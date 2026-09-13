@@ -43,6 +43,7 @@ model User {
   
   comments      Comment[]
   attachments   Attachment[]
+  ownerFeedbacks OwnerFeedback[]
 }
 
 model Session {
@@ -139,6 +140,8 @@ model WorkerProfile {
   invitations         TenderInvitation[]
   offers              Offer[]
   workOrders          WorkOrder[]
+  tenantFeedbacks TenantFeedback[]
+  ownerFeedbacks  OwnerFeedback[]
 }
 
 enum ProfileStatus {
@@ -457,6 +460,7 @@ model WorkOrder {
   
   paymentRecord    PaymentRecord?
   tenantFeedback   TenantFeedback?
+  ownerFeedback    OwnerFeedback?
 
   @@unique([requestId])
 }
@@ -521,11 +525,29 @@ model TenantFeedback {
   workOrder        WorkOrder       @relation(fields: [workOrderId], references: [id])
   tenantId         String
   workerId         String
+  worker           WorkerProfile @relation(fields: [workerId], references: [id], onDelete: Cascade)
   
   rating           Int             // 1-5
   comment          String?
   createdAt        DateTime        @default(now())
   
+  hiddenById       String?
+  hiddenAt         DateTime?
+  hiddenReason     String?
+}
+
+model OwnerFeedback {
+  id               String   @id @default(cuid())
+  workOrderId      String   @unique
+  workOrder        WorkOrder @relation(fields: [workOrderId], references: [id])
+  ownerId          String
+  owner            User     @relation(fields: [ownerId], references: [id])
+  workerId         String
+  worker           WorkerProfile @relation(fields: [workerId], references: [id])
+  rating           Int
+  comment          String?
+  createdAt        DateTime @default(now())
+
   hiddenById       String?
   hiddenAt         DateTime?
   hiddenReason     String?
