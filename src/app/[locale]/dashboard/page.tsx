@@ -114,6 +114,7 @@ export default async function DashboardPage({
       : Promise.resolve([]),
     db.notification.findMany({ where: { recipientId: userId }, orderBy: { createdAt: "desc" }, take: 20 }),
   ]);
+  const unreadNotifications = notifications.filter((notification) => !notification.readAt).length;
 
   const title = role === Role.OWNER ? "لوحة المالك" : role === Role.TENANT ? "لوحة المستأجر" : role === Role.WORKER ? "لوحة الفني" : role === Role.SUPER_ADMIN ? "لوحة الإدارة" : "لوحتك";
   return (
@@ -130,20 +131,21 @@ export default async function DashboardPage({
         {role === Role.OWNER && <DashboardTabs tabs={[
           { id: "overview", label: "نظرة عامة", content: <OwnerPanel buildings={buildings} locale={locale} /> },
           { id: "memberships", label: `طلبات الانضمام (${ownerMemberships.length})`, content: <OwnerMembershipPanel memberships={ownerMemberships} locale={locale} /> },
+          { id: "buildings", label: `مبانيك (${buildings.length})`, content: <OwnerBuildingsPanel buildings={buildings} /> },
           { id: "requests", label: `طلبات الصيانة (${requests.length})`, content: requests.length ? <RequestList requests={requests} locale={locale} role={role} workers={ownerWorkers} /> : <EmptyState text="لا توجد طلبات صيانة حاليًا." /> },
-          { id: "notifications", label: `الإشعارات (${notifications.length})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
+          { id: "notifications", label: `الإشعارات (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
         ]} />}
         {role === Role.TENANT && <DashboardTabs tabs={[
           { id: "overview", label: "نظرة عامة", content: <TenantPanel tenancies={tenancies} memberships={memberships} categories={categories} locale={locale} /> },
           { id: "requests", label: `طلباتي (${requests.length})`, content: requests.length ? <RequestList requests={requests} locale={locale} role={role} workers={[]} /> : <EmptyState text="لم ترسل أي طلب صيانة بعد." /> },
-          { id: "notifications", label: `الإشعارات (${notifications.length})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
+          { id: "notifications", label: `الإشعارات (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
         ]} />}
         {role === Role.WORKER && <DashboardTabs tabs={[
           { id: "overview", label: "الملف المهني", content: <WorkerPanel profile={profile} categories={categories} areas={areas} procurements={workerProcurements} locale={locale} /> },
           { id: "requests", label: `الأعمال المرتبطة (${requests.length})`, content: requests.length ? <RequestList requests={requests} locale={locale} role={role} workers={[]} /> : <EmptyState text="لا توجد أعمال مرتبطة بك حاليًا." /> },
-          { id: "notifications", label: `الإشعارات (${notifications.length})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
+          { id: "notifications", label: `الإشعارات (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
         ]} />}
-        {role === Role.SUPER_ADMIN && <AdminPanel workers={pendingWorkers} locale={locale} requests={requests} notifications={notifications} />}
+        {role === Role.SUPER_ADMIN && <AdminPanel workers={pendingWorkers} locale={locale} requests={requests} notifications={notifications} unreadNotifications={unreadNotifications} />}
       </div>
     </main>
   );
@@ -154,18 +156,21 @@ function EmptyState({ text }: { text: string }) {
 }
 
 function OwnerPanel({ buildings, locale }: { buildings: Array<{ id: string; name: string; address: string; area: string; joinCode: string; units: Array<{ id: string; label: string; type: string }> }>; locale: string }) {
-  return <div className="grid items-stretch gap-6 lg:grid-cols-3">
+  return <div className="grid items-stretch gap-6 lg:grid-cols-2">
     <Card className="h-full"><h2 className="text-xl font-bold">إضافة مبنى ووحدة</h2><form action={createBuilding} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><Input name="name" label="اسم المبنى" /><Input name="address" label="العنوان" /><Input name="area" label="المنطقة" /><Input name="unitLabel" label="رقم الوحدة الأولى" required={false} /><select name="unitType" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="APARTMENT">شقة</option><option value="SHOP">محل</option></select><Button>حفظ المبنى</Button></form></Card>
     {buildings.length > 0 && <Card className="h-full"><h2 className="text-xl font-bold">إضافة وحدة إلى مبنى</h2><form action={createUnit} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><select name="buildingId" required className="rounded-xl border border-[#c8d7d0] px-3 py-2.5">{buildings.map((building) => <option key={building.id} value={building.id}>{building.name}</option>)}</select><Input name="label" label="رقم الوحدة" /><Input name="floor" label="الطابق" required={false} /><select name="type" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="APARTMENT">شقة</option><option value="SHOP">محل</option></select><Button>إضافة الوحدة</Button></form></Card>}
-    <Card className="h-full"><h2 className="text-xl font-bold">مبانيك</h2>{buildings.length === 0 ? <p className="mt-2 text-[#52635b]">لم تضف مباني بعد.</p> : <ul className="mt-3 space-y-3">{buildings.map((building) => <li key={building.id} className="rounded-2xl bg-[#f6f8f7] p-4"><strong>{building.name}</strong><p className="text-sm text-[#52635b]">{building.address} · رمز الانضمام: <code>{building.joinCode}</code></p><p className="mt-2 text-sm">الوحدات: {building.units.map((unit) => unit.label).join("، ") || "لا توجد"}</p></li>)}</ul>}</Card>
   </div>;
+}
+
+function OwnerBuildingsPanel({ buildings }: { buildings: Array<{ id: string; name: string; address: string; area: string; joinCode: string; units: Array<{ id: string; label: string; type: string }> }> }) {
+  return <Card><h2 className="text-xl font-bold">مبانيك</h2>{buildings.length === 0 ? <p className="mt-3 text-[#52635b]">لم تضف مباني بعد.</p> : <ul className="mt-4 grid gap-4 md:grid-cols-2">{buildings.map((building) => <li key={building.id} className="rounded-2xl bg-[#f6f8f7] p-5"><strong>{building.name}</strong><p className="mt-1 text-sm text-[#52635b]">{building.address} · رمز الانضمام: <code>{building.joinCode}</code></p><p className="mt-3 text-sm">الوحدات: {building.units.map((unit) => unit.label).join("، ") || "لا توجد"}</p></li>)}</ul>}</Card>;
 }
 
 function OwnerMembershipPanel({ memberships, locale }: { memberships: Array<{ id: string; tenant: { name: string; email: string }; unit: { label: string; building: { name: string } } }>; locale: string }) {
   return <Card><h2 className="text-xl font-bold">طلبات الانضمام</h2>{memberships.length === 0 ? <p className="mt-3 text-[#52635b]">لا توجد طلبات انضمام معلقة.</p> : <ul className="mt-4 grid gap-3 md:grid-cols-2">{memberships.map((membership) => <li key={membership.id} className="rounded-2xl bg-[#f6f8f7] p-4"><p><strong>{membership.tenant.name}</strong> · {membership.tenant.email}</p><p className="mt-1 text-sm text-[#52635b]">{membership.unit.building.name} · {membership.unit.label}</p><div className="mt-3 flex gap-2"><form action={decideMembership}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="membershipId" value={membership.id} /><input type="hidden" name="decision" value="APPROVED" /><Button>موافقة</Button></form><form action={decideMembership}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="membershipId" value={membership.id} /><input type="hidden" name="decision" value="REJECTED" /><button className="rounded-xl border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-700">رفض</button></form></div></li>)}</ul>}</Card>;
 }
 
-function AdminPanel({ workers, locale, requests, notifications }: { workers: Array<{ id: string; bio: string | null; submittedAt: Date | null; user: { name: string; email: string }; categories: Array<{ category: { nameAr: string } }>; serviceAreas: Array<{ area: { code: string } }> }>; locale: string; requests: DashboardRequest[]; notifications: Array<{ id: string; eventType: string; messageKey: string; createdAt: Date; readAt: Date | null; parameters: unknown }> }) {
+function AdminPanel({ workers, locale, requests, notifications, unreadNotifications }: { workers: Array<{ id: string; bio: string | null; submittedAt: Date | null; user: { name: string; email: string }; categories: Array<{ category: { nameAr: string } }>; serviceAreas: Array<{ area: { code: string } }> }>; locale: string; requests: DashboardRequest[]; notifications: Array<{ id: string; eventType: string; messageKey: string; createdAt: Date; readAt: Date | null; parameters: unknown }>; unreadNotifications: number }) {
   return <Card>
     <DashboardTabs tabs={[
       {
@@ -190,7 +195,7 @@ function AdminPanel({ workers, locale, requests, notifications }: { workers: Arr
       },
       {
         id: "notifications",
-        label: `الإشعارات (${notifications.length})`,
+        label: `الإشعارات (${unreadNotifications})`,
         content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <p className="text-[#52635b]">لا توجد إشعارات حاليًا.</p>,
       },
     ]} />
