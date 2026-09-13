@@ -104,7 +104,7 @@ export default async function DashboardPage({
       : Promise.resolve([]),
     role === Role.WORKER
       ? db.procurement.findMany({
-          where: { state: "OPEN", invitations: { some: { workerId: userId } } },
+          where: { state: "OPEN", OR: [{ mode: "PUBLIC" }, { invitations: { some: { workerId: userId } } }] },
           include: {
             request: { include: { unit: { include: { building: true } }, category: true } },
             offers: { where: { workerId: userId }, select: { id: true, state: true } },
@@ -125,17 +125,31 @@ export default async function DashboardPage({
         </header>
         {message && <p className="mt-6 rounded-xl bg-[#e3f3e9] px-4 py-3 text-sm font-semibold text-[#176b4d]">تم حفظ العملية بنجاح.</p>}
         <div className="mt-8">
-          {role === Role.OWNER && <OwnerPanel buildings={buildings} memberships={ownerMemberships} locale={locale} />}
-          {role === Role.TENANT && <TenantPanel tenancies={tenancies} memberships={memberships} categories={categories} locale={locale} />}
-          {role === Role.WORKER && <WorkerPanel profile={profile} categories={categories} areas={areas} procurements={workerProcurements} locale={locale} />}
           {!role && <Card><h2 className="text-xl font-bold">اختر دورًا من إعدادات الحساب</h2><p className="mt-2 text-[#52635b]">حسابك يحتاج إلى دور قبل البدء في المنصة.</p></Card>}
-          {role === Role.SUPER_ADMIN && <AdminPanel workers={pendingWorkers} locale={locale} requests={requests} />}
         </div>
-        {notifications.length > 0 && <NotificationList notifications={notifications} locale={locale} />}
-        {role !== Role.SUPER_ADMIN && requests.length > 0 && <RequestList requests={requests} locale={locale} role={role} workers={ownerWorkers} />}
+        {role === Role.OWNER && <DashboardTabs tabs={[
+          { id: "overview", label: "نظرة عامة", content: <OwnerPanel buildings={buildings} memberships={ownerMemberships} locale={locale} /> },
+          { id: "requests", label: `طلبات الصيانة (${requests.length})`, content: requests.length ? <RequestList requests={requests} locale={locale} role={role} workers={ownerWorkers} /> : <EmptyState text="لا توجد طلبات صيانة حاليًا." /> },
+          { id: "notifications", label: `الإشعارات (${notifications.length})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
+        ]} />}
+        {role === Role.TENANT && <DashboardTabs tabs={[
+          { id: "overview", label: "نظرة عامة", content: <TenantPanel tenancies={tenancies} memberships={memberships} categories={categories} locale={locale} /> },
+          { id: "requests", label: `طلباتي (${requests.length})`, content: requests.length ? <RequestList requests={requests} locale={locale} role={role} workers={[]} /> : <EmptyState text="لم ترسل أي طلب صيانة بعد." /> },
+          { id: "notifications", label: `الإشعارات (${notifications.length})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
+        ]} />}
+        {role === Role.WORKER && <DashboardTabs tabs={[
+          { id: "overview", label: "الملف المهني", content: <WorkerPanel profile={profile} categories={categories} areas={areas} procurements={workerProcurements} locale={locale} /> },
+          { id: "requests", label: `الأعمال المرتبطة (${requests.length})`, content: requests.length ? <RequestList requests={requests} locale={locale} role={role} workers={[]} /> : <EmptyState text="لا توجد أعمال مرتبطة بك حاليًا." /> },
+          { id: "notifications", label: `الإشعارات (${notifications.length})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
+        ]} />}
+        {role === Role.SUPER_ADMIN && <AdminPanel workers={pendingWorkers} locale={locale} requests={requests} notifications={notifications} />}
       </div>
     </main>
   );
+}
+
+function EmptyState({ text }: { text: string }) {
+  return <Card><p className="text-[#52635b]">{text}</p></Card>;
 }
 
 function OwnerPanel({ buildings, memberships, locale }: { buildings: Array<{ id: string; name: string; address: string; area: string; joinCode: string; units: Array<{ id: string; label: string; type: string }> }>; memberships: Array<{ id: string; tenant: { name: string; email: string }; unit: { label: string; building: { name: string } } }>; locale: string }) {
@@ -147,7 +161,7 @@ function OwnerPanel({ buildings, memberships, locale }: { buildings: Array<{ id:
   </div>;
 }
 
-function AdminPanel({ workers, locale, requests }: { workers: Array<{ id: string; bio: string | null; submittedAt: Date | null; user: { name: string; email: string }; categories: Array<{ category: { nameAr: string } }>; serviceAreas: Array<{ area: { code: string } }> }>; locale: string; requests: DashboardRequest[] }) {
+function AdminPanel({ workers, locale, requests, notifications }: { workers: Array<{ id: string; bio: string | null; submittedAt: Date | null; user: { name: string; email: string }; categories: Array<{ category: { nameAr: string } }>; serviceAreas: Array<{ area: { code: string } }> }>; locale: string; requests: DashboardRequest[]; notifications: Array<{ id: string; eventType: string; messageKey: string; createdAt: Date; readAt: Date | null; parameters: unknown }> }) {
   return <Card>
     <DashboardTabs tabs={[
       {
@@ -169,6 +183,11 @@ function AdminPanel({ workers, locale, requests }: { workers: Array<{ id: string
         id: "settings",
         label: "إعدادات النظام",
         content: <div><h2 className="text-xl font-bold">إعدادات النظام</h2><p className="mt-3 text-[#52635b]">الإشعارات، التصنيفات، مناطق الخدمة، وإعدادات الدفع.</p></div>,
+      },
+      {
+        id: "notifications",
+        label: `الإشعارات (${notifications.length})`,
+        content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <p className="text-[#52635b]">لا توجد إشعارات حاليًا.</p>,
       },
     ]} />
   </Card>;
@@ -228,7 +247,7 @@ function RequestList({ requests, locale, role, workers }: { requests: DashboardR
   return <section className="mt-8"><h2 className="mb-4 text-2xl font-bold">طلبات الصيانة</h2><div className="grid gap-4">{requests.map((request) => {
     const openProcurement = request.procurements.find((procurement) => procurement.state === "OPEN");
     return <Card key={request.id}><div className="flex flex-wrap items-start justify-between gap-3"><div><h3 className="text-lg font-bold">{request.title}</h3><p className="mt-1 text-sm text-[#52635b]">{request.unit.building.name} · {request.unit.label} · {request.category.nameAr}</p></div><span className="rounded-full bg-[#e3f3e9] px-3 py-1 text-xs font-semibold text-[#176b4d]">{statusLabels[request.status]}</span></div><p className="mt-3 leading-7">{request.description}</p>
-      {role === Role.OWNER && request.status === RequestStatus.SUBMITTED && <form action={createProcurement} className="mt-4 rounded-2xl border border-[#dce8e1] p-4"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="requestId" value={request.id} /><p className="font-semibold">فتح مناقصة ودعوة فنيين</p>{workers.length === 0 ? <p className="mt-2 text-sm text-[#52635b]">لا يوجد فنيون معتمدون.</p> : <div className="mt-3 grid gap-2 sm:grid-cols-2">{workers.map((worker) => <label key={worker.id} className="text-sm"><input type="checkbox" name="workerIds" value={worker.id} className="ml-2" />{worker.user.name} · {worker.user.email}</label>)}</div>}<label className="mt-3 block max-w-md text-sm font-semibold">الموعد النهائي<input name="deadline" type="date" className="mt-2 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /></label><div className="mt-4"><Button>إرسال الدعوات</Button></div></form>}
+      {role === Role.OWNER && request.status === RequestStatus.SUBMITTED && <form action={createProcurement} className="mt-4 rounded-2xl border border-[#dce8e1] p-4"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="requestId" value={request.id} /><p className="font-semibold">اختيار طريقة الحصول على الفني</p><select name="procurementMode" className="mt-3 w-full max-w-md rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="INVITED">دعوة فنيين محددين</option><option value="PUBLIC">استقبال عروض من الفنيين المعتمدين</option></select>{workers.length === 0 ? <p className="mt-2 text-sm text-[#52635b]">لا يوجد فنيون معتمدون للدعوات. يمكنك اختيار استقبال عروض عامة.</p> : <div className="mt-3 grid gap-2 sm:grid-cols-2">{workers.map((worker) => <label key={worker.id} className="text-sm"><input type="checkbox" name="workerIds" value={worker.id} className="ml-2" />{worker.user.name} · {worker.user.email}</label>)}</div>}<label className="mt-3 block max-w-md text-sm font-semibold">الموعد النهائي<input name="deadline" type="date" className="mt-2 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /></label><div className="mt-4"><Button>إنشاء وإرسال المناقصة</Button></div></form>}
       {role === Role.OWNER && openProcurement && <div className="mt-4 rounded-2xl border border-[#dce8e1] p-4"><p className="font-semibold">العروض الواردة ({openProcurement.offers.length})</p>{openProcurement.offers.length === 0 ? <p className="mt-2 text-sm text-[#52635b]">بانتظار عروض الفنيين.</p> : <ul className="mt-2 space-y-2">{openProcurement.offers.map((offer) => <li key={offer.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-[#f6f8f7] p-3 text-sm"><span>{offer.worker.user.name} · {offer.totalAgorot} أغورة · {offer.state}</span>{offer.state === "SUBMITTED" && <form action={awardOffer}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="offerId" value={offer.id} /><Button>ترسية وإنشاء أمر عمل</Button></form>}</li>)}</ul>}</div>}
       {role === Role.WORKER && request.status === RequestStatus.ASSIGNED && <StatusForm request={request} locale={locale} statuses={["IN_PROGRESS"]} />}
       {role === Role.OWNER && request.status === RequestStatus.TENANT_CONFIRMED && <StatusForm request={request} locale={locale} statuses={["CLOSED"]} />}
@@ -241,7 +260,7 @@ function RequestList({ requests, locale, role, workers }: { requests: DashboardR
   })}</div></section>;
 }
 
-function NotificationList({ notifications, locale }: { notifications: Array<{ id: string; eventType: string; messageKey: string; createdAt: Date; readAt: Date | null }>; locale: string }) {
+function NotificationList({ notifications, locale }: { notifications: Array<{ id: string; eventType: string; messageKey: string; createdAt: Date; readAt: Date | null; parameters: unknown }>; locale: string }) {
   const labels: Record<string, string> = {
     MAINTENANCE_REQUEST_CREATED: "تم إنشاء طلب صيانة جديد",
     MEMBERSHIP_REQUESTED: "طلب انضمام جديد",
@@ -251,7 +270,7 @@ function NotificationList({ notifications, locale }: { notifications: Array<{ id
     OFFER_AWARDED: "تمت ترسية العرض",
     TENANT_FEEDBACK_SUBMITTED: "تم استلام تقييم جديد",
   };
-  return <section className="mt-8"><Card><h2 className="text-xl font-bold">الإشعارات</h2><ul className="mt-3 space-y-2">{notifications.map((notification) => <li key={notification.id} className={`flex items-center justify-between gap-3 rounded-xl p-3 text-sm ${notification.readAt ? "bg-[#f6f8f7]" : "bg-[#e9f5ee]"}`}><span><strong>{labels[notification.eventType] ?? notification.messageKey}</strong></span>{!notification.readAt && <form action={markNotificationRead}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="notificationId" value={notification.id} /><button className="text-xs font-bold text-[#176b4d]">تحديد كمقروء</button></form>}</li>)}</ul></Card></section>;
+  return <section className="mt-8"><Card><h2 className="text-xl font-bold">الإشعارات</h2><ul className="mt-3 space-y-2">{notifications.map((notification) => { const actorName = typeof notification.parameters === "object" && notification.parameters !== null && "actorName" in notification.parameters && typeof notification.parameters.actorName === "string" ? notification.parameters.actorName : null; return <li key={notification.id} className={`flex items-center justify-between gap-3 rounded-xl p-3 text-sm ${notification.readAt ? "bg-[#f6f8f7]" : "bg-[#e9f5ee]"}`}><span><strong>{labels[notification.eventType] ?? notification.messageKey}</strong>{actorName && <span className="mr-2 text-[#60756a]">بواسطة {actorName}</span>}</span>{!notification.readAt && <form action={markNotificationRead}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="notificationId" value={notification.id} /><button className="text-xs font-bold text-[#176b4d]">تحديد كمقروء</button></form>}</li>; })}</ul></Card></section>;
 }
 
 function StatusForm({ request, locale, statuses }: { request: { id: string; version: number }; locale: string; statuses: string[] }) {

@@ -241,7 +241,7 @@ export async function createMaintenanceRequest(formData: FormData) {
     eventType: "MAINTENANCE_REQUEST_CREATED",
     resourceId: request.id,
     messageKey: "maintenanceRequestCreated",
-    parameters: { requestTitle: request.title },
+    parameters: { requestTitle: request.title, actorName: session.user.name },
   });
   revalidatePath(`/${localeFrom(formData)}/dashboard`);
   dashboard(formData, "request-created");
@@ -250,8 +250,9 @@ export async function createMaintenanceRequest(formData: FormData) {
 export async function createProcurement(formData: FormData) {
   const { session } = await requireRole(Role.OWNER);
   const requestId = text(formData, "requestId");
+  const mode = enumValue(text(formData, "procurementMode", false) || "INVITED", ["INVITED", "PUBLIC"] as const, "procurementMode");
   const workerIds = [...new Set(formData.getAll("workerIds").filter((value): value is string => typeof value === "string" && Boolean(value.trim())))];
-  if (!workerIds.length) throw new Error("WORKERS_REQUIRED");
+  if (mode === "INVITED" && !workerIds.length) throw new Error("WORKERS_REQUIRED");
   const request = await db.maintenanceRequest.findUnique({
     where: { id: requestId },
     include: { unit: { include: { building: true } }, category: true, procurements: { where: { state: "OPEN" } } },
@@ -281,7 +282,7 @@ export async function createProcurement(formData: FormData) {
       data: {
         requestId,
         roundNumber: roundNumber + 1,
-        mode: "INVITED",
+        mode,
         state: "OPEN",
         sanitizedBrief: text(formData, "brief", false) || request.description,
         categorySnapshot: request.category.code,
@@ -302,7 +303,7 @@ export async function createProcurement(formData: FormData) {
           eventType: "TENDER_INVITATION_CREATED",
           resourceId: procurement.id,
           messageKey: "tenderInvitationReceived",
-          parameters: { requestTitle: request.title },
+          parameters: { requestTitle: request.title, actorName: session.user.name },
         }),
       ),
     );
@@ -326,7 +327,7 @@ export async function submitOffer(formData: FormData) {
     where: { id: procurementId },
     include: { request: { include: { unit: true } }, invitations: { where: { workerId: session.user.id } } },
   });
-  if (!procurement || procurement.state !== "OPEN" || !procurement.invitations.length) throw new Error("PROCUREMENT_NOT_AVAILABLE");
+  if (!procurement || procurement.state !== "OPEN" || (procurement.mode !== "PUBLIC" && !procurement.invitations.length)) throw new Error("PROCUREMENT_NOT_AVAILABLE");
   const profile = await db.workerProfile.findUnique({ where: { id: session.user.id }, select: { status: true } });
   if (!profile || profile.status !== ProfileStatus.APPROVED) throw new Error("PROFILE_NOT_APPROVED");
 
