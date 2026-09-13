@@ -331,7 +331,8 @@ export async function createProcurement(formData: FormData) {
 export async function submitOffer(formData: FormData) {
   const { session } = await requireRole(Role.WORKER);
   const procurementId = text(formData, "procurementId");
-  const totalAgorot = integerValue(formData, "totalAgorot", { min: 1 });
+  const amountShekels = integerValue(formData, "amountShekels", { min: 1 });
+  const totalAgorot = amountShekels * 100;
   const scopeInclusions = text(formData, "scopeInclusions");
   const assumptions = text(formData, "assumptions", false) || null;
   const duration = text(formData, "duration", false) || null;
