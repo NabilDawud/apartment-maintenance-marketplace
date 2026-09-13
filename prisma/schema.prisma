@@ -45,6 +45,8 @@ model User {
   attachments   Attachment[]
   ownerFeedbacks OwnerFeedback[]
   offerMessages OfferMessage[]
+  unitOwnershipRequests UnitOwnershipRequest[] @relation("OwnershipApplicant")
+  decidedOwnershipRequests UnitOwnershipRequest[] @relation("OwnershipDecider")
 }
 
 model Session {
@@ -245,6 +247,7 @@ model Unit {
   archivedAt       DateTime?
 
   memberships      MembershipRequest[]
+  ownershipRequests UnitOwnershipRequest[]
   tenancies        Tenancy[]
   requests         MaintenanceRequest[]
 
@@ -271,6 +274,22 @@ model MembershipRequest {
   decisionTime     DateTime?
 
   tenancies        Tenancy[]
+}
+
+model UnitOwnershipRequest {
+  id            String          @id @default(cuid())
+  applicantId   String
+  applicant     User            @relation("OwnershipApplicant", fields: [applicantId], references: [id])
+  unitId        String
+  unit          Unit            @relation(fields: [unitId], references: [id])
+  state         MembershipState @default(PENDING)
+  submittedAt   DateTime        @default(now())
+  decidedById   String?
+  decider       User?           @relation("OwnershipDecider", fields: [decidedById], references: [id])
+  decisionReason String?
+  decisionTime  DateTime?
+
+  @@unique([applicantId, unitId, state])
 }
 
 enum MembershipState {

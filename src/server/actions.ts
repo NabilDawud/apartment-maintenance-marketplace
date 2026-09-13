@@ -123,14 +123,61 @@ export async function createUnit(formData: FormData) {
   const buildingId = text(formData, "buildingId");
   const label = text(formData, "label");
   const type = enumValue(text(formData, "type"), Object.values(UnitType), "type");
-  const ownerEmail = text(formData, "ownerEmail", false).toLowerCase();
   const building = await db.building.findFirst({ where: { id: buildingId, ownerId: session.user.id, archivedAt: null } });
   if (!building) throw new Error("BUILDING_NOT_FOUND");
-  const unitOwner = ownerEmail ? await db.user.findUnique({ where: { email: ownerEmail }, select: { id: true, role: true } }) : null;
-  if (ownerEmail && (!unitOwner || unitOwner.role !== Role.OWNER)) throw new Error("UNIT_OWNER_NOT_FOUND");
-  await db.unit.create({ data: { buildingId, ownerId: unitOwner?.id ?? session.user.id, label, type, floor: text(formData, "floor", false) || null } });
+  await db.unit.create({ data: { buildingId, ownerId: session.user.id, label, type, floor: text(formData, "floor", false) || null } });
   revalidatePath(`/${localeFrom(formData)}/dashboard`);
   dashboard(formData, "unit-created");
+}
+
+export async function requestUnitOwnership(formData: FormData) {
+  const { session } = await requireRole(Role.OWNER);
+  const joinCode = text(formData, "joinCode").toUpperCase();
+  const unitLabel = text(formData, "unitLabel");
+  const building = await db.building.findFirst({
+    where: { joinCode, archivedAt: null },
+    include: { units: { where: { label: unitLabel, archivedAt: null }, include: { owner: true } } },
+  });
+  if (!building) return dashboard(formData, "ownership-building-not-found");
+  const unit = building.units[0];
+  if (!unit) return dashboard(formData, "ownership-unit-not-found");
+  if (unit.ownerId === session.user.id) return dashboard(formData, "ownership-already-owned");
+  const pending = await db.unitOwnershipRequest.findFirst({ where: { applicantId: session.user.id, unitId: unit.id, state: MembershipState.PENDING } });
+  if (pending) return dashboard(formData, "ownership-request-exists");
+  const request = await db.unitOwnershipRequest.create({ data: { applicantId: session.user.id, unitId: unit.id } });
+  await createNotification(db, {
+    recipientId: building.ownerId,
+    eventType: "UNIT_OWNERSHIP_REQUESTED",
+    resourceId: request.id,
+    messageKey: "unitOwnershipRequested",
+    parameters: { actorName: session.user.name, unitLabel: unit.label, buildingName: building.name },
+  });
+  revalidatePath(`/${localeFrom(formData)}/dashboard`);
+  dashboard(formData, "ownership-requested");
+}
+
+export async function decideUnitOwnership(formData: FormData) {
+  const { session, role } = await requireRole(Role.OWNER, Role.SUPER_ADMIN);
+  const requestId = text(formData, "ownershipRequestId");
+  const decision = enumValue(text(formData, "decision"), [MembershipState.APPROVED, MembershipState.REJECTED] as const, "decision");
+  const request = await db.unitOwnershipRequest.findUnique({ where: { id: requestId }, include: { unit: { include: { building: true } } } });
+  if (!request || (role !== Role.SUPER_ADMIN && request.unit.building.ownerId !== session.user.id) || request.state !== MembershipState.PENDING) throw new Error("FORBIDDEN");
+  await db.$transaction(async (tx) => {
+    await tx.unitOwnershipRequest.update({ where: { id: requestId }, data: { state: decision, decidedById: session.user.id, decisionTime: new Date() } });
+    if (decision === MembershipState.APPROVED) {
+      await tx.unit.update({ where: { id: request.unitId }, data: { ownerId: request.applicantId } });
+      await tx.unitOwnershipRequest.updateMany({ where: { unitId: request.unitId, id: { not: requestId }, state: MembershipState.PENDING }, data: { state: MembershipState.REJECTED, decidedById: session.user.id, decisionTime: new Date(), decisionReason: "وحدة مرتبطة بمالك آخر" } });
+    }
+    await createNotification(tx, {
+      recipientId: request.applicantId,
+      eventType: "UNIT_OWNERSHIP_DECIDED",
+      resourceId: requestId,
+      messageKey: "unitOwnershipDecided",
+      parameters: { decision },
+    });
+  });
+  revalidatePath(`/${localeFrom(formData)}/dashboard`);
+  dashboard(formData, "ownership-decided");
 }
 
 export async function requestMembership(formData: FormData) {

@@ -15,6 +15,8 @@ import {
   markNotificationRead,
   reviewWorkerProfile,
   requestMembership,
+  requestUnitOwnership,
+  decideUnitOwnership,
   respondTenderInvitation,
   submitOffer,
   submitOwnerFeedback,
@@ -74,9 +76,12 @@ export default async function DashboardPage({
   const isEnglish = locale === "en";
   const userId = session.user.id;
 
-  const [buildings, tenancies, categories, areas, requests, profile, memberships, ownerMemberships, pendingWorkers, ownerWorkers, availableWorkers, workerProcurements, notifications] = await Promise.all([
+  const [buildings, ownedUnits, tenancies, categories, areas, requests, profile, memberships, ownerMemberships, ownershipRequests, pendingWorkers, ownerWorkers, availableWorkers, workerProcurements, notifications] = await Promise.all([
     role === Role.OWNER
       ? db.building.findMany({ where: { ownerId: userId, archivedAt: null }, include: { units: { where: { archivedAt: null }, orderBy: { label: "asc" } } } })
+      : Promise.resolve([]),
+    role === Role.OWNER
+      ? db.unit.findMany({ where: { ownerId: userId, archivedAt: null, building: { ownerId: { not: userId } } }, include: { building: true }, orderBy: [{ building: { name: "asc" } }, { label: "asc" }] })
       : Promise.resolve([]),
     role === Role.TENANT
       ? db.tenancy.findMany({ where: { tenantId: userId, endedAt: null }, include: { unit: { include: { building: true } } }, orderBy: { startedAt: "desc" } })
@@ -117,6 +122,7 @@ export default async function DashboardPage({
     role === Role.WORKER ? db.workerProfile.findUnique({ where: { id: userId }, include: { categories: true, serviceAreas: true, tenantFeedbacks: { select: { rating: true, comment: true } }, ownerFeedbacks: { select: { rating: true, comment: true } } } }) : Promise.resolve(null),
     role === Role.TENANT ? db.membershipRequest.findMany({ where: { tenantId: userId }, include: { unit: { include: { building: true } } }, orderBy: { submittedAt: "desc" } }) : Promise.resolve([]),
     role === Role.OWNER ? db.membershipRequest.findMany({ where: { unit: { ownerId: userId }, state: "PENDING" }, include: { tenant: true, unit: { include: { building: true } } }, orderBy: { submittedAt: "asc" } }) : Promise.resolve([]),
+    role === Role.OWNER ? db.unitOwnershipRequest.findMany({ where: { unit: { building: { ownerId: userId } }, state: "PENDING" }, include: { applicant: true, unit: { include: { building: true } } }, orderBy: { submittedAt: "asc" } }) : Promise.resolve([]),
     role === Role.SUPER_ADMIN ? db.workerProfile.findMany({ where: { status: "PENDING_REVIEW" }, include: { user: true, categories: { include: { category: true } }, serviceAreas: { include: { area: true } } }, orderBy: { submittedAt: "asc" } }) : Promise.resolve([]),
     role === Role.OWNER
       ? db.workerProfile.findMany({ where: { status: ProfileStatus.APPROVED }, select: workerDirectorySelect, orderBy: { user: { name: "asc" } } })
@@ -146,14 +152,16 @@ export default async function DashboardPage({
           <div><p className="text-sm font-semibold text-[#176b4d]">صيانة</p><h1 className="mt-2 text-3xl font-bold">{title}</h1><p className="mt-1 text-[#52635b]">مرحبًا، {session.user.name}</p></div>
           <LogoutButton locale={locale} />
         </header>
-        {message && <p className={`mt-6 rounded-xl px-4 py-3 text-sm font-semibold ${message.startsWith("membership-") && message !== "membership-requested" ? "bg-[#fff1f0] text-[#a33a32]" : "bg-[#e3f3e9] text-[#176b4d]"}`}>{message === "membership-requested" ? "تم إرسال طلب الانضمام، وسيظهر الآن لدى مالك الوحدة للموافقة." : message === "membership-building-not-found" ? "رمز المبنى غير صحيح أو المبنى غير موجود." : message === "membership-unit-not-found" ? "رقم الوحدة غير موجود داخل هذا المبنى." : message === "membership-exists" ? "لديك طلب قائم أو عضوية موجودة لهذه الوحدة." : "تم حفظ العملية بنجاح."}</p>}
+        {message && <p className={`mt-6 rounded-xl px-4 py-3 text-sm font-semibold ${message.includes("not-found") || message.includes("exists") || message.includes("already") ? "bg-[#fff1f0] text-[#a33a32]" : "bg-[#e3f3e9] text-[#176b4d]"}`}>{message === "membership-requested" ? "تم إرسال طلب الانضمام، وسيظهر الآن لدى مالك الوحدة للموافقة." : message === "membership-building-not-found" || message === "ownership-building-not-found" ? "رمز البناية غير صحيح أو البناية غير موجودة." : message === "membership-unit-not-found" || message === "ownership-unit-not-found" ? "رقم الوحدة غير موجود داخل هذه البناية." : message === "membership-exists" ? "لديك طلب قائم أو عضوية موجودة لهذه الوحدة." : message === "ownership-requested" ? "تم إرسال طلب ملكية الوحدة إلى مالك البناية للموافقة." : message === "ownership-request-exists" ? "لديك طلب ملكية قيد المراجعة لهذه الوحدة." : message === "ownership-already-owned" ? "أنت مالك هذه الوحدة بالفعل." : "تم حفظ العملية بنجاح."}</p>}
         <div className="mt-8">
           {!role && <Card><h2 className="text-xl font-bold">اختر دورًا من إعدادات الحساب</h2><p className="mt-2 text-[#52635b]">حسابك يحتاج إلى دور قبل البدء في المنصة.</p></Card>}
         </div>
         {role === Role.OWNER && <DashboardTabs tabs={[
           { id: "overview", label: "نظرة عامة", content: <OwnerPanel buildings={buildings} locale={locale} /> },
           { id: "memberships", label: `طلبات الانضمام (${ownerMemberships.length})`, content: <OwnerMembershipPanel memberships={ownerMemberships} locale={locale} /> },
+          { id: "ownership", label: `طلبات ملكية الوحدات (${ownershipRequests.length})`, content: <OwnerOwnershipPanel requests={ownershipRequests} locale={locale} /> },
           { id: "buildings", label: `مبانيك (${buildings.length})`, content: <OwnerBuildingsPanel buildings={buildings} /> },
+          { id: "units", label: `وحداتي (${ownedUnits.length})`, content: <OwnedUnitsPanel units={ownedUnits} /> },
           { id: "workers", label: "الفنيون المعتمدون", content: <WorkerDirectoryPanel workers={ownerWorkers} /> },
           { id: "requests", label: `طلبات الصيانة (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={ownerWorkers} /> },
           { id: "notifications", label: `الإشعارات (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
@@ -206,7 +214,7 @@ function RequestStatusTabs({ requests, locale, role, workers }: { requests: Dash
 function OwnerPanel({ buildings, locale }: { buildings: Array<{ id: string; name: string; address: string; area: string; joinCode: string; canManageUnitRequests: boolean; units: Array<{ id: string; label: string; type: string }> }>; locale: string }) {
   return <div className="grid items-stretch gap-6 lg:grid-cols-2">
     <Card className="h-full"><h2 className="text-xl font-bold">إضافة مبنى ووحدة</h2><form action={createBuilding} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><Input name="name" label="اسم المبنى" /><Input name="address" label="العنوان" /><Input name="area" label="المنطقة" /><Input name="unitLabel" label="رقم الوحدة الأولى" required={false} /><select name="unitType" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="APARTMENT">شقة</option><option value="SHOP">محل</option></select><label className="flex items-start gap-2 text-sm"><input type="checkbox" name="canManageUnitRequests" className="mt-1" /><span><strong>السماح بإدارة طلبات الوحدات</strong><span className="block font-normal text-[#52635b]">اختياري للبنايات التي يدير مالكها الصيانة العامة.</span></span></label><Button>حفظ المبنى</Button></form></Card>
-    {buildings.length > 0 && <Card className="h-full"><h2 className="text-xl font-bold">إضافة وحدة إلى مبنى</h2><form action={createUnit} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><select name="buildingId" required className="rounded-xl border border-[#c8d7d0] px-3 py-2.5">{buildings.map((building) => <option key={building.id} value={building.id}>{building.name}</option>)}</select><Input name="label" label="رقم الوحدة" /><Input name="ownerEmail" label="بريد مالك الشقة (اختياري)" required={false} type="email" /><Input name="floor" label="الطابق" required={false} /><select name="type" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="APARTMENT">شقة</option><option value="SHOP">محل</option></select><p className="text-xs text-[#52635b]">إذا تركته فارغًا، تبقى الوحدة باسم مالك البناية.</p><Button>إضافة الوحدة</Button></form></Card>}
+    {buildings.length > 0 && <Card className="h-full"><h2 className="text-xl font-bold">إضافة وحدة إلى مبنى</h2><form action={createUnit} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><select name="buildingId" required className="rounded-xl border border-[#c8d7d0] px-3 py-2.5">{buildings.map((building) => <option key={building.id} value={building.id}>{building.name}</option>)}</select><Input name="label" label="رقم الوحدة" /><Input name="floor" label="الطابق" required={false} /><select name="type" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="APARTMENT">شقة</option><option value="SHOP">محل</option></select><p className="text-xs text-[#52635b]">بعد إضافتها، أرسل رمز البناية ورقم الوحدة لمالك الشقة ليطلب ربطها بحسابه.</p><Button>إضافة الوحدة</Button></form><form action={requestUnitOwnership} className="mt-6 grid gap-3 border-t border-[#e0e9e4] pt-5"><h3 className="font-semibold">ربط حسابك بوحدة في بناية أخرى</h3><input type="hidden" name="locale" value={locale} /><Input name="joinCode" label="رمز البناية" /><Input name="unitLabel" label="رقم الوحدة" /><Button>إرسال طلب ملكية</Button></form></Card>}
   </div>;
 }
 
@@ -214,8 +222,16 @@ function OwnerBuildingsPanel({ buildings }: { buildings: Array<{ id: string; nam
   return <Card><h2 className="text-xl font-bold">مبانيك</h2>{buildings.length === 0 ? <p className="mt-3 text-[#52635b]">لم تضف مباني بعد.</p> : <ul className="mt-4 grid gap-4 md:grid-cols-2">{buildings.map((building) => <li key={building.id} className="rounded-2xl bg-[#f6f8f7] p-5"><strong>{building.name}</strong><p className="mt-1 text-sm text-[#52635b]">{building.address} · رمز الانضمام: <code>{building.joinCode}</code></p><p className="mt-2 text-sm">إدارة طلبات الوحدات: {building.canManageUnitRequests ? "مفعلة" : "غير مفعلة"}</p><p className="mt-3 text-sm">الوحدات: {building.units.map((unit) => unit.label).join("، ") || "لا توجد"}</p></li>)}</ul>}</Card>;
 }
 
+function OwnedUnitsPanel({ units }: { units: Array<{ id: string; label: string; type: string; building: { name: string; address: string } }> }) {
+  return <Card><h2 className="text-xl font-bold">وحداتي</h2>{units.length === 0 ? <p className="mt-3 text-[#52635b]">لا توجد وحدات مرتبطة بحسابك من بنايات أخرى.</p> : <ul className="mt-4 grid gap-3 md:grid-cols-2">{units.map((unit) => <li key={unit.id} className="rounded-2xl bg-[#f6f8f7] p-4"><strong>{unit.building.name} · الوحدة {unit.label}</strong><p className="mt-1 text-sm text-[#52635b]">{unit.building.address} · {unit.type === "SHOP" ? "محل" : "شقة"}</p></li>)}</ul>}</Card>;
+}
+
 function OwnerMembershipPanel({ memberships, locale }: { memberships: Array<{ id: string; tenant: { name: string; email: string }; unit: { label: string; building: { name: string } } }>; locale: string }) {
   return <Card><h2 className="text-xl font-bold">طلبات الانضمام</h2>{memberships.length === 0 ? <p className="mt-3 text-[#52635b]">لا توجد طلبات انضمام معلقة.</p> : <ul className="mt-4 grid gap-3 md:grid-cols-2">{memberships.map((membership) => <li key={membership.id} className="rounded-2xl bg-[#f6f8f7] p-4"><p><strong>{membership.tenant.name}</strong> · {membership.tenant.email}</p><p className="mt-1 text-sm text-[#52635b]">{membership.unit.building.name} · {membership.unit.label}</p><div className="mt-3 flex gap-2"><form action={decideMembership}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="membershipId" value={membership.id} /><input type="hidden" name="decision" value="APPROVED" /><Button>موافقة</Button></form><form action={decideMembership}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="membershipId" value={membership.id} /><input type="hidden" name="decision" value="REJECTED" /><button className="rounded-xl border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-700">رفض</button></form></div></li>)}</ul>}</Card>;
+}
+
+function OwnerOwnershipPanel({ requests, locale }: { requests: Array<{ id: string; applicant: { name: string; email: string }; unit: { label: string; building: { name: string } } }>; locale: string }) {
+  return <Card><h2 className="text-xl font-bold">طلبات ملكية الوحدات</h2>{requests.length === 0 ? <p className="mt-3 text-[#52635b]">لا توجد طلبات ملكية معلقة.</p> : <ul className="mt-4 grid gap-3 md:grid-cols-2">{requests.map((request) => <li key={request.id} className="rounded-2xl bg-[#f6f8f7] p-4"><p><strong>{request.applicant.name}</strong> · {request.applicant.email}</p><p className="mt-1 text-sm text-[#52635b]">{request.unit.building.name} · الوحدة {request.unit.label}</p><div className="mt-3 flex gap-2"><form action={decideUnitOwnership}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="ownershipRequestId" value={request.id} /><input type="hidden" name="decision" value="APPROVED" /><Button>موافقة</Button></form><form action={decideUnitOwnership}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="ownershipRequestId" value={request.id} /><input type="hidden" name="decision" value="REJECTED" /><button className="rounded-xl border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-700">رفض</button></form></div></li>)}</ul>}</Card>;
 }
 
 function AdminPanel({ workers, locale, requests, notifications, unreadNotifications }: { workers: Array<{ id: string; bio: string | null; submittedAt: Date | null; user: { name: string; email: string }; categories: Array<{ category: { nameAr: string } }>; serviceAreas: Array<{ area: { code: string } }> }>; locale: string; requests: DashboardRequest[]; notifications: Array<{ id: string; eventType: string; messageKey: string; createdAt: Date; readAt: Date | null; parameters: unknown }>; unreadNotifications: number }) {
