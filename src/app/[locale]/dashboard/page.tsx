@@ -49,6 +49,40 @@ const workerDirectorySelect = {
   ownerFeedbacks: { select: { rating: true, comment: true } },
 } as const;
 
+const actionMessages: Record<string, string> = {
+  "error-invalid_name": "يرجى إدخال اسم صحيح.",
+  "error-invalid_address": "يرجى إدخال عنوان صحيح.",
+  "error-invalid_area": "يرجى إدخال منطقة صحيحة.",
+  "error-invalid_unitlabel": "يرجى إدخال رقم وحدة صحيح.",
+  "error-invalid_buildingid": "يرجى اختيار بناية صحيحة.",
+  "error-building_not_found": "البناية غير موجودة أو لا تملك صلاحية إدارتها.",
+  "error-forbidden": "لا تملك صلاحية تنفيذ هذه العملية.",
+  "error-tenancy_not_found": "لا توجد عضوية نشطة لهذه الوحدة.",
+  "error-category_not_found": "فئة الخدمة غير موجودة أو غير مفعلة.",
+  "error-profile_taxonomy_required": "اختر فئة خدمة ومنطقة عمل واحدة على الأقل.",
+  "error-invalid_profile_taxonomy": "اختيارات الملف المهني غير صالحة.",
+  "error-invalid_experience": "سنوات الخبرة يجب أن تكون بين 0 و80.",
+  "error-workers_required": "اختر فنيًا واحدًا على الأقل أو استخدم المناقصة العامة.",
+  "error-invalid_worker_selection": "أحد الفنيين المختارين غير معتمد أو لا يطابق الفئة.",
+  "error-invalid_request_status": "حالة طلب الصيانة لا تسمح بهذه العملية.",
+  "error-procurement_already_open": "توجد مناقصة مفتوحة لهذا الطلب بالفعل.",
+  "error-invalid_deadline": "يجب أن يكون الموعد النهائي في المستقبل.",
+  "error-invalid_budget": "الميزانية يجب أن تكون رقمًا صحيحًا غير سالب.",
+  "error-invalid_valid_until": "تاريخ انتهاء العرض يجب أن يكون في المستقبل.",
+  "error-procurement_not_available": "المناقصة لم تعد متاحة أو أُغلقت.",
+  "error-profile_not_approved": "يجب اعتماد ملفك المهني قبل إرسال العرض.",
+  "error-invitation_not_available": "دعوة المناقصة غير متاحة.",
+  "error-offer_already_submitted": "لقد أرسلت عرضًا لهذه المناقصة مسبقًا.",
+  "error-offer_not_available": "العرض غير متاح أو لم يعد مفتوحًا.",
+  "error-request_changed": "تم تحديث الطلب من مستخدم آخر. حدّث الصفحة وحاول مجددًا.",
+  "error-feedback_not_available": "التقييم غير متاح في حالة الطلب الحالية.",
+  "error-feedback_exists": "تم إرسال التقييم مسبقًا.",
+  "error-request_not_found": "طلب الصيانة غير موجود.",
+  "error-invalid_status_transition": "لا يمكن الانتقال إلى حالة الطلب المختارة.",
+  "error-action_failed": "تعذر تنفيذ العملية حاليًا. تحقق من البيانات وحاول مجددًا.",
+  "error-unauthorized": "انتهت جلسة الدخول. سجل الدخول مجددًا.",
+};
+
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <section className={`rounded-3xl border border-[#e0e9e4] bg-white p-6 shadow-sm ${className}`}>{children}</section>;
 }
@@ -152,7 +186,7 @@ export default async function DashboardPage({
           <div><p className="text-sm font-semibold text-[#176b4d]">صيانة</p><h1 className="mt-2 text-3xl font-bold">{title}</h1><p className="mt-1 text-[#52635b]">مرحبًا، {session.user.name}</p></div>
           <LogoutButton locale={locale} />
         </header>
-        {message && <p className={`mt-6 rounded-xl px-4 py-3 text-sm font-semibold ${message.includes("not-found") || message.includes("exists") || message.includes("already") ? "bg-[#fff1f0] text-[#a33a32]" : "bg-[#e3f3e9] text-[#176b4d]"}`}>{message === "membership-requested" ? "تم إرسال طلب الانضمام، وسيظهر الآن لدى مالك الوحدة للموافقة." : message === "membership-building-not-found" || message === "ownership-building-not-found" ? "رمز البناية غير صحيح أو البناية غير موجودة." : message === "membership-unit-not-found" || message === "ownership-unit-not-found" ? "رقم الوحدة غير موجود داخل هذه البناية." : message === "membership-exists" ? "لديك طلب قائم أو عضوية موجودة لهذه الوحدة." : message === "ownership-requested" ? "تم إرسال طلب ملكية الوحدة إلى مالك البناية للموافقة." : message === "ownership-request-exists" ? "لديك طلب ملكية قيد المراجعة لهذه الوحدة." : message === "ownership-already-owned" ? "أنت مالك هذه الوحدة بالفعل." : "تم حفظ العملية بنجاح."}</p>}
+        {message && <p className={`mt-6 rounded-xl px-4 py-3 text-sm font-semibold ${message.startsWith("error-") || message.includes("not-found") || message.includes("exists") || message.includes("already") ? "bg-[#fff1f0] text-[#a33a32]" : "bg-[#e3f3e9] text-[#176b4d]"}`}>{actionMessages[message] ?? (message === "membership-requested" ? "تم إرسال طلب الانضمام، وسيظهر الآن لدى مالك الوحدة للموافقة." : message === "membership-building-not-found" || message === "ownership-building-not-found" ? "رمز البناية غير صحيح أو البناية غير موجودة." : message === "membership-unit-not-found" || message === "ownership-unit-not-found" ? "رقم الوحدة غير موجود داخل هذه البناية." : message === "membership-exists" ? "لديك طلب قائم أو عضوية موجودة لهذه الوحدة." : message === "ownership-requested" ? "تم إرسال طلب ملكية الوحدة إلى مالك البناية للموافقة." : message === "ownership-request-exists" ? "لديك طلب ملكية قيد المراجعة لهذه الوحدة." : message === "ownership-already-owned" ? "أنت مالك هذه الوحدة بالفعل." : "تم حفظ العملية بنجاح.")}</p>}
         <div className="mt-8">
           {!role && <Card><h2 className="text-xl font-bold">اختر دورًا من إعدادات الحساب</h2><p className="mt-2 text-[#52635b]">حسابك يحتاج إلى دور قبل البدء في المنصة.</p></Card>}
         </div>

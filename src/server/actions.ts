@@ -35,6 +35,27 @@ function dashboard(formData: FormData, message: string) {
   redirect(`/${localeFrom(formData)}/dashboard?message=${encodeURIComponent(message)}`);
 }
 
+function isRedirectError(error: unknown) {
+  return typeof error === "object" && error !== null && "digest" in error && String(error.digest).startsWith("NEXT_REDIRECT");
+}
+
+function errorCode(error: unknown) {
+  return error instanceof Error && /^[A-Z0-9_]+$/.test(error.message) ? error.message : "ACTION_FAILED";
+}
+
+type FormAction = (formData: FormData) => Promise<void>;
+
+function safeAction(action: FormAction): FormAction {
+  return async (formData) => {
+    try {
+      await action(formData);
+    } catch (error) {
+      if (isRedirectError(error)) throw error;
+      dashboard(formData, `error-${errorCode(error).toLowerCase()}`);
+    }
+  };
+}
+
 function enumValue<T extends string>(value: string, values: readonly T[], key: string): T {
   if (!values.includes(value as T)) throw new Error(`INVALID_${key.toUpperCase()}`);
   return value as T;
@@ -93,7 +114,7 @@ async function createNotification(
   });
 }
 
-export async function createBuilding(formData: FormData) {
+async function createBuildingAction(formData: FormData) {
   const { session } = await requireRole(Role.OWNER);
   const name = text(formData, "name");
   const address = text(formData, "address");
@@ -118,7 +139,7 @@ export async function createBuilding(formData: FormData) {
   dashboard(formData, "building-created");
 }
 
-export async function createUnit(formData: FormData) {
+async function createUnitAction(formData: FormData) {
   const { session } = await requireRole(Role.OWNER);
   const buildingId = text(formData, "buildingId");
   const label = text(formData, "label");
@@ -130,7 +151,7 @@ export async function createUnit(formData: FormData) {
   dashboard(formData, "unit-created");
 }
 
-export async function requestUnitOwnership(formData: FormData) {
+async function requestUnitOwnershipAction(formData: FormData) {
   const { session } = await requireRole(Role.OWNER);
   const joinCode = text(formData, "joinCode").toUpperCase();
   const unitLabel = text(formData, "unitLabel");
@@ -156,7 +177,7 @@ export async function requestUnitOwnership(formData: FormData) {
   dashboard(formData, "ownership-requested");
 }
 
-export async function decideUnitOwnership(formData: FormData) {
+async function decideUnitOwnershipAction(formData: FormData) {
   const { session, role } = await requireRole(Role.OWNER, Role.SUPER_ADMIN);
   const requestId = text(formData, "ownershipRequestId");
   const decision = enumValue(text(formData, "decision"), [MembershipState.APPROVED, MembershipState.REJECTED] as const, "decision");
@@ -180,7 +201,7 @@ export async function decideUnitOwnership(formData: FormData) {
   dashboard(formData, "ownership-decided");
 }
 
-export async function requestMembership(formData: FormData) {
+async function requestMembershipAction(formData: FormData) {
   const { session } = await requireRole(Role.TENANT);
   const joinCode = text(formData, "joinCode").toUpperCase();
   const unitLabel = text(formData, "unitLabel");
@@ -214,7 +235,7 @@ export async function requestMembership(formData: FormData) {
   dashboard(formData, "membership-requested");
 }
 
-export async function decideMembership(formData: FormData) {
+async function decideMembershipAction(formData: FormData) {
   const { session, role } = await requireRole(Role.OWNER, Role.SUPER_ADMIN);
   const membershipId = text(formData, "membershipId");
   const decision = enumValue(text(formData, "decision"), [MembershipState.APPROVED, MembershipState.REJECTED] as const, "decision");
@@ -230,7 +251,7 @@ export async function decideMembership(formData: FormData) {
   dashboard(formData, "membership-decided");
 }
 
-export async function submitWorkerProfile(formData: FormData) {
+async function submitWorkerProfileAction(formData: FormData) {
   const { session } = await requireRole(Role.WORKER);
   const bio = text(formData, "bio", false);
   const yearsOfExperience = Number(text(formData, "yearsOfExperience", false) || "0");
@@ -283,7 +304,7 @@ export async function submitWorkerProfile(formData: FormData) {
   dashboard(formData, "profile-submitted");
 }
 
-export async function reviewWorkerProfile(formData: FormData) {
+async function reviewWorkerProfileAction(formData: FormData) {
   const { session } = await requireRole(Role.SUPER_ADMIN);
   const workerId = text(formData, "workerId");
   const decision = enumValue(text(formData, "decision"), [ProfileStatus.APPROVED, ProfileStatus.CHANGES_REQUESTED, ProfileStatus.REJECTED] as const, "decision");
@@ -294,7 +315,7 @@ export async function reviewWorkerProfile(formData: FormData) {
   dashboard(formData, "profile-reviewed");
 }
 
-export async function createMaintenanceRequest(formData: FormData) {
+async function createMaintenanceRequestAction(formData: FormData) {
   const { session } = await requireRole(Role.TENANT);
   const unitId = text(formData, "unitId");
   const categoryId = text(formData, "categoryId");
@@ -328,7 +349,7 @@ export async function createMaintenanceRequest(formData: FormData) {
   dashboard(formData, "request-created");
 }
 
-export async function createProcurement(formData: FormData) {
+async function createProcurementAction(formData: FormData) {
   const { session } = await requireRole(Role.OWNER);
   const requestId = text(formData, "requestId");
   const mode = enumValue(text(formData, "procurementMode", false) || "INVITED", ["INVITED", "PUBLIC"] as const, "procurementMode");
@@ -394,7 +415,7 @@ export async function createProcurement(formData: FormData) {
   dashboard(formData, "procurement-created");
 }
 
-export async function submitOffer(formData: FormData) {
+async function submitOfferAction(formData: FormData) {
   const { session } = await requireRole(Role.WORKER);
   const procurementId = text(formData, "procurementId");
   const totalAgorot = shekelAmount(formData, "amountShekels");
@@ -438,7 +459,7 @@ export async function submitOffer(formData: FormData) {
   dashboard(formData, "offer-submitted");
 }
 
-export async function respondTenderInvitation(formData: FormData) {
+async function respondTenderInvitationAction(formData: FormData) {
   const { session } = await requireRole(Role.WORKER);
   const procurementId = text(formData, "procurementId");
   const response = enumValue(text(formData, "response"), ["DECLINED"] as const, "response");
@@ -453,7 +474,7 @@ export async function respondTenderInvitation(formData: FormData) {
   dashboard(formData, "invitation-answered");
 }
 
-export async function sendOfferMessage(formData: FormData) {
+async function sendOfferMessageAction(formData: FormData) {
   const { session, role } = await requireRole(Role.OWNER, Role.WORKER);
   const offerId = text(formData, "offerId");
   const message = text(formData, "message");
@@ -480,7 +501,7 @@ export async function sendOfferMessage(formData: FormData) {
   dashboard(formData, "offer-message-sent");
 }
 
-export async function awardOffer(formData: FormData) {
+async function awardOfferAction(formData: FormData) {
   const { session } = await requireRole(Role.OWNER);
   const offerId = text(formData, "offerId");
   const offer = await db.offer.findUnique({
@@ -540,7 +561,7 @@ export async function awardOffer(formData: FormData) {
   dashboard(formData, "offer-awarded");
 }
 
-export async function submitTenantFeedback(formData: FormData) {
+async function submitTenantFeedbackAction(formData: FormData) {
   const { session } = await requireRole(Role.TENANT);
   const workOrderId = text(formData, "workOrderId");
   const rating = integerValue(formData, "rating", { min: 1, max: 5 });
@@ -574,7 +595,7 @@ export async function submitTenantFeedback(formData: FormData) {
   dashboard(formData, "feedback-submitted");
 }
 
-export async function submitOwnerFeedback(formData: FormData) {
+async function submitOwnerFeedbackAction(formData: FormData) {
   const { session } = await requireRole(Role.OWNER);
   const workOrderId = text(formData, "workOrderId");
   const rating = integerValue(formData, "rating", { min: 1, max: 5 });
@@ -611,7 +632,7 @@ export async function listNotifications(limit = 50) {
   });
 }
 
-export async function markNotificationRead(formData: FormData) {
+async function markNotificationReadAction(formData: FormData) {
   const session = await requireSession();
   const notificationId = text(formData, "notificationId");
   await db.notification.updateMany({ where: { id: notificationId, recipientId: session.user.id, readAt: null }, data: { readAt: new Date() } });
@@ -631,7 +652,7 @@ const transitions: Record<RequestStatus, RequestStatus[]> = {
   [RequestStatus.REJECTED]: [],
 };
 
-export async function updateMaintenanceStatus(formData: FormData) {
+async function updateMaintenanceStatusAction(formData: FormData) {
   const { session, role } = await requireRole(Role.TENANT, Role.OWNER, Role.WORKER, Role.SUPER_ADMIN);
   const requestId = text(formData, "requestId");
   const nextStatus = enumValue(text(formData, "status"), Object.values(RequestStatus), "status");
@@ -670,7 +691,7 @@ export async function updateMaintenanceStatus(formData: FormData) {
   dashboard(formData, "status-updated");
 }
 
-export async function addComment(formData: FormData) {
+async function addCommentAction(formData: FormData) {
   const session = await requireSession();
   const requestId = text(formData, "requestId");
   const commentText = text(formData, "text");
@@ -693,3 +714,23 @@ export async function addComment(formData: FormData) {
   revalidatePath(`/${localeFrom(formData)}/dashboard`);
   dashboard(formData, "comment-added");
 }
+
+export const createBuilding = safeAction(createBuildingAction);
+export const createUnit = safeAction(createUnitAction);
+export const requestUnitOwnership = safeAction(requestUnitOwnershipAction);
+export const decideUnitOwnership = safeAction(decideUnitOwnershipAction);
+export const requestMembership = safeAction(requestMembershipAction);
+export const decideMembership = safeAction(decideMembershipAction);
+export const submitWorkerProfile = safeAction(submitWorkerProfileAction);
+export const reviewWorkerProfile = safeAction(reviewWorkerProfileAction);
+export const createMaintenanceRequest = safeAction(createMaintenanceRequestAction);
+export const createProcurement = safeAction(createProcurementAction);
+export const submitOffer = safeAction(submitOfferAction);
+export const respondTenderInvitation = safeAction(respondTenderInvitationAction);
+export const sendOfferMessage = safeAction(sendOfferMessageAction);
+export const awardOffer = safeAction(awardOfferAction);
+export const submitTenantFeedback = safeAction(submitTenantFeedbackAction);
+export const submitOwnerFeedback = safeAction(submitOwnerFeedbackAction);
+export const markNotificationRead = safeAction(markNotificationReadAction);
+export const updateMaintenanceStatus = safeAction(updateMaintenanceStatusAction);
+export const addComment = safeAction(addCommentAction);
