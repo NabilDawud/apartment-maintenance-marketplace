@@ -100,6 +100,7 @@ export async function createBuilding(formData: FormData) {
   const area = text(formData, "area");
   const unitLabel = text(formData, "unitLabel", false);
   const unitType = enumValue(text(formData, "unitType", false) || UnitType.APARTMENT, Object.values(UnitType), "unitType");
+  const canManageUnitRequests = formData.get("canManageUnitRequests") === "on";
   const joinCode = randomBytes(5).toString("hex").toUpperCase();
 
   await db.building.create({
@@ -109,6 +110,7 @@ export async function createBuilding(formData: FormData) {
       address,
       area,
       joinCode,
+      canManageUnitRequests,
       ...(unitLabel ? { units: { create: { ownerId: session.user.id, label: unitLabel, type: unitType } } } : {}),
     },
   });
@@ -121,9 +123,12 @@ export async function createUnit(formData: FormData) {
   const buildingId = text(formData, "buildingId");
   const label = text(formData, "label");
   const type = enumValue(text(formData, "type"), Object.values(UnitType), "type");
+  const ownerEmail = text(formData, "ownerEmail", false).toLowerCase();
   const building = await db.building.findFirst({ where: { id: buildingId, ownerId: session.user.id, archivedAt: null } });
   if (!building) throw new Error("BUILDING_NOT_FOUND");
-  await db.unit.create({ data: { buildingId, ownerId: session.user.id, label, type, floor: text(formData, "floor", false) || null } });
+  const unitOwner = ownerEmail ? await db.user.findUnique({ where: { email: ownerEmail }, select: { id: true, role: true } }) : null;
+  if (ownerEmail && (!unitOwner || unitOwner.role !== Role.OWNER)) throw new Error("UNIT_OWNER_NOT_FOUND");
+  await db.unit.create({ data: { buildingId, ownerId: unitOwner?.id ?? session.user.id, label, type, floor: text(formData, "floor", false) || null } });
   revalidatePath(`/${localeFrom(formData)}/dashboard`);
   dashboard(formData, "unit-created");
 }

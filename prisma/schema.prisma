@@ -227,6 +227,7 @@ model Building {
   address          String
   area             String
   joinCode         String          @unique
+  canManageUnitRequests Boolean    @default(false)
   archivedAt       DateTime?
   
   units            Unit[]
