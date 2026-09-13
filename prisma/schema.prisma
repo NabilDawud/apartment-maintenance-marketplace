@@ -441,6 +441,7 @@ model Offer {
   validUntil       DateTime
   
   state            OfferState      @default(SUBMITTED)
+  updatedFields    String[]        @default([])
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
   messages         OfferMessage[]

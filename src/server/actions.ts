@@ -447,10 +447,20 @@ async function submitOfferAction(formData: FormData) {
 
   await db.$transaction(async (tx) => {
     const existing = await tx.offer.findUnique({ where: { procurementId_workerId: { procurementId, workerId: session.user.id } } });
+    const updatedFields = existing
+      ? [
+          existing.totalAgorot !== totalAgorot ? "price" : null,
+          existing.scopeInclusions !== scopeInclusions ? "scope" : null,
+          existing.assumptions !== assumptions ? "assumptions" : null,
+          existing.duration !== duration ? "duration" : null,
+          existing.proposedDate?.getTime() !== proposedDate?.getTime() ? "proposedDate" : null,
+          existing.validUntil.getTime() !== validUntil.getTime() ? "validUntil" : null,
+        ].filter((field): field is string => field !== null)
+      : [];
     await tx.offer.upsert({
       where: { procurementId_workerId: { procurementId, workerId: session.user.id } },
       create: { procurementId, workerId: session.user.id, totalAgorot, scopeInclusions, assumptions, proposedDate, duration, validUntil },
-      update: { totalAgorot, scopeInclusions, assumptions, proposedDate, duration, validUntil, state: "SUBMITTED", version: { increment: 1 } },
+      update: { totalAgorot, scopeInclusions, assumptions, proposedDate, duration, validUntil, updatedFields, state: "SUBMITTED", version: { increment: 1 } },
     });
     await tx.tenderInvitation.updateMany({
       where: { procurementId, workerId: session.user.id },
