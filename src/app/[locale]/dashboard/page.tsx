@@ -196,11 +196,11 @@ export default async function DashboardPage({
           {!role && <Card><h2 className="text-xl font-bold">اختر دورًا من إعدادات الحساب</h2><p className="mt-2 text-[#52635b]">حسابك يحتاج إلى دور قبل البدء في المنصة.</p></Card>}
         </div>
         {role === Role.OWNER && <DashboardTabs tabs={[
-          { id: "overview", label: "نظرة عامة", content: <OwnerPanel buildings={buildings} locale={locale} /> },
-          { id: "memberships", label: `طلبات الانضمام (${ownerMemberships.length})`, content: <OwnerMembershipPanel memberships={ownerMemberships} locale={locale} /> },
+          { id: "overview", label: "نظرة عامة", content: <OwnerOverviewPanel buildings={buildings} ownedUnits={ownedUnits} requests={requests} ownershipRequests={ownershipRequests} /> },
+          { id: "memberships", label: `طلبات المستأجرين (${ownerMemberships.length})`, content: <OwnerMembershipPanel memberships={ownerMemberships} locale={locale} /> },
           { id: "ownership", label: `طلبات ملكية الوحدات (${ownershipRequests.length})`, content: <OwnerOwnershipPanel requests={ownershipRequests} locale={locale} /> },
-          { id: "buildings", label: `مبانيك (${buildings.length})`, content: <OwnerBuildingsPanel buildings={buildings} /> },
-          { id: "units", label: `وحداتي (${ownedUnits.length})`, content: <OwnedUnitsPanel units={ownedUnits} /> },
+          { id: "buildings", label: `مبانيك (${buildings.length})`, content: <OwnerBuildingsPanel buildings={buildings} locale={locale} /> },
+          { id: "units", label: `وحداتي (${ownedUnits.length})`, content: <OwnedUnitsPanel units={ownedUnits} locale={locale} /> },
           { id: "workers", label: "الفنيون المعتمدون", content: <WorkerDirectoryPanel workers={ownerWorkers} /> },
           { id: "requests", label: `طلبات الصيانة (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={ownerWorkers} /> },
           { id: "notifications", label: `الإشعارات (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
@@ -250,20 +250,26 @@ function RequestStatusTabs({ requests, locale, role, workers }: { requests: Dash
   })} />;
 }
 
-function OwnerPanel({ buildings, locale }: { buildings: Array<{ id: string; name: string; address: string; area: string; joinCode: string; canManageUnitRequests: boolean; units: Array<{ id: string; label: string; joinCode: string; type: string }> }>; locale: string }) {
-  return <div className="grid items-stretch gap-6 lg:grid-cols-2">
-    <Card className="h-full"><h2 className="text-xl font-bold">إضافة مبنى ووحدة</h2><form action={createBuilding} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><Input name="name" label="اسم المبنى" /><Input name="address" label="العنوان" /><Input name="area" label="المنطقة" /><Input name="unitLabel" label="رقم الوحدة الأولى" required={false} /><select name="unitType" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="APARTMENT">شقة</option><option value="SHOP">محل</option></select><label className="flex items-start gap-2 text-sm"><input type="checkbox" name="canManageUnitRequests" className="mt-1" /><span><strong>السماح بإدارة طلبات الوحدات</strong><span className="block font-normal text-[#52635b]">اختياري للبنايات التي يدير مالكها الصيانة العامة.</span></span></label><Button>حفظ المبنى</Button></form></Card>
-    {buildings.length > 0 && <Card className="h-full"><h2 className="text-xl font-bold">إضافة وحدة إلى مبنى</h2><form action={createUnit} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><select name="buildingId" required className="rounded-xl border border-[#c8d7d0] px-3 py-2.5">{buildings.map((building) => <option key={building.id} value={building.id}>{building.name}</option>)}</select><Input name="label" label="رقم الوحدة" /><Input name="floor" label="الطابق" required={false} /><select name="type" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="APARTMENT">شقة</option><option value="SHOP">محل</option></select><p className="text-xs text-[#52635b]">بعد إضافتها، أرسل رمز البناية ورقم الوحدة لمالك الشقة ليطلب ربطها بحسابه.</p><Button>إضافة الوحدة</Button></form></Card>}
-    <Card className="h-full"><h2 className="text-xl font-bold">طلب ملكية شقة أو محل</h2><p className="mt-2 text-sm leading-6 text-[#52635b]">إذا لم تكن صاحب بناية، لا تحتاج إلى إنشاء بناية. أدخل رمز البناية ورمز الوحدة الذي أرسلهما لك صاحب البناية، وسيصل له طلب للموافقة.</p><form action={requestUnitOwnership} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><Input name="joinCode" label="رمز البناية" /><Input name="unitCode" label="رمز الوحدة" /><Button>إرسال طلب ملكية</Button></form></Card>
+function OwnerOverviewPanel({ buildings, ownedUnits, requests, ownershipRequests }: { buildings: Array<{ id: string }>; ownedUnits: Array<{ id: string }>; requests: DashboardRequest[]; ownershipRequests: Array<{ id: string }> }) {
+  return <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    {[["البنايات", buildings.length], ["وحداتي", ownedUnits.length], ["طلبات الصيانة", requests.length], ["طلبات الملكية المعلقة", ownershipRequests.length]].map(([label, count]) => <Card key={String(label)}><p className="text-sm text-[#52635b]">{label}</p><p className="mt-2 text-3xl font-bold text-[#176b4d]">{count}</p></Card>)}
+    <Card className="sm:col-span-2 lg:col-span-4"><h2 className="text-xl font-bold">لوحة المالك</h2><p className="mt-2 leading-7 text-[#52635b]">من تبويب <strong>مبانيك</strong> أنشئ البنايات والوحدات، ومن تبويب <strong>وحداتي</strong> اربط الوحدات التي تملكها في بنايات أخرى. ستجد طلبات المستأجرين وطلبات الملكية في تبويبات مستقلة.</p></Card>
   </div>;
 }
 
-function OwnerBuildingsPanel({ buildings }: { buildings: Array<{ id: string; name: string; address: string; area: string; joinCode: string; canManageUnitRequests: boolean; units: Array<{ id: string; label: string; joinCode: string; type: string }> }> }) {
+function OwnerBuildingsPanel({ buildings, locale }: { buildings: Array<{ id: string; name: string; address: string; area: string; joinCode: string; canManageUnitRequests: boolean; units: Array<{ id: string; label: string; joinCode: string; type: string }> }>; locale: string }) {
+  return <div><div className="grid items-stretch gap-6 lg:grid-cols-2">
+    <Card className="h-full"><h2 className="text-xl font-bold">إضافة مبنى ووحدة</h2><form action={createBuilding} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><Input name="name" label="اسم المبنى" /><Input name="address" label="العنوان" /><Input name="area" label="المنطقة" /><Input name="unitLabel" label="رقم الوحدة الأولى" required={false} /><select name="unitType" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="APARTMENT">شقة</option><option value="SHOP">محل</option></select><label className="flex items-start gap-2 text-sm"><input type="checkbox" name="canManageUnitRequests" className="mt-1" /><span><strong>السماح بإدارة طلبات الوحدات</strong><span className="block font-normal text-[#52635b]">اختياري للبنايات التي يدير مالكها الصيانة العامة.</span></span></label><Button>حفظ المبنى</Button></form></Card>
+    {buildings.length > 0 && <Card className="h-full"><h2 className="text-xl font-bold">إضافة وحدة إلى مبنى</h2><form action={createUnit} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><select name="buildingId" required className="rounded-xl border border-[#c8d7d0] px-3 py-2.5">{buildings.map((building) => <option key={building.id} value={building.id}>{building.name}</option>)}</select><Input name="label" label="رقم الوحدة" /><Input name="floor" label="الطابق" required={false} /><select name="type" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="APARTMENT">شقة</option><option value="SHOP">محل</option></select><p className="text-xs text-[#52635b]">بعد إضافتها، أرسل رمز البناية ورقم الوحدة لمالك الشقة ليطلب ربطها بحسابه.</p><Button>إضافة الوحدة</Button></form></Card>}
+  </div><div className="mt-6"><OwnerBuildingsList buildings={buildings} /></div></div>;
+}
+
+function OwnerBuildingsList({ buildings }: { buildings: Array<{ id: string; name: string; address: string; area: string; joinCode: string; canManageUnitRequests: boolean; units: Array<{ id: string; label: string; joinCode: string; type: string }> }> }) {
   return <Card><h2 className="text-xl font-bold">مبانيك</h2>{buildings.length === 0 ? <p className="mt-3 text-[#52635b]">لم تضف مباني بعد.</p> : <ul className="mt-4 grid gap-4 md:grid-cols-2">{buildings.map((building) => <li key={building.id} className="rounded-2xl bg-[#f6f8f7] p-5"><strong>{building.name}</strong><p className="mt-1 text-sm text-[#52635b]">{building.address} · رمز انضمام البناية: <code>{building.joinCode}</code></p><p className="mt-2 text-sm">إدارة طلبات الوحدات: {building.canManageUnitRequests ? "مفعلة" : "غير مفعلة"}</p><div className="mt-3 space-y-2 text-sm"><strong>الوحدات ورموز انضمامها</strong>{building.units.length ? building.units.map((unit) => <p key={unit.id} className="rounded-xl bg-white px-3 py-2">{unit.label} · رمز الوحدة: <code>{unit.joinCode}</code></p>) : <p>لا توجد وحدات</p>}</div></li>)}</ul>}</Card>;
 }
 
-function OwnedUnitsPanel({ units }: { units: Array<{ id: string; label: string; type: string; building: { name: string; address: string } }> }) {
-  return <Card><h2 className="text-xl font-bold">وحداتي</h2>{units.length === 0 ? <p className="mt-3 text-[#52635b]">لا توجد وحدات مرتبطة بحسابك من بنايات أخرى.</p> : <ul className="mt-4 grid gap-3 md:grid-cols-2">{units.map((unit) => <li key={unit.id} className="rounded-2xl bg-[#f6f8f7] p-4"><strong>{unit.building.name} · الوحدة {unit.label}</strong><p className="mt-1 text-sm text-[#52635b]">{unit.building.address} · {unit.type === "SHOP" ? "محل" : "شقة"}</p></li>)}</ul>}</Card>;
+function OwnedUnitsPanel({ units, locale }: { units: Array<{ id: string; label: string; type: string; building: { name: string; address: string } }>; locale: string }) {
+  return <div className="grid gap-6 lg:grid-cols-2"><Card><h2 className="text-xl font-bold">وحداتي</h2>{units.length === 0 ? <p className="mt-3 text-[#52635b]">لا توجد وحدات مرتبطة بحسابك من بنايات أخرى.</p> : <ul className="mt-4 grid gap-3">{units.map((unit) => <li key={unit.id} className="rounded-2xl bg-[#f6f8f7] p-4"><strong>{unit.building.name} · الوحدة {unit.label}</strong><p className="mt-1 text-sm text-[#52635b]">{unit.building.address} · {unit.type === "SHOP" ? "محل" : "شقة"}</p></li>)}</ul>}</Card><Card><h2 className="text-xl font-bold">طلب ملكية شقة أو محل</h2><p className="mt-2 text-sm leading-6 text-[#52635b]">أدخل رمز البناية ورمز الوحدة الذي أرسلهما لك صاحب البناية.</p><form action={requestUnitOwnership} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><Input name="joinCode" label="رمز البناية" /><Input name="unitCode" label="رمز الوحدة" /><Button>إرسال طلب ملكية</Button></form></Card></div>;
 }
 
 function OwnerMembershipPanel({ memberships, locale }: { memberships: Array<{ id: string; tenant: { name: string; email: string }; unit: { label: string; building: { name: string } } }>; locale: string }) {
@@ -387,20 +393,23 @@ function RequestList({ requests, locale, role, workers }: { requests: DashboardR
 }
 
 function NotificationList({ notifications, locale }: { notifications: Array<{ id: string; eventType: string; messageKey: string; createdAt: Date; readAt: Date | null; parameters: unknown }>; locale: string }) {
-  const labels: Record<string, string> = {
-    MAINTENANCE_REQUEST_CREATED: "تم إنشاء طلب صيانة جديد",
-    MEMBERSHIP_REQUESTED: "طلب انضمام جديد",
-    MEMBERSHIP_DECIDED: "تم تحديث طلب الانضمام",
-    TENDER_INVITED: "تمت دعوتك إلى مناقصة",
-    TENDER_INVITATION_CREATED: "تمت دعوتك إلى مناقصة",
-    OFFER_SUBMITTED: "تم إرسال عرض جديد",
-    OFFER_AWARDED: "تمت ترسية العرض",
-    TENANT_FEEDBACK_SUBMITTED: "تم استلام تقييم جديد",
-    OWNER_FEEDBACK_SUBMITTED: "تم استلام تقييم جديد من المالك",
-    WORK_COMPLETION_READY: "العمل جاهز لتأكيد المستأجر",
-    OFFER_MESSAGE_RECEIVED: "رسالة جديدة حول العرض",
+  const labels: Record<string, [string, string]> = {
+    MAINTENANCE_REQUEST_CREATED: ["تم إنشاء طلب صيانة جديد", "New maintenance request"],
+    MEMBERSHIP_REQUESTED: ["طلب مستأجر جديد", "New tenant request"],
+    MEMBERSHIP_DECIDED: ["تم تحديث طلب المستأجر", "Tenant request updated"],
+    UNIT_OWNERSHIP_REQUESTED: ["طلب ملكية وحدة جديد", "New unit ownership request"],
+    UNIT_OWNERSHIP_DECIDED: ["تم البت في طلب ملكية الوحدة", "Unit ownership request decided"],
+    TENDER_INVITED: ["تمت دعوتك إلى مناقصة", "You were invited to a tender"],
+    TENDER_INVITATION_CREATED: ["تمت دعوتك إلى مناقصة", "You were invited to a tender"],
+    OFFER_SUBMITTED: ["تم إرسال عرض جديد", "New offer submitted"],
+    OFFER_AWARDED: ["تمت ترسية العرض", "Offer awarded"],
+    TENANT_FEEDBACK_SUBMITTED: ["تم استلام تقييم جديد", "New tenant feedback received"],
+    OWNER_FEEDBACK_SUBMITTED: ["تم استلام تقييم جديد من المالك", "New owner feedback received"],
+    WORK_COMPLETION_READY: ["العمل جاهز لتأكيد المستأجر", "Work ready for tenant confirmation"],
+    OFFER_MESSAGE_RECEIVED: ["رسالة جديدة حول العرض", "New offer message"],
   };
-  return <section className="mt-8"><Card><h2 className="text-xl font-bold">الإشعارات</h2><ul className="mt-3 space-y-2">{notifications.map((notification) => { const actorName = typeof notification.parameters === "object" && notification.parameters !== null && "actorName" in notification.parameters && typeof notification.parameters.actorName === "string" ? notification.parameters.actorName : null; const sentAt = notification.createdAt.toLocaleString(locale === "en" ? "en-US" : "ar-JO", { dateStyle: "medium", timeStyle: "short" }); return <li key={notification.id} className={`flex items-center justify-between gap-3 rounded-xl p-3 text-sm ${notification.readAt ? "bg-[#f6f8f7]" : "bg-[#e9f5ee]"}`}><span><strong>{labels[notification.eventType] ?? notification.messageKey}</strong>{actorName && <span className="mr-2 text-[#60756a]">بواسطة {actorName}</span>}<time dateTime={notification.createdAt.toISOString()} className="mt-1 block text-xs text-[#60756a]">أُرسل في {sentAt}</time></span>{!notification.readAt && <form action={markNotificationRead}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="notificationId" value={notification.id} /><button className="text-xs font-bold text-[#176b4d]">تحديد كمقروء</button></form>}</li>; })}</ul></Card></section>;
+  const isEnglish = locale === "en";
+  return <section className="mt-8"><Card><h2 className="text-xl font-bold">{isEnglish ? "Notifications" : "الإشعارات"}</h2><ul className="mt-3 space-y-2">{notifications.map((notification) => { const actorName = typeof notification.parameters === "object" && notification.parameters !== null && "actorName" in notification.parameters && typeof notification.parameters.actorName === "string" ? notification.parameters.actorName : null; const decision = typeof notification.parameters === "object" && notification.parameters !== null && "decision" in notification.parameters && typeof notification.parameters.decision === "string" ? notification.parameters.decision : null; const label = labels[notification.eventType]; const title = label ? label[isEnglish ? 1 : 0] : notification.messageKey; const decisionText = notification.eventType === "UNIT_OWNERSHIP_DECIDED" && decision ? (isEnglish ? decision.toLowerCase() : decision === "APPROVED" ? "تمت الموافقة" : "تم الرفض") : null; const sentAt = notification.createdAt.toLocaleString(isEnglish ? "en-US" : "ar-JO", { dateStyle: "medium", timeStyle: "short" }); return <li key={notification.id} className={`flex items-center justify-between gap-3 rounded-xl p-3 text-sm ${notification.readAt ? "bg-[#f6f8f7]" : "bg-[#e9f5ee]"}`}><span><strong>{title}{decisionText && <span className="mr-2 text-[#176b4d]">({decisionText})</span>}</strong>{actorName && <span className="mr-2 text-[#60756a]">{isEnglish ? `by ${actorName}` : `بواسطة ${actorName}`}</span>}<time dateTime={notification.createdAt.toISOString()} className="mt-1 block text-xs text-[#60756a]">{isEnglish ? `Sent ${sentAt}` : `أُرسل في ${sentAt}`}</time></span>{!notification.readAt && <form action={markNotificationRead}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="notificationId" value={notification.id} /><button className="text-xs font-bold text-[#176b4d]">{isEnglish ? "Mark as read" : "تحديد كمقروء"}</button></form>}</li>; })}</ul></Card></section>;
 }
 
 function StatusForm({ request, locale, statuses, submitLabel = "تحديث الحالة" }: { request: { id: string; version: number }; locale: string; statuses: string[]; submitLabel?: string }) {
