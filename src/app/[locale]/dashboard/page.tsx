@@ -100,7 +100,7 @@ export default async function DashboardPage({
     role === Role.OWNER ? db.membershipRequest.findMany({ where: { unit: { ownerId: userId }, state: "PENDING" }, include: { tenant: true, unit: { include: { building: true } } }, orderBy: { submittedAt: "asc" } }) : Promise.resolve([]),
     role === Role.SUPER_ADMIN ? db.workerProfile.findMany({ where: { status: "PENDING_REVIEW" }, include: { user: true, categories: { include: { category: true } }, serviceAreas: { include: { area: true } } }, orderBy: { submittedAt: "asc" } }) : Promise.resolve([]),
     role === Role.OWNER
-      ? db.workerProfile.findMany({ where: { status: ProfileStatus.APPROVED }, select: { id: true, user: { select: { name: true, email: true } } }, orderBy: { user: { name: "asc" } } })
+      ? db.workerProfile.findMany({ where: { status: ProfileStatus.APPROVED }, select: { id: true, user: { select: { name: true, email: true } }, categories: { select: { categoryId: true } } }, orderBy: { user: { name: "asc" } } })
       : Promise.resolve([]),
     role === Role.WORKER
       ? db.procurement.findMany({
@@ -235,7 +235,7 @@ type DashboardRequest = {
   description: string;
   status: RequestStatus;
   version: number;
-  category: { nameAr: string };
+  category: { id: string; nameAr: string };
   unit: { label: string; building: { name: string } };
   comments: Array<{ id: string; text: string; author: { name: string } }>;
   workOrders: Array<{ id: string; workerId: string; tenantFeedback: { id: string } | null }>;
@@ -247,11 +247,12 @@ type DashboardRequest = {
   }>;
 };
 
-function RequestList({ requests, locale, role, workers }: { requests: DashboardRequest[]; locale: string; role: Role | null; workers: Array<{ id: string; user: { name: string; email: string } }> }) {
+function RequestList({ requests, locale, role, workers }: { requests: DashboardRequest[]; locale: string; role: Role | null; workers: Array<{ id: string; user: { name: string; email: string }; categories: Array<{ categoryId: string }> }> }) {
   return <section className="mt-8"><h2 className="mb-4 text-2xl font-bold">طلبات الصيانة</h2><div className="grid gap-4">{requests.map((request) => {
     const openProcurement = request.procurements.find((procurement) => procurement.state === "OPEN");
+    const matchingWorkers = workers.filter((worker) => worker.categories.some((category) => category.categoryId === request.category.id));
     return <Card key={request.id}><div className="flex flex-wrap items-start justify-between gap-3"><div><h3 className="text-lg font-bold">{request.title}</h3><p className="mt-1 text-sm text-[#52635b]">{request.unit.building.name} · {request.unit.label} · {request.category.nameAr}</p></div><span className="rounded-full bg-[#e3f3e9] px-3 py-1 text-xs font-semibold text-[#176b4d]">{statusLabels[request.status]}</span></div><p className="mt-3 leading-7">{request.description}</p>
-      {role === Role.OWNER && request.status === RequestStatus.SUBMITTED && <form action={createProcurement} className="mt-4 rounded-2xl border border-[#dce8e1] p-4"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="requestId" value={request.id} /><p className="font-semibold">اختيار طريقة الحصول على الفني</p><select name="procurementMode" className="mt-3 w-full max-w-md rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="INVITED">دعوة فنيين محددين</option><option value="PUBLIC">استقبال عروض من الفنيين المعتمدين</option></select>{workers.length === 0 ? <p className="mt-2 text-sm text-[#52635b]">لا يوجد فنيون معتمدون للدعوات. يمكنك اختيار استقبال عروض عامة.</p> : <div className="mt-3 grid gap-2 sm:grid-cols-2">{workers.map((worker) => <label key={worker.id} className="text-sm"><input type="checkbox" name="workerIds" value={worker.id} className="ml-2" />{worker.user.name} · {worker.user.email}</label>)}</div>}<label className="mt-3 block max-w-md text-sm font-semibold">الموعد النهائي<input name="deadline" type="date" className="mt-2 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /></label><div className="mt-4"><Button>إنشاء وإرسال المناقصة</Button></div></form>}
+      {role === Role.OWNER && request.status === RequestStatus.SUBMITTED && <form action={createProcurement} className="mt-4 rounded-2xl border border-[#dce8e1] p-4"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="requestId" value={request.id} /><p className="font-semibold">اختيار طريقة الحصول على الفني</p><select name="procurementMode" className="mt-3 w-full max-w-md rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="INVITED">دعوة فنيين محددين</option><option value="PUBLIC">استقبال عروض من الفنيين المعتمدين</option></select>{matchingWorkers.length === 0 ? <p className="mt-2 text-sm text-[#52635b]">لا يوجد فني معتمد لهذا التخصص للدعوات المحددة. يمكنك اختيار استقبال عروض عامة.</p> : <div className="mt-3 grid gap-2 sm:grid-cols-2">{matchingWorkers.map((worker) => <label key={worker.id} className="text-sm"><input type="checkbox" name="workerIds" value={worker.id} className="ml-2" />{worker.user.name} · {worker.user.email}</label>)}</div>}<label className="mt-3 block max-w-md text-sm font-semibold">الموعد النهائي<input name="deadline" type="date" className="mt-2 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /></label><div className="mt-4"><Button>إنشاء وإرسال المناقصة</Button></div></form>}
       {role === Role.OWNER && openProcurement && <div className="mt-4 rounded-2xl border border-[#dce8e1] p-4"><p className="font-semibold">العروض الواردة ({openProcurement.offers.length})</p>{openProcurement.offers.length === 0 ? <p className="mt-2 text-sm text-[#52635b]">بانتظار عروض الفنيين.</p> : <ul className="mt-2 space-y-2">{openProcurement.offers.map((offer) => <li key={offer.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-[#f6f8f7] p-3 text-sm"><span>{offer.worker.user.name} · {offer.totalAgorot} أغورة · {offer.state}</span>{offer.state === "SUBMITTED" && <form action={awardOffer}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="offerId" value={offer.id} /><Button>ترسية وإنشاء أمر عمل</Button></form>}</li>)}</ul>}</div>}
       {role === Role.WORKER && request.status === RequestStatus.ASSIGNED && <StatusForm request={request} locale={locale} statuses={["IN_PROGRESS"]} />}
       {role === Role.OWNER && request.status === RequestStatus.TENANT_CONFIRMED && <StatusForm request={request} locale={locale} statuses={["CLOSED"]} />}
