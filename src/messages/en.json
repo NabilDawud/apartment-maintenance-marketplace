@@ -1,0 +1,13 @@
+{
+  "Index": {
+    "title": "Apartment Maintenance Marketplace",
+    "description": "Welcome to the best way to manage property maintenance."
+  },
+  "Auth": {
+    "login": "Sign In",
+    "register": "Create Account",
+    "email": "Email Address",
+    "password": "Password",
+    "submit": "Continue"
+  }
+}
