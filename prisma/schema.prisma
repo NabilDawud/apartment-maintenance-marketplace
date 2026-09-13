@@ -43,7 +43,6 @@ model User {
   
   comments      Comment[]
   attachments   Attachment[]
-  ownerFeedbacks OwnerFeedback[]
 }
 
 model Session {
@@ -458,7 +457,6 @@ model WorkOrder {
   
   paymentRecord    PaymentRecord?
   tenantFeedback   TenantFeedback?
-  ownerFeedback    OwnerFeedback?
 
   @@unique([requestId])
 }
@@ -533,21 +531,6 @@ model TenantFeedback {
   hiddenReason     String?
 }
 
-model OwnerFeedback {
-  id               String   @id @default(cuid())
-  workOrderId      String   @unique
-  workOrder        WorkOrder @relation(fields: [workOrderId], references: [id])
-  ownerId          String
-  owner            User     @relation(fields: [ownerId], references: [id])
-  workerId         String
-  rating           Int
-  comment          String?
-  createdAt        DateTime @default(now())
-
-  hiddenById       String?
-  hiddenAt         DateTime?
-  hiddenReason     String?
-}
 
 model Notification {
   id               String          @id @default(cuid())
