@@ -17,6 +17,7 @@ import {
   requestMembership,
   respondTenderInvitation,
   submitOffer,
+  submitOwnerFeedback,
   submitTenantFeedback,
   submitWorkerProfile,
   updateMaintenanceStatus,
@@ -83,7 +84,7 @@ export default async function DashboardPage({
             unit: { include: { building: true } },
             category: true,
             comments: { include: { author: true }, orderBy: { createdAt: "asc" } },
-            workOrders: { select: { id: true, workerId: true, tenantFeedback: { select: { id: true } } } },
+            workOrders: { select: { id: true, workerId: true, tenantFeedback: { select: { id: true } }, ownerFeedback: { select: { id: true } } } },
             procurements: {
               orderBy: { roundNumber: "desc" },
               include: {
@@ -132,18 +133,18 @@ export default async function DashboardPage({
           { id: "overview", label: "نظرة عامة", content: <OwnerPanel buildings={buildings} locale={locale} /> },
           { id: "memberships", label: `طلبات الانضمام (${ownerMemberships.length})`, content: <OwnerMembershipPanel memberships={ownerMemberships} locale={locale} /> },
           { id: "buildings", label: `مبانيك (${buildings.length})`, content: <OwnerBuildingsPanel buildings={buildings} /> },
-          { id: "requests", label: `طلبات الصيانة (${requests.length})`, content: requests.length ? <RequestList requests={requests} locale={locale} role={role} workers={ownerWorkers} /> : <EmptyState text="لا توجد طلبات صيانة حاليًا." /> },
+          { id: "requests", label: `طلبات الصيانة (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={ownerWorkers} /> },
           { id: "notifications", label: `الإشعارات (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
         ]} />}
         {role === Role.TENANT && <DashboardTabs tabs={[
           { id: "overview", label: "نظرة عامة", content: <TenantPanel tenancies={tenancies} memberships={memberships} categories={categories} locale={locale} /> },
-          { id: "requests", label: `طلباتي (${requests.length})`, content: requests.length ? <RequestList requests={requests} locale={locale} role={role} workers={[]} /> : <EmptyState text="لم ترسل أي طلب صيانة بعد." /> },
+          { id: "requests", label: `طلباتي (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={[]} /> },
           { id: "notifications", label: `الإشعارات (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
         ]} />}
         {role === Role.WORKER && <DashboardTabs tabs={[
           { id: "overview", label: "الملف المهني", content: <WorkerPanel profile={profile} categories={categories} areas={areas} locale={locale} /> },
           { id: "tenders", label: `دعوات المناقصات (${workerProcurements.length})`, content: <WorkerTenderPanel procurements={workerProcurements} locale={locale} /> },
-          { id: "requests", label: `الأعمال المرتبطة (${requests.length})`, content: requests.length ? <RequestList requests={requests} locale={locale} role={role} workers={[]} /> : <EmptyState text="لا توجد أعمال مرتبطة بك حاليًا." /> },
+          { id: "requests", label: `الأعمال المرتبطة (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={[]} /> },
           { id: "notifications", label: `الإشعارات (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
         ]} />}
         {role === Role.SUPER_ADMIN && <AdminPanel workers={pendingWorkers} locale={locale} requests={requests} notifications={notifications} unreadNotifications={unreadNotifications} />}
@@ -154,6 +155,25 @@ export default async function DashboardPage({
 
 function EmptyState({ text }: { text: string }) {
   return <Card><p className="text-[#52635b]">{text}</p></Card>;
+}
+
+const requestFilterTabs: Array<{ id: string; label: string; statuses?: RequestStatus[] }> = [
+  { id: "all", label: "الكل" },
+  { id: "submitted", label: "مُرسل", statuses: [RequestStatus.SUBMITTED] },
+  { id: "procurement", label: "قيد البحث عن فني", statuses: [RequestStatus.PROCUREMENT] },
+  { id: "assigned", label: "تم التعيين", statuses: [RequestStatus.ASSIGNED] },
+  { id: "in-progress", label: "قيد التنفيذ", statuses: [RequestStatus.IN_PROGRESS] },
+  { id: "awaiting-confirmation", label: "بانتظار التأكيد", statuses: [RequestStatus.AWAITING_TENANT_CONFIRMATION] },
+  { id: "confirmed", label: "مؤكد", statuses: [RequestStatus.TENANT_CONFIRMED] },
+  { id: "closed", label: "مكتمل", statuses: [RequestStatus.CLOSED] },
+  { id: "cancelled", label: "ملغي", statuses: [RequestStatus.CANCELLED, RequestStatus.REJECTED] },
+];
+
+function RequestStatusTabs({ requests, locale, role, workers }: { requests: DashboardRequest[]; locale: string; role: Role | null; workers: Array<{ id: string; user: { name: string; email: string }; categories: Array<{ categoryId: string }> }> }) {
+  return <DashboardTabs tabs={requestFilterTabs.map((tab) => {
+    const filtered = tab.statuses ? requests.filter((request) => tab.statuses?.includes(request.status)) : requests;
+    return { id: tab.id, label: `${tab.label} (${filtered.length})`, content: filtered.length ? <RequestList requests={filtered} locale={locale} role={role} workers={workers} /> : <EmptyState text="لا توجد طلبات بهذه الحالة." /> };
+  })} />;
 }
 
 function OwnerPanel({ buildings, locale }: { buildings: Array<{ id: string; name: string; address: string; area: string; joinCode: string; units: Array<{ id: string; label: string; type: string }> }>; locale: string }) {
@@ -187,7 +207,7 @@ function AdminPanel({ workers, locale, requests, notifications, unreadNotificati
       {
         id: "requests",
         label: `طلبات الصيانة (${requests.length})`,
-        content: requests.length > 0 ? <RequestList requests={requests} locale={locale} role={Role.SUPER_ADMIN} workers={[]} /> : <div><h2 className="text-xl font-bold">طلبات الصيانة</h2><p className="mt-3 text-[#52635b]">لا توجد طلبات صيانة حاليًا.</p></div>,
+        content: <RequestStatusTabs requests={requests} locale={locale} role={Role.SUPER_ADMIN} workers={[]} />,
       },
       {
         id: "settings",
@@ -238,7 +258,7 @@ type DashboardRequest = {
   category: { id: string; nameAr: string };
   unit: { label: string; building: { name: string } };
   comments: Array<{ id: string; text: string; author: { name: string } }>;
-  workOrders: Array<{ id: string; workerId: string; tenantFeedback: { id: string } | null }>;
+  workOrders: Array<{ id: string; workerId: string; tenantFeedback: { id: string } | null; ownerFeedback: { id: string } | null }>;
   procurements: Array<{
     id: string;
     state: string;
@@ -261,6 +281,7 @@ function RequestList({ requests, locale, role, workers }: { requests: DashboardR
       {role === Role.TENANT && request.status === RequestStatus.SUBMITTED && <StatusForm request={request} locale={locale} statuses={["CANCELLED"]} />}
       {role === Role.TENANT && request.status === RequestStatus.AWAITING_TENANT_CONFIRMATION && <StatusForm request={request} locale={locale} statuses={["TENANT_CONFIRMED"]} />}
       {role === Role.TENANT && request.status === RequestStatus.AWAITING_TENANT_CONFIRMATION && request.workOrders.filter((order) => !order.tenantFeedback).map((order) => <form key={order.id} action={submitTenantFeedback} className="mt-4 rounded-2xl border border-[#dce8e1] p-4"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="workOrderId" value={order.id} /><p className="font-semibold">قيّم الخدمة</p><select name="rating" className="mt-2 rounded-xl border border-[#c8d7d0] px-3 py-2"><option value="5">5 - ممتاز</option><option value="4">4 - جيد جدًا</option><option value="3">3 - جيد</option><option value="2">2 - مقبول</option><option value="1">1 - ضعيف</option></select><textarea name="comment" placeholder="ملاحظات اختيارية" className="mt-2 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /><div className="mt-2"><Button>إرسال التقييم</Button></div></form>)}
+      {role === Role.OWNER && request.status === RequestStatus.CLOSED && request.workOrders.filter((order) => !order.ownerFeedback).map((order) => <form key={order.id} action={submitOwnerFeedback} className="mt-4 rounded-2xl border border-[#dce8e1] p-4"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="workOrderId" value={order.id} /><p className="font-semibold">قيّم الفني</p><select name="rating" className="mt-2 rounded-xl border border-[#c8d7d0] px-3 py-2"><option value="5">5 - ممتاز</option><option value="4">4 - جيد جدًا</option><option value="3">3 - جيد</option><option value="2">2 - مقبول</option><option value="1">1 - ضعيف</option></select><textarea name="comment" placeholder="ملاحظات اختيارية" className="mt-2 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /><div className="mt-2"><Button>إرسال تقييم المالك</Button></div></form>)}
       {request.comments.length > 0 && <ul className="mt-4 space-y-2 border-t border-[#e0e9e4] pt-4 text-sm">{request.comments.map((comment) => <li key={comment.id}><strong>{comment.author.name}:</strong> {comment.text}</li>)}</ul>}<form action={addComment} className="mt-4 flex gap-2"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="requestId" value={request.id} /><input name="text" required placeholder="أضف تعليقًا..." className="min-w-0 flex-1 rounded-xl border border-[#c8d7d0] px-3 py-2.5" /><input type="hidden" name="audience" value={role === Role.WORKER ? "JOB_PARTICIPANTS" : "TENANT_OWNER"} /><Button>تعليق</Button></form></Card>;
   })}</div></section>;
 }
@@ -275,6 +296,7 @@ function NotificationList({ notifications, locale }: { notifications: Array<{ id
     OFFER_SUBMITTED: "تم إرسال عرض جديد",
     OFFER_AWARDED: "تمت ترسية العرض",
     TENANT_FEEDBACK_SUBMITTED: "تم استلام تقييم جديد",
+    OWNER_FEEDBACK_SUBMITTED: "تم استلام تقييم جديد من المالك",
   };
   return <section className="mt-8"><Card><h2 className="text-xl font-bold">الإشعارات</h2><ul className="mt-3 space-y-2">{notifications.map((notification) => { const actorName = typeof notification.parameters === "object" && notification.parameters !== null && "actorName" in notification.parameters && typeof notification.parameters.actorName === "string" ? notification.parameters.actorName : null; return <li key={notification.id} className={`flex items-center justify-between gap-3 rounded-xl p-3 text-sm ${notification.readAt ? "bg-[#f6f8f7]" : "bg-[#e9f5ee]"}`}><span><strong>{labels[notification.eventType] ?? notification.messageKey}</strong>{actorName && <span className="mr-2 text-[#60756a]">بواسطة {actorName}</span>}</span>{!notification.readAt && <form action={markNotificationRead}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="notificationId" value={notification.id} /><button className="text-xs font-bold text-[#176b4d]">تحديد كمقروء</button></form>}</li>; })}</ul></Card></section>;
 }

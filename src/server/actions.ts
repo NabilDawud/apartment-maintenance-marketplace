@@ -481,6 +481,34 @@ export async function submitTenantFeedback(formData: FormData) {
   dashboard(formData, "feedback-submitted");
 }
 
+export async function submitOwnerFeedback(formData: FormData) {
+  const { session } = await requireRole(Role.OWNER);
+  const workOrderId = text(formData, "workOrderId");
+  const rating = integerValue(formData, "rating", { min: 1, max: 5 });
+  const comment = text(formData, "comment", false) || null;
+  const workOrder = await db.workOrder.findUnique({
+    where: { id: workOrderId },
+    include: { request: { include: { unit: true } }, ownerFeedback: true },
+  });
+  if (!workOrder || workOrder.request.unit.ownerId !== session.user.id) throw new Error("FORBIDDEN");
+  if (workOrder.request.status !== RequestStatus.CLOSED) throw new Error("FEEDBACK_NOT_AVAILABLE");
+  if (workOrder.ownerFeedback) throw new Error("FEEDBACK_EXISTS");
+  await db.$transaction(async (tx) => {
+    await tx.ownerFeedback.create({
+      data: { workOrderId, ownerId: session.user.id, workerId: workOrder.workerId, rating, comment },
+    });
+    await createNotification(tx, {
+      recipientId: workOrder.workerId,
+      eventType: "OWNER_FEEDBACK_SUBMITTED",
+      resourceId: workOrderId,
+      messageKey: "ownerFeedbackReceived",
+      parameters: { rating },
+    });
+  });
+  revalidatePath(`/${localeFrom(formData)}/dashboard`);
+  dashboard(formData, "feedback-submitted");
+}
+
 export async function listNotifications(limit = 50) {
   const session = await requireSession();
   return db.notification.findMany({
