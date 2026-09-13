@@ -122,13 +122,28 @@ export async function requestMembership(formData: FormData) {
     where: { joinCode, archivedAt: null },
     include: { units: { where: { label: unitLabel, archivedAt: null } } },
   });
-  const unit = building?.units[0];
-  if (!unit) throw new Error("UNIT_NOT_FOUND");
+  if (!building) {
+    dashboard(formData, "membership-building-not-found");
+    return;
+  }
+  const unit = building.units[0];
+  if (!unit) {
+    dashboard(formData, "membership-unit-not-found");
+  }
   const existing = await db.membershipRequest.findFirst({
     where: { tenantId: session.user.id, unitId: unit.id, state: { in: [MembershipState.PENDING, MembershipState.APPROVED] } },
   });
-  if (existing) throw new Error("MEMBERSHIP_EXISTS");
-  await db.membershipRequest.create({ data: { tenantId: session.user.id, unitId: unit.id } });
+  if (existing) {
+    dashboard(formData, "membership-exists");
+  }
+  const membership = await db.membershipRequest.create({ data: { tenantId: session.user.id, unitId: unit.id } });
+  await createNotification(db, {
+    recipientId: unit.ownerId,
+    eventType: "MEMBERSHIP_REQUESTED",
+    resourceId: membership.id,
+    messageKey: "membershipRequested",
+    parameters: { actorName: session.user.name, unitLabel: unit.label },
+  });
   revalidatePath(`/${localeFrom(formData)}/dashboard`);
   dashboard(formData, "membership-requested");
 }

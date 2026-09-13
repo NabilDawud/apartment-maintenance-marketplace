@@ -123,7 +123,7 @@ export default async function DashboardPage({
           <div><p className="text-sm font-semibold text-[#176b4d]">صيانة</p><h1 className="mt-2 text-3xl font-bold">{title}</h1><p className="mt-1 text-[#52635b]">مرحبًا، {session.user.name}</p></div>
           <LogoutButton locale={locale} />
         </header>
-        {message && <p className="mt-6 rounded-xl bg-[#e3f3e9] px-4 py-3 text-sm font-semibold text-[#176b4d]">تم حفظ العملية بنجاح.</p>}
+        {message && <p className={`mt-6 rounded-xl px-4 py-3 text-sm font-semibold ${message.startsWith("membership-") && message !== "membership-requested" ? "bg-[#fff1f0] text-[#a33a32]" : "bg-[#e3f3e9] text-[#176b4d]"}`}>{message === "membership-requested" ? "تم إرسال طلب الانضمام، وسيظهر الآن لدى مالك الوحدة للموافقة." : message === "membership-building-not-found" ? "رمز المبنى غير صحيح أو المبنى غير موجود." : message === "membership-unit-not-found" ? "رقم الوحدة غير موجود داخل هذا المبنى." : message === "membership-exists" ? "لديك طلب قائم أو عضوية موجودة لهذه الوحدة." : "تم حفظ العملية بنجاح."}</p>}
         <div className="mt-8">
           {!role && <Card><h2 className="text-xl font-bold">اختر دورًا من إعدادات الحساب</h2><p className="mt-2 text-[#52635b]">حسابك يحتاج إلى دور قبل البدء في المنصة.</p></Card>}
         </div>
