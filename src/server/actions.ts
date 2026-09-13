@@ -529,11 +529,22 @@ export async function updateMaintenanceStatus(formData: FormData) {
     (isOwner && ([RequestStatus.PROCUREMENT, RequestStatus.ASSIGNED, RequestStatus.REJECTED, RequestStatus.CANCELLED, RequestStatus.CLOSED] as RequestStatus[]).includes(nextStatus)) ||
     (isWorker && ([RequestStatus.IN_PROGRESS, RequestStatus.AWAITING_TENANT_CONFIRMATION] as RequestStatus[]).includes(nextStatus));
   if (!allowed || (role !== Role.SUPER_ADMIN && !transitions[request.status].includes(nextStatus))) throw new Error("INVALID_STATUS_TRANSITION");
-  const result = await db.maintenanceRequest.updateMany({
-    where: { id: request.id, version: request.version },
-    data: { status: nextStatus, version: { increment: 1 } },
+  await db.$transaction(async (tx) => {
+    const result = await tx.maintenanceRequest.updateMany({
+      where: { id: request.id, version: request.version },
+      data: { status: nextStatus, version: { increment: 1 } },
+    });
+    if (!result.count) throw new Error("REQUEST_CHANGED");
+    if (nextStatus === RequestStatus.AWAITING_TENANT_CONFIRMATION) {
+      await createNotification(tx, {
+        recipientId: request.tenantId,
+        eventType: "WORK_COMPLETION_READY",
+        resourceId: request.id,
+        messageKey: "workCompletionReady",
+        parameters: { requestTitle: request.title },
+      });
+    }
   });
-  if (!result.count) throw new Error("REQUEST_CHANGED");
   revalidatePath(`/${localeFrom(formData)}/dashboard`);
   dashboard(formData, "status-updated");
 }
