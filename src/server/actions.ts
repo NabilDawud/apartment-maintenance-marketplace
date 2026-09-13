@@ -216,6 +216,7 @@ async function requestMembershipAction(formData: FormData) {
   const unit = building.units[0];
   if (!unit) {
     dashboard(formData, "membership-unit-not-found");
+    return;
   }
   const existing = await db.membershipRequest.findFirst({
     where: { tenantId: session.user.id, unitId: unit.id, state: { in: [MembershipState.PENDING, MembershipState.APPROVED] } },

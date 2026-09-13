@@ -54,6 +54,7 @@ const actionMessages: Record<string, string> = {
   "error-invalid_address": "يرجى إدخال عنوان صحيح.",
   "error-invalid_area": "يرجى إدخال منطقة صحيحة.",
   "error-invalid_unitlabel": "يرجى إدخال رقم وحدة صحيح.",
+  "error-invalid_unitcode": "يرجى إدخال رمز الوحدة.",
   "error-invalid_buildingid": "يرجى اختيار بناية صحيحة.",
   "error-building_not_found": "البناية غير موجودة أو لا تملك صلاحية إدارتها.",
   "error-forbidden": "لا تملك صلاحية تنفيذ هذه العملية.",
@@ -80,6 +81,10 @@ const actionMessages: Record<string, string> = {
   "error-request_not_found": "طلب الصيانة غير موجود.",
   "error-invalid_status_transition": "لا يمكن الانتقال إلى حالة الطلب المختارة.",
   "error-action_failed": "تعذر تنفيذ العملية حاليًا. تحقق من البيانات وحاول مجددًا.",
+  "error-ownership_unit_not_found": "لا توجد وحدة بهذا الرمز داخل هذه البناية.",
+  "error-membership_unit_not_found": "لا توجد وحدة بهذا الرمز داخل هذه البناية.",
+  "error-ownership_building_not_found": "لا توجد بناية بهذا الرمز.",
+  "error-membership_building_not_found": "لا توجد بناية بهذا الرمز.",
   "error-unauthorized": "انتهت جلسة الدخول. سجل الدخول مجددًا.",
 };
 
@@ -395,7 +400,7 @@ function NotificationList({ notifications, locale }: { notifications: Array<{ id
     WORK_COMPLETION_READY: "العمل جاهز لتأكيد المستأجر",
     OFFER_MESSAGE_RECEIVED: "رسالة جديدة حول العرض",
   };
-  return <section className="mt-8"><Card><h2 className="text-xl font-bold">الإشعارات</h2><ul className="mt-3 space-y-2">{notifications.map((notification) => { const actorName = typeof notification.parameters === "object" && notification.parameters !== null && "actorName" in notification.parameters && typeof notification.parameters.actorName === "string" ? notification.parameters.actorName : null; return <li key={notification.id} className={`flex items-center justify-between gap-3 rounded-xl p-3 text-sm ${notification.readAt ? "bg-[#f6f8f7]" : "bg-[#e9f5ee]"}`}><span><strong>{labels[notification.eventType] ?? notification.messageKey}</strong>{actorName && <span className="mr-2 text-[#60756a]">بواسطة {actorName}</span>}</span>{!notification.readAt && <form action={markNotificationRead}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="notificationId" value={notification.id} /><button className="text-xs font-bold text-[#176b4d]">تحديد كمقروء</button></form>}</li>; })}</ul></Card></section>;
+  return <section className="mt-8"><Card><h2 className="text-xl font-bold">الإشعارات</h2><ul className="mt-3 space-y-2">{notifications.map((notification) => { const actorName = typeof notification.parameters === "object" && notification.parameters !== null && "actorName" in notification.parameters && typeof notification.parameters.actorName === "string" ? notification.parameters.actorName : null; const sentAt = notification.createdAt.toLocaleString(locale === "en" ? "en-US" : "ar-JO", { dateStyle: "medium", timeStyle: "short" }); return <li key={notification.id} className={`flex items-center justify-between gap-3 rounded-xl p-3 text-sm ${notification.readAt ? "bg-[#f6f8f7]" : "bg-[#e9f5ee]"}`}><span><strong>{labels[notification.eventType] ?? notification.messageKey}</strong>{actorName && <span className="mr-2 text-[#60756a]">بواسطة {actorName}</span>}<time dateTime={notification.createdAt.toISOString()} className="mt-1 block text-xs text-[#60756a]">أُرسل في {sentAt}</time></span>{!notification.readAt && <form action={markNotificationRead}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="notificationId" value={notification.id} /><button className="text-xs font-bold text-[#176b4d]">تحديد كمقروء</button></form>}</li>; })}</ul></Card></section>;
 }
 
 function StatusForm({ request, locale, statuses, submitLabel = "تحديث الحالة" }: { request: { id: string; version: number }; locale: string; statuses: string[]; submitLabel?: string }) {
