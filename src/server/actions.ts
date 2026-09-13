@@ -276,15 +276,17 @@ export async function createProcurement(formData: FormData) {
   if (request.status !== RequestStatus.SUBMITTED && request.status !== RequestStatus.PROCUREMENT) throw new Error("INVALID_REQUEST_STATUS");
   if (request.procurements.length) throw new Error("PROCUREMENT_ALREADY_OPEN");
 
-  const workers = await db.workerProfile.findMany({
-    where: {
-      id: { in: workerIds },
-      status: ProfileStatus.APPROVED,
-      categories: { some: { categoryId: request.categoryId } },
-    },
-    select: { id: true },
-  });
-  if (workers.length !== workerIds.length) throw new Error("INVALID_WORKER_SELECTION");
+  const workers = mode === "INVITED"
+    ? await db.workerProfile.findMany({
+        where: {
+          id: { in: workerIds },
+          status: ProfileStatus.APPROVED,
+          categories: { some: { categoryId: request.categoryId } },
+        },
+        select: { id: true },
+      })
+    : [];
+  if (mode === "INVITED" && workers.length !== workerIds.length) throw new Error("INVALID_WORKER_SELECTION");
   const deadline = optionalDate(formData, "deadline");
   if (deadline) deadline.setHours(23, 59, 59, 999);
   if (deadline && deadline <= new Date()) throw new Error("INVALID_DEADLINE");
