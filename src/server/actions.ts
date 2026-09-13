@@ -132,7 +132,7 @@ async function createBuildingAction(formData: FormData) {
       area,
       joinCode,
       canManageUnitRequests,
-      ...(unitLabel ? { units: { create: { ownerId: session.user.id, label: unitLabel, type: unitType } } } : {}),
+      ...(unitLabel ? { units: { create: { ownerId: session.user.id, label: unitLabel, joinCode: randomBytes(5).toString("hex").toUpperCase(), type: unitType } } } : {}),
     },
   });
   revalidatePath(`/${localeFrom(formData)}/dashboard`);
@@ -146,7 +146,7 @@ async function createUnitAction(formData: FormData) {
   const type = enumValue(text(formData, "type"), Object.values(UnitType), "type");
   const building = await db.building.findFirst({ where: { id: buildingId, ownerId: session.user.id, archivedAt: null } });
   if (!building) throw new Error("BUILDING_NOT_FOUND");
-  await db.unit.create({ data: { buildingId, ownerId: session.user.id, label, type, floor: text(formData, "floor", false) || null } });
+  await db.unit.create({ data: { buildingId, ownerId: session.user.id, label, joinCode: randomBytes(5).toString("hex").toUpperCase(), type, floor: text(formData, "floor", false) || null } });
   revalidatePath(`/${localeFrom(formData)}/dashboard`);
   dashboard(formData, "unit-created");
 }
@@ -154,10 +154,10 @@ async function createUnitAction(formData: FormData) {
 async function requestUnitOwnershipAction(formData: FormData) {
   const { session } = await requireRole(Role.OWNER);
   const joinCode = text(formData, "joinCode").toUpperCase();
-  const unitLabel = text(formData, "unitLabel");
+  const unitCode = text(formData, "unitCode");
   const building = await db.building.findFirst({
     where: { joinCode, archivedAt: null },
-    include: { units: { where: { label: unitLabel, archivedAt: null }, include: { owner: true } } },
+    include: { units: { where: { joinCode: unitCode, archivedAt: null }, include: { owner: true } } },
   });
   if (!building) return dashboard(formData, "ownership-building-not-found");
   const unit = building.units[0];
@@ -204,10 +204,10 @@ async function decideUnitOwnershipAction(formData: FormData) {
 async function requestMembershipAction(formData: FormData) {
   const { session } = await requireRole(Role.TENANT);
   const joinCode = text(formData, "joinCode").toUpperCase();
-  const unitLabel = text(formData, "unitLabel");
+  const unitCode = text(formData, "unitCode");
   const building = await db.building.findFirst({
     where: { joinCode, archivedAt: null },
-    include: { units: { where: { label: unitLabel, archivedAt: null } } },
+    include: { units: { where: { joinCode: unitCode, archivedAt: null } } },
   });
   if (!building) {
     dashboard(formData, "membership-building-not-found");

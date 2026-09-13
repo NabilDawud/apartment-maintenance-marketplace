@@ -242,6 +242,7 @@ model Unit {
   ownerId          String          // Denormalized for convenience
   owner            User            @relation(fields: [ownerId], references: [id])
   label            String
+  joinCode         String          @unique
   type             UnitType
   floor            String?
   archivedAt       DateTime?
