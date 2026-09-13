@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { Role, RequestStatus } from "@prisma/client";
 import { db } from "@/server/db";
 import { getSession, getSessionRole } from "@/server/session";
+import LogoutButton from "./logout-button";
 import {
   addComment,
   createBuilding,
@@ -87,7 +88,7 @@ export default async function DashboardPage({
       <div className="mx-auto max-w-6xl">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div><p className="text-sm font-semibold text-[#176b4d]">صيانة</p><h1 className="mt-2 text-3xl font-bold">{title}</h1><p className="mt-1 text-[#52635b]">مرحبًا، {session.user.name}</p></div>
-          <form action="/api/auth/sign-out" method="post"><button className="rounded-full border border-[#c8d7d0] bg-white px-5 py-2.5 text-sm font-semibold">تسجيل الخروج</button></form>
+          <LogoutButton locale={locale} />
         </header>
         {message && <p className="mt-6 rounded-xl bg-[#e3f3e9] px-4 py-3 text-sm font-semibold text-[#176b4d]">تم حفظ العملية بنجاح.</p>}
         <div className="mt-8 grid gap-6 lg:grid-cols-2">

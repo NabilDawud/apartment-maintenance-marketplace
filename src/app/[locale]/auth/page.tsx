@@ -19,13 +19,27 @@ export default function AuthPage() {
     setError("");
     const form = new FormData(event.currentTarget);
     const endpoint = mode === "login" ? "sign-in/email" : "sign-up/email";
-    const response = await fetch(`/api/auth/${endpoint}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: form.get("email"), password: form.get("password"), ...(mode === "register" ? { name: form.get("name"), role: form.get("role") } : {}) }) });
-    if (!response.ok) {
+    try {
+      const response = await fetch(`/api/auth/${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          email: form.get("email"),
+          password: form.get("password"),
+          ...(mode === "register" ? { name: form.get("name"), role: form.get("role") } : {}),
+        }),
+      });
+      if (!response.ok) {
+        const details = await response.json().catch(() => null) as { message?: string } | null;
+        throw new Error(details?.message || "AUTH_REQUEST_FAILED");
+      }
+      router.replace(`/${locale}/dashboard`);
+      router.refresh();
+    } catch {
       setError(isArabic ? "تعذر إكمال العملية. تحقق من البيانات وحاول مرة أخرى." : "Unable to complete the request. Check your details and try again.");
       setPending(false);
-      return;
     }
-    router.push(`/${locale}/dashboard`);
   }
 
   return (
