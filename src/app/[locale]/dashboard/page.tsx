@@ -129,10 +129,10 @@ export default async function DashboardPage({
           {role === Role.TENANT && <TenantPanel tenancies={tenancies} memberships={memberships} categories={categories} locale={locale} />}
           {role === Role.WORKER && <WorkerPanel profile={profile} categories={categories} areas={areas} procurements={workerProcurements} locale={locale} />}
           {!role && <Card><h2 className="text-xl font-bold">اختر دورًا من إعدادات الحساب</h2><p className="mt-2 text-[#52635b]">حسابك يحتاج إلى دور قبل البدء في المنصة.</p></Card>}
-          {role === Role.SUPER_ADMIN && <AdminPanel workers={pendingWorkers} locale={locale} requests={requests.length} />}
+          {role === Role.SUPER_ADMIN && <AdminPanel workers={pendingWorkers} locale={locale} requests={requests} />}
         </div>
         {notifications.length > 0 && <NotificationList notifications={notifications} locale={locale} />}
-        {requests.length > 0 && <RequestList requests={requests} locale={locale} role={role} workers={ownerWorkers} />}
+        {role !== Role.SUPER_ADMIN && requests.length > 0 && <RequestList requests={requests} locale={locale} role={role} workers={ownerWorkers} />}
       </div>
     </main>
   );
@@ -147,13 +147,13 @@ function OwnerPanel({ buildings, memberships, locale }: { buildings: Array<{ id:
   </div>;
 }
 
-function AdminPanel({ workers, locale, requests }: { workers: Array<{ id: string; bio: string | null; submittedAt: Date | null; user: { name: string; email: string }; categories: Array<{ category: { nameAr: string } }>; serviceAreas: Array<{ area: { code: string } }> }>; locale: string; requests: number }) {
+function AdminPanel({ workers, locale, requests }: { workers: Array<{ id: string; bio: string | null; submittedAt: Date | null; user: { name: string; email: string }; categories: Array<{ category: { nameAr: string } }>; serviceAreas: Array<{ area: { code: string } }> }>; locale: string; requests: DashboardRequest[] }) {
   return <Card>
     <DashboardTabs tabs={[
       {
         id: "overview",
         label: "نظرة عامة",
-        content: <div><h2 className="text-xl font-bold">نظرة عامة</h2><div className="mt-5 grid gap-4 sm:grid-cols-3"><div className="rounded-2xl bg-[#e9f5ee] p-5"><p className="text-3xl font-bold text-[#0b5c3b]">{requests}</p><p className="mt-1 text-sm text-[#52635b]">طلبات صيانة</p></div><div className="rounded-2xl bg-[#fff8e8] p-5"><p className="text-3xl font-bold text-[#6b4a00]">{workers.length}</p><p className="mt-1 text-sm text-[#52635b]">ملفات فنيين بانتظار المراجعة</p></div><div className="rounded-2xl bg-[#eef2ff] p-5"><p className="text-3xl font-bold text-[#3949ab]">جاهز</p><p className="mt-1 text-sm text-[#52635b]">حالة النظام</p></div></div></div>,
+        content: <div><h2 className="text-xl font-bold">نظرة عامة</h2><div className="mt-5 grid gap-4 sm:grid-cols-3"><div className="rounded-2xl bg-[#e9f5ee] p-5"><p className="text-3xl font-bold text-[#0b5c3b]">{requests.length}</p><p className="mt-1 text-sm text-[#52635b]">طلبات صيانة</p></div><div className="rounded-2xl bg-[#fff8e8] p-5"><p className="text-3xl font-bold text-[#6b4a00]">{workers.length}</p><p className="mt-1 text-sm text-[#52635b]">ملفات فنيين بانتظار المراجعة</p></div><div className="rounded-2xl bg-[#eef2ff] p-5"><p className="text-3xl font-bold text-[#3949ab]">جاهز</p><p className="mt-1 text-sm text-[#52635b]">حالة النظام</p></div></div><p className="mt-5 text-sm text-[#52635b]">إدارة المناقصات والعروض تتم من حساب المالك، والتقييم يرسله المستأجر بعد انتهاء أمر العمل.</p></div>,
       },
       {
         id: "workers",
@@ -162,8 +162,8 @@ function AdminPanel({ workers, locale, requests }: { workers: Array<{ id: string
       },
       {
         id: "requests",
-        label: "طلبات الصيانة",
-        content: <div><h2 className="text-xl font-bold">طلبات الصيانة</h2><p className="mt-3 text-[#52635b]">سيتم عرض ومراجعة جميع الطلبات هنا حسب الحالة والأولوية.</p></div>,
+        label: `طلبات الصيانة (${requests.length})`,
+        content: requests.length > 0 ? <RequestList requests={requests} locale={locale} role={Role.SUPER_ADMIN} workers={[]} /> : <div><h2 className="text-xl font-bold">طلبات الصيانة</h2><p className="mt-3 text-[#52635b]">لا توجد طلبات صيانة حاليًا.</p></div>,
       },
       {
         id: "settings",
