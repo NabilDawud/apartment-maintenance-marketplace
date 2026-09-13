@@ -48,11 +48,25 @@ function integerValue(formData: FormData, key: string, options: { required?: boo
   return value;
 }
 
+function shekelAmount(formData: FormData, key: string) {
+  const raw = text(formData, key);
+  const value = Number(raw);
+  if (!Number.isFinite(value) || value <= 0 || value > 100000000 || !/^\d+(\.\d{1,2})?$/.test(raw)) {
+    throw new Error(`INVALID_${key.toUpperCase()}`);
+  }
+  return Math.round(value * 100);
+}
+
 function optionalDate(formData: FormData, key: string) {
   const value = text(formData, key, false);
   if (!value) return null;
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) throw new Error(`INVALID_${key.toUpperCase()}`);
+  return date;
+}
+
+function endOfDay(date: Date | null) {
+  if (date) date.setHours(23, 59, 59, 999);
   return date;
 }
 
@@ -331,13 +345,12 @@ export async function createProcurement(formData: FormData) {
 export async function submitOffer(formData: FormData) {
   const { session } = await requireRole(Role.WORKER);
   const procurementId = text(formData, "procurementId");
-  const amountShekels = integerValue(formData, "amountShekels", { min: 1 });
-  const totalAgorot = amountShekels * 100;
+  const totalAgorot = shekelAmount(formData, "amountShekels");
   const scopeInclusions = text(formData, "scopeInclusions");
   const assumptions = text(formData, "assumptions", false) || null;
   const duration = text(formData, "duration", false) || null;
   const proposedDate = optionalDate(formData, "proposedDate");
-  const validUntil = optionalDate(formData, "validUntil");
+  const validUntil = endOfDay(optionalDate(formData, "validUntil"));
   if (!validUntil || validUntil <= new Date()) throw new Error("INVALID_VALID_UNTIL");
 
   const procurement = await db.procurement.findUnique({
@@ -355,8 +368,8 @@ export async function submitOffer(formData: FormData) {
       create: { procurementId, workerId: session.user.id, totalAgorot, scopeInclusions, assumptions, proposedDate, duration, validUntil },
       update: { totalAgorot, scopeInclusions, assumptions, proposedDate, duration, validUntil, state: "SUBMITTED", version: { increment: 1 } },
     });
-    await tx.tenderInvitation.update({
-      where: { procurementId_workerId: { procurementId, workerId: session.user.id } },
+    await tx.tenderInvitation.updateMany({
+      where: { procurementId, workerId: session.user.id },
       data: { response: "OFFERED" },
     });
     if (!existing) {
