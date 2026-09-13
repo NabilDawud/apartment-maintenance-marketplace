@@ -401,6 +401,33 @@ export async function respondTenderInvitation(formData: FormData) {
   dashboard(formData, "invitation-answered");
 }
 
+export async function sendOfferMessage(formData: FormData) {
+  const { session, role } = await requireRole(Role.OWNER, Role.WORKER);
+  const offerId = text(formData, "offerId");
+  const message = text(formData, "message");
+  const offer = await db.offer.findUnique({
+    where: { id: offerId },
+    include: { worker: { include: { user: true } }, procurement: { include: { request: { include: { unit: true } } } } },
+  });
+  if (!offer || offer.procurement.state !== "OPEN") throw new Error("OFFER_NOT_AVAILABLE");
+  const isOwner = offer.procurement.request.unit.ownerId === session.user.id;
+  const isWorker = offer.workerId === session.user.id;
+  if ((role === Role.OWNER && !isOwner) || (role === Role.WORKER && !isWorker)) throw new Error("FORBIDDEN");
+  const recipientId = isOwner ? offer.workerId : offer.procurement.request.unit.ownerId;
+  await db.$transaction(async (tx) => {
+    await tx.offerMessage.create({ data: { offerId, authorId: session.user.id, message } });
+    await createNotification(tx, {
+      recipientId,
+      eventType: "OFFER_MESSAGE_RECEIVED",
+      resourceId: offerId,
+      messageKey: "offerMessageReceived",
+      parameters: { actorName: session.user.name },
+    });
+  });
+  revalidatePath(`/${localeFrom(formData)}/dashboard`);
+  dashboard(formData, "offer-message-sent");
+}
+
 export async function awardOffer(formData: FormData) {
   const { session } = await requireRole(Role.OWNER);
   const offerId = text(formData, "offerId");

@@ -44,6 +44,7 @@ model User {
   comments      Comment[]
   attachments   Attachment[]
   ownerFeedbacks OwnerFeedback[]
+  offerMessages OfferMessage[]
 }
 
 model Session {
@@ -421,8 +422,19 @@ model Offer {
   state            OfferState      @default(SUBMITTED)
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
+  messages         OfferMessage[]
 
   @@unique([procurementId, workerId])
+}
+
+model OfferMessage {
+  id        String   @id @default(cuid())
+  offerId   String
+  offer     Offer    @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  message   String
+  createdAt DateTime @default(now())
 }
 
 enum OfferState {
