@@ -9,6 +9,7 @@
     "db:validate": "prisma validate",
     "db:migrate": "prisma migrate dev",
     "db:seed": "node prisma/seed.mjs",
+    "db:provision-admin": "node prisma/provision-admin.mjs",
     "start": "next start",
     "lint": "eslint"
   },
