@@ -271,6 +271,7 @@ export async function createProcurement(formData: FormData) {
   });
   if (workers.length !== workerIds.length) throw new Error("INVALID_WORKER_SELECTION");
   const deadline = optionalDate(formData, "deadline");
+  if (deadline) deadline.setHours(23, 59, 59, 999);
   if (deadline && deadline <= new Date()) throw new Error("INVALID_DEADLINE");
   const budgetText = text(formData, "budget", false);
   const budget = budgetText ? Number(budgetText) : null;
