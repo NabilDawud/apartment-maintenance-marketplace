@@ -78,6 +78,11 @@ function shekelAmount(formData: FormData, key: string) {
   return Math.round(value * 100);
 }
 
+function optionalShekelAmount(formData: FormData, key: string) {
+  const raw = text(formData, key, false);
+  return raw ? shekelAmount(formData, key) : null;
+}
+
 function optionalDate(formData: FormData, key: string) {
   const value = text(formData, key, false);
   if (!value) return null;
@@ -419,14 +424,6 @@ async function createProcurementAction(formData: FormData) {
 async function submitOfferAction(formData: FormData) {
   const { session } = await requireRole(Role.WORKER);
   const procurementId = text(formData, "procurementId");
-  const totalAgorot = shekelAmount(formData, "amountShekels");
-  const scopeInclusions = text(formData, "scopeInclusions");
-  const assumptions = text(formData, "assumptions", false) || null;
-  const duration = text(formData, "duration", false) || null;
-  const proposedDate = optionalDate(formData, "proposedDate");
-  const validUntil = endOfDay(optionalDate(formData, "validUntil"));
-  if (!validUntil || validUntil <= new Date()) throw new Error("INVALID_VALID_UNTIL");
-
   const procurement = await db.procurement.findUnique({
     where: { id: procurementId },
     include: { request: { include: { unit: true } }, invitations: { where: { workerId: session.user.id } } },
@@ -434,6 +431,19 @@ async function submitOfferAction(formData: FormData) {
   if (!procurement || procurement.state !== "OPEN" || (procurement.mode !== "PUBLIC" && !procurement.invitations.length)) throw new Error("PROCUREMENT_NOT_AVAILABLE");
   const profile = await db.workerProfile.findUnique({ where: { id: session.user.id }, select: { status: true } });
   if (!profile || profile.status !== ProfileStatus.APPROVED) throw new Error("PROFILE_NOT_APPROVED");
+  const existingOffer = await db.offer.findUnique({ where: { procurementId_workerId: { procurementId, workerId: session.user.id } } });
+  const totalAgorot = existingOffer ? optionalShekelAmount(formData, "amountShekels") ?? existingOffer.totalAgorot : shekelAmount(formData, "amountShekels");
+  const scopeValue = text(formData, "scopeInclusions", !existingOffer);
+  const scopeInclusions = scopeValue || existingOffer?.scopeInclusions || "";
+  const assumptionsValue = text(formData, "assumptions", false);
+  const assumptions = assumptionsValue || existingOffer?.assumptions || null;
+  const durationValue = text(formData, "duration", false);
+  const duration = durationValue || existingOffer?.duration || null;
+  const proposedDateValue = text(formData, "proposedDate", false);
+  const proposedDate = proposedDateValue ? optionalDate(formData, "proposedDate") : existingOffer?.proposedDate ?? null;
+  const validUntilValue = text(formData, "validUntil", !existingOffer);
+  const validUntil = endOfDay(validUntilValue ? optionalDate(formData, "validUntil") : existingOffer?.validUntil ?? null);
+  if (!validUntil || validUntil <= new Date()) throw new Error("INVALID_VALID_UNTIL");
 
   await db.$transaction(async (tx) => {
     const existing = await tx.offer.findUnique({ where: { procurementId_workerId: { procurementId, workerId: session.user.id } } });
