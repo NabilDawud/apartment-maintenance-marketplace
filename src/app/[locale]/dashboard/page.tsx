@@ -439,7 +439,7 @@ export default async function DashboardPage({
       <div className="mx-auto max-w-6xl">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div><p className="text-sm font-semibold text-[#176b4d]">{tx(locale, "صيانة" )}</p><h1 className="mt-2 text-3xl font-bold">{title}</h1><p className="mt-1 text-[#52635b]">{tx(locale, "مرحبًا")}, {session.user.name}</p></div>
-          <div className="flex items-center gap-3"><a href={`/${locale === "en" ? "ar" : "en"}/dashboard`} className="rounded-full border border-[#c8d7d0] bg-white px-4 py-2 text-sm font-semibold">{locale === "en" ? "Switch to Arabic" : "English"}</a><LogoutButton locale={locale} /></div>
+          <div className="flex items-center gap-3"><a href={`/${locale === "en" ? "ar" : "en"}/dashboard`} className="rounded-full border border-[#c8d7d0] bg-white px-4 py-2 text-sm font-semibold">{locale === "en" ? "العربية" : "English"}</a><LogoutButton locale={locale} /></div>
         </header>
         {actionMessage && <p className="mt-6 rounded-xl bg-[#e3f3e9] px-4 py-3 text-sm font-semibold text-[#176b4d]">{actionMessage}</p>}
         <div className="mt-8">
