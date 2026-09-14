@@ -1,17 +1,37 @@
 import Link from "next/link";
 
-const features = [
+const arabicFeatures = [
   ["⌂", "إدارة العقار", "أضف المباني والوحدات وتابع طلبات السكان من مكان واحد."],
   ["✓", "عمال موثوقون", "تواصل مع فنيين معتمدين حسب التخصص والمنطقة."],
   ["↗", "شفافية كاملة", "قارن العروض وتابع حالة الإصلاح حتى إغلاق الطلب."],
 ];
 
+const englishFeatures = [
+  ["⌂", "Property management", "Add buildings and units, then manage resident requests in one place."],
+  ["✓", "Trusted workers", "Connect with approved workers by service category and area."],
+  ["↗", "Full transparency", "Compare offers and follow every repair through completion."],
+];
+
 export default async function LocaleHome({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const isArabic = locale === "ar";
+  const features = isArabic ? arabicFeatures : englishFeatures;
+  const workflow = isArabic
+    ? [
+        ["1", "أنشئ حسابك", "اختر مالكًا أو مستأجرًا أو فنيًا ثم ادخل إلى لوحة التحكم."],
+        ["2", "اربط العقار", "استخدم رمز البناية ورمز الوحدة لطلب الملكية أو الانضمام."],
+        ["3", "أدر العمل", "أرسل الطلبات، قارن المناقصات، تفاوض، عيّن الفني، وتابع التنفيذ."],
+        ["4", "أكد وقيّم", "أكد انتهاء العمل وأضف تقييمك للحفاظ على جودة الخدمة."],
+      ]
+    : [
+        ["1", "Create your account", "Choose owner, tenant, or worker and open your dashboard."],
+        ["2", "Connect the property", "Use the building code and unit code to request ownership or membership."],
+        ["3", "Manage the job", "Submit requests, compare tenders, negotiate, assign a worker, and track progress."],
+        ["4", "Confirm and rate", "Confirm completion and share feedback so quality stays visible."],
+      ];
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f6f8f7] text-[#17221d]">
+    <main className="min-h-screen scroll-smooth overflow-hidden bg-[#f6f8f7] text-[#17221d]">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6 lg:px-8">
         <Link href={`/${locale}`} className="text-xl font-bold tracking-tight text-[#176b4d]">صيانة</Link>
         <div className="flex items-center gap-3 text-sm">
@@ -45,7 +65,16 @@ export default async function LocaleHome({ params }: { params: Promise<{ locale:
           </div>
         </div>
       </section>
-      <section id="how-it-works" className="mx-auto grid max-w-6xl gap-4 px-6 pb-24 sm:grid-cols-3 lg:px-8">
+      <section id="how-it-works" className="scroll-mt-8 border-t border-[#e0e9e4] bg-white px-6 py-16 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-sm font-semibold text-[#176b4d]">{isArabic ? "خطوات بسيطة" : "Simple steps"}</p>
+          <h2 className="mt-2 text-3xl font-bold">{isArabic ? "كيف تعمل المنصة؟" : "How it works"}</h2>
+          <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {workflow.map(([number, title, description]) => <article key={number} className="rounded-3xl border border-[#e0e9e4] bg-[#f6f8f7] p-6"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#176b4d] font-bold text-white">{number}</span><h3 className="mt-4 font-bold">{title}</h3><p className="mt-2 text-sm leading-6 text-[#52635b]">{description}</p></article>)}
+          </div>
+        </div>
+      </section>
+      <section className="mx-auto grid max-w-6xl gap-4 px-6 py-16 sm:grid-cols-3 lg:px-8">
         {features.map(([icon, title, description]) => <article key={title} className="rounded-3xl border border-[#e0e9e4] bg-white p-7"><span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#e5f3ec] text-xl font-bold text-[#176b4d]">{icon}</span><h2 className="mt-5 text-xl font-bold">{title}</h2><p className="mt-2 leading-7 text-[#52635b]">{description}</p></article>)}
       </section>
     </main>
