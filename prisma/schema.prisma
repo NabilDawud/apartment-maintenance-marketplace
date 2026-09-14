@@ -43,6 +43,10 @@ model User {
   
   comments      Comment[]
   attachments   Attachment[]
+  ownerFeedbacks OwnerFeedback[]
+  offerMessages OfferMessage[]
+  unitOwnershipRequests UnitOwnershipRequest[] @relation("OwnershipApplicant")
+  decidedOwnershipRequests UnitOwnershipRequest[] @relation("OwnershipDecider")
 }
 
 model Session {
@@ -139,6 +143,8 @@ model WorkerProfile {
   invitations         TenderInvitation[]
   offers              Offer[]
   workOrders          WorkOrder[]
+  tenantFeedbacks TenantFeedback[]
+  ownerFeedbacks  OwnerFeedback[]
 }
 
 enum ProfileStatus {
@@ -223,6 +229,7 @@ model Building {
   address          String
   area             String
   joinCode         String          @unique
+  canManageUnitRequests Boolean    @default(false)
   archivedAt       DateTime?
   
   units            Unit[]
@@ -235,11 +242,13 @@ model Unit {
   ownerId          String          // Denormalized for convenience
   owner            User            @relation(fields: [ownerId], references: [id])
   label            String
+  joinCode         String          @unique
   type             UnitType
   floor            String?
   archivedAt       DateTime?
 
   memberships      MembershipRequest[]
+  ownershipRequests UnitOwnershipRequest[]
   tenancies        Tenancy[]
   requests         MaintenanceRequest[]
 
@@ -266,6 +275,22 @@ model MembershipRequest {
   decisionTime     DateTime?
 
   tenancies        Tenancy[]
+}
+
+model UnitOwnershipRequest {
+  id            String          @id @default(cuid())
+  applicantId   String
+  applicant     User            @relation("OwnershipApplicant", fields: [applicantId], references: [id])
+  unitId        String
+  unit          Unit            @relation(fields: [unitId], references: [id])
+  state         MembershipState @default(PENDING)
+  submittedAt   DateTime        @default(now())
+  decidedById   String?
+  decider       User?           @relation("OwnershipDecider", fields: [decidedById], references: [id])
+  decisionReason String?
+  decisionTime  DateTime?
+
+  @@unique([applicantId, unitId, state])
 }
 
 enum MembershipState {
@@ -416,10 +441,22 @@ model Offer {
   validUntil       DateTime
   
   state            OfferState      @default(SUBMITTED)
+  updatedFields    String[]        @default([])
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
+  messages         OfferMessage[]
 
   @@unique([procurementId, workerId])
+}
+
+model OfferMessage {
+  id        String   @id @default(cuid())
+  offerId   String
+  offer     Offer    @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  message   String
+  createdAt DateTime @default(now())
 }
 
 enum OfferState {
@@ -457,6 +494,7 @@ model WorkOrder {
   
   paymentRecord    PaymentRecord?
   tenantFeedback   TenantFeedback?
+  ownerFeedback    OwnerFeedback?
 
   @@unique([requestId])
 }
@@ -521,6 +559,7 @@ model TenantFeedback {
   workOrder        WorkOrder       @relation(fields: [workOrderId], references: [id])
   tenantId         String
   workerId         String
+  worker           WorkerProfile @relation(fields: [workerId], references: [id], onDelete: Cascade)
   
   rating           Int             // 1-5
   comment          String?
@@ -530,6 +569,24 @@ model TenantFeedback {
   hiddenAt         DateTime?
   hiddenReason     String?
 }
+
+model OwnerFeedback {
+  id               String   @id @default(cuid())
+  workOrderId      String   @unique
+  workOrder        WorkOrder @relation(fields: [workOrderId], references: [id])
+  ownerId          String
+  owner            User     @relation(fields: [ownerId], references: [id])
+  workerId         String
+  worker           WorkerProfile @relation(fields: [workerId], references: [id])
+  rating           Int
+  comment          String?
+  createdAt        DateTime @default(now())
+
+  hiddenById       String?
+  hiddenAt         DateTime?
+  hiddenReason     String?
+}
+
 
 model Notification {
   id               String          @id @default(cuid())
