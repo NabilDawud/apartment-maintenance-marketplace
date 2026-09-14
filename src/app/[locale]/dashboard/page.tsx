@@ -183,7 +183,9 @@ export default async function DashboardPage({
   ]);
   const unreadNotifications = notifications.filter((notification) => !notification.readAt).length;
 
-  const title = role === Role.OWNER ? "لوحة المالك" : role === Role.TENANT ? "لوحة المستأجر" : role === Role.WORKER ? "لوحة الفني" : role === Role.SUPER_ADMIN ? "لوحة الإدارة" : "لوحتك";
+  const title = isEnglish
+    ? role === Role.OWNER ? "Owner dashboard" : role === Role.TENANT ? "Tenant dashboard" : role === Role.WORKER ? "Worker dashboard" : role === Role.SUPER_ADMIN ? "Admin dashboard" : "Your dashboard"
+    : role === Role.OWNER ? "لوحة المالك" : role === Role.TENANT ? "لوحة المستأجر" : role === Role.WORKER ? "لوحة الفني" : role === Role.SUPER_ADMIN ? "لوحة الإدارة" : "لوحتك";
   return (
     <main className="min-h-screen bg-[#f6f8f7] px-5 py-8 text-[#17221d]" dir={isEnglish ? "ltr" : "rtl"}>
       <div className="mx-auto max-w-6xl">
@@ -196,26 +198,26 @@ export default async function DashboardPage({
           {!role && <Card><h2 className="text-xl font-bold">اختر دورًا من إعدادات الحساب</h2><p className="mt-2 text-[#52635b]">حسابك يحتاج إلى دور قبل البدء في المنصة.</p></Card>}
         </div>
         {role === Role.OWNER && <DashboardTabs tabs={[
-          { id: "overview", label: "نظرة عامة", content: <OwnerOverviewPanel buildings={buildings} ownedUnits={ownedUnits} requests={requests} ownershipRequests={ownershipRequests} /> },
-          { id: "memberships", label: `طلبات المستأجرين (${ownerMemberships.length})`, content: <OwnerMembershipPanel memberships={ownerMemberships} locale={locale} /> },
-          { id: "ownership", label: `طلبات ملكية الوحدات (${ownershipRequests.length})`, content: <OwnerOwnershipPanel requests={ownershipRequests} locale={locale} /> },
-          { id: "buildings", label: `مبانيك (${buildings.length})`, content: <OwnerBuildingsPanel buildings={buildings} locale={locale} /> },
-          { id: "units", label: `وحداتي (${ownedUnits.length})`, content: <OwnedUnitsPanel units={ownedUnits} locale={locale} /> },
-          { id: "workers", label: "الفنيون المعتمدون", content: <WorkerDirectoryPanel workers={ownerWorkers} /> },
-          { id: "requests", label: `طلبات الصيانة (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={ownerWorkers} /> },
-          { id: "notifications", label: `الإشعارات (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
+          { id: "overview", label: isEnglish ? "Overview" : "نظرة عامة", content: <div><RoleWorkflowPanel role={role} locale={locale} hasBuildings={buildings.length > 0} hasOwnedUnits={ownedUnits.length > 0} /><OwnerOverviewPanel buildings={buildings} ownedUnits={ownedUnits} requests={requests} ownershipRequests={ownershipRequests} /></div> },
+          { id: "memberships", label: `${isEnglish ? "Tenant requests" : "طلبات المستأجرين"} (${ownerMemberships.length})`, content: <OwnerMembershipPanel memberships={ownerMemberships} locale={locale} /> },
+          { id: "ownership", label: `${isEnglish ? "Unit ownership requests" : "طلبات ملكية الوحدات"} (${ownershipRequests.length})`, content: <OwnerOwnershipPanel requests={ownershipRequests} locale={locale} /> },
+          { id: "buildings", label: `${isEnglish ? "My buildings" : "مبانيك"} (${buildings.length})`, content: <OwnerBuildingsPanel buildings={buildings} locale={locale} /> },
+          { id: "units", label: `${isEnglish ? "My units" : "وحداتي"} (${ownedUnits.length})`, content: <OwnedUnitsPanel units={ownedUnits} locale={locale} /> },
+          { id: "workers", label: isEnglish ? "Approved workers" : "الفنيون المعتمدون", content: <WorkerDirectoryPanel workers={ownerWorkers} /> },
+          { id: "requests", label: `${isEnglish ? "Maintenance requests" : "طلبات الصيانة"} (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={ownerWorkers} /> },
+          { id: "notifications", label: `${isEnglish ? "Notifications" : "الإشعارات"} (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text={isEnglish ? "No notifications yet." : "لا توجد إشعارات حاليًا."} /> },
         ]} />}
         {role === Role.TENANT && <DashboardTabs tabs={[
-          { id: "overview", label: "نظرة عامة", content: <TenantPanel tenancies={tenancies} memberships={memberships} categories={categories} locale={locale} /> },
-          { id: "workers", label: "الفنيون المعتمدون", content: <WorkerDirectoryPanel workers={availableWorkers} /> },
-          { id: "requests", label: `طلباتي (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={availableWorkers} /> },
-          { id: "notifications", label: `الإشعارات (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
+          { id: "overview", label: isEnglish ? "Overview" : "نظرة عامة", content: <div><RoleWorkflowPanel role={role} locale={locale} /><TenantPanel tenancies={tenancies} memberships={memberships} categories={categories} locale={locale} /></div> },
+          { id: "workers", label: isEnglish ? "Approved workers" : "الفنيون المعتمدون", content: <WorkerDirectoryPanel workers={availableWorkers} /> },
+          { id: "requests", label: `${isEnglish ? "My requests" : "طلباتي"} (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={availableWorkers} /> },
+          { id: "notifications", label: `${isEnglish ? "Notifications" : "الإشعارات"} (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text={isEnglish ? "No notifications yet." : "لا توجد إشعارات حاليًا."} /> },
         ]} />}
         {role === Role.WORKER && <DashboardTabs tabs={[
-          { id: "overview", label: "الملف المهني", content: <WorkerPanel profile={profile} categories={categories} areas={areas} locale={locale} /> },
-          { id: "tenders", label: `دعوات المناقصات (${workerProcurements.length})`, content: <WorkerTenderPanel procurements={workerProcurements} locale={locale} /> },
-          { id: "requests", label: `الأعمال المرتبطة (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={[]} /> },
-          { id: "notifications", label: `الإشعارات (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text="لا توجد إشعارات حاليًا." /> },
+          { id: "overview", label: isEnglish ? "Professional profile" : "الملف المهني", content: <div><RoleWorkflowPanel role={role} locale={locale} /><WorkerPanel profile={profile} categories={categories} areas={areas} locale={locale} /></div> },
+          { id: "tenders", label: `${isEnglish ? "Tender invitations" : "دعوات المناقصات"} (${workerProcurements.length})`, content: <WorkerTenderPanel procurements={workerProcurements} locale={locale} /> },
+          { id: "requests", label: `${isEnglish ? "Assigned work" : "الأعمال المرتبطة"} (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={[]} /> },
+          { id: "notifications", label: `${isEnglish ? "Notifications" : "الإشعارات"} (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text={isEnglish ? "No notifications yet." : "لا توجد إشعارات حاليًا."} /> },
         ]} />}
         {role === Role.SUPER_ADMIN && <AdminPanel workers={pendingWorkers} locale={locale} requests={requests} notifications={notifications} unreadNotifications={unreadNotifications} />}
       </div>
@@ -225,6 +227,27 @@ export default async function DashboardPage({
 
 function EmptyState({ text }: { text: string }) {
   return <Card><p className="text-[#52635b]">{text}</p></Card>;
+}
+
+function RoleWorkflowPanel({ role, locale, hasBuildings = false, hasOwnedUnits = false }: { role: Role | null; locale: string; hasBuildings?: boolean; hasOwnedUnits?: boolean }) {
+  const english = locale === "en";
+  const ownerSteps = hasBuildings
+    ? english
+      ? ["Manage buildings and unit codes.", "Review unit ownership requests.", "Review tenant requests for your owned units.", "Create maintenance tenders, compare offers, negotiate, and award work.", "Close completed work and rate workers."]
+      : ["إدارة البنايات ورموز الوحدات.", "مراجعة طلبات ملكية الوحدات.", "مراجعة طلبات المستأجرين لوحداتك.", "إنشاء المناقصات ومقارنة العروض والتفاوض وترسية العمل.", "إغلاق الأعمال المكتملة وتقييم الفنيين."]
+    : hasOwnedUnits
+      ? english
+        ? ["Your unit ownership has been approved.", "Review tenant requests for your unit.", "Manage maintenance requests and tender offers for your unit.", "Close completed work and rate workers."]
+        : ["تمت الموافقة على ملكية وحدتك.", "مراجعة طلبات المستأجرين لوحدتك.", "إدارة طلبات الصيانة والعروض لوحدتك.", "إغلاق الأعمال المكتملة وتقييم الفنيين."]
+      : english
+        ? ["Request ownership using the building code and unit code.", "Wait for the building owner to approve your request.", "After approval, manage your unit and tenant requests."]
+        : ["أرسل طلب ملكية باستخدام رمز البناية ورمز الوحدة.", "انتظر موافقة مالك البناية على الطلب.", "بعد الموافقة، أدر وحدتك وطلبات المستأجرين."]
+  const steps = role === Role.OWNER ? ownerSteps : role === Role.TENANT
+    ? english ? ["Join a unit using its building and unit codes.", "Wait for the unit owner to approve your membership.", "Submit and follow maintenance requests.", "Confirm completed work and rate the worker."] : ["الانضمام إلى وحدة باستخدام رمزي البناية والوحدة.", "انتظار موافقة مالك الوحدة على طلبك.", "إرسال ومتابعة طلبات الصيانة.", "تأكيد انتهاء العمل وتقييم الفني."]
+    : role === Role.WORKER
+      ? english ? ["Complete your profile and select categories and service areas.", "Wait for admin approval.", "Review tender invitations and submit or update offers.", "Negotiate with the owner and execute awarded work.", "Move work through progress and tenant confirmation."] : ["إكمال الملف المهني واختيار التخصصات والمناطق.", "انتظار اعتماد الإدارة.", "مراجعة دعوات المناقصات وإرسال أو تحديث العروض.", "التفاوض مع المالك وتنفيذ الأعمال التي تمت ترسيتها.", "تحديث حالة العمل حتى تأكيد المستأجر."]
+      : english ? ["Review pending worker profiles.", "Monitor maintenance requests and platform activity.", "Manage the platform configuration and notifications."] : ["مراجعة ملفات الفنيين المعلقة.", "متابعة طلبات الصيانة ونشاط المنصة.", "إدارة إعدادات المنصة والإشعارات."]
+  return <Card className="mb-6 border-[#b9dcca] bg-[#f1faf4]"><h2 className="text-xl font-bold">{english ? "How your workflow works" : "كيف تعمل المنصة معك"}</h2><p className="mt-2 text-sm text-[#52635b]">{english ? "Follow these steps for the role associated with your account." : "اتبع هذه الخطوات حسب الدور المرتبط بحسابك."}</p><ol className="mt-4 grid gap-3 md:grid-cols-2">{steps.map((step, index) => <li key={step} className="flex gap-3 rounded-xl bg-white p-3 text-sm"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#176b4d] font-bold text-white">{index + 1}</span><span>{step}</span></li>)}</ol></Card>;
 }
 
 function WorkerDirectoryPanel({ workers }: { workers: DirectoryWorker[] }) {
