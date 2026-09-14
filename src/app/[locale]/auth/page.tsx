@@ -53,7 +53,7 @@ export default function AuthPage() {
           <Link href={`/${locale}`} className="text-xl font-bold text-[#0b5c3b]">صيانة</Link>
           <Link href={`/${alternateLocale}/auth${mode === "register" ? "?mode=register" : ""}`} className="rounded-full px-3 py-1.5 text-sm font-semibold text-[#52635b] hover:bg-[#f6f8f7]">{languageLabel}</Link>
         </div>
-        <h1 className="mt-12 text-3xl font-bold tracking-tight text-[#10251b]">{mode === "login" ? (isArabic ? "مرحبًا بعودتك" : "Welcome back") : (isArabic ? "أنشئ حسابك" : "Create your account")}</h1>
+        <h1 className="mt-12 inline-flex rounded-2xl bg-gradient-to-r from-[#e3f3e9] via-[#f1faf4] to-[#fff4d9] px-4 py-2 text-3xl font-bold tracking-tight text-[#0b5c3b] shadow-sm shadow-[#176b4d]/10 ring-1 ring-[#b9ddcc]/70">{mode === "login" ? (isArabic ? "مرحبًا بعودتك" : "Welcome back") : (isArabic ? "أنشئ حسابك" : "Create your account")}</h1>
         <p className="mt-3 text-base leading-7 text-[#3f5148]">{isArabic ? "أدر طلبات الصيانة بثقة وسهولة." : "Manage maintenance requests with confidence."}</p>
         <form onSubmit={submit} className="mt-8 space-y-4">
           {mode === "register" && <label className="block text-sm font-semibold text-[#17221d]">{isArabic ? "الاسم" : "Name"}<input name="name" required className="mt-2 w-full rounded-xl border-2 border-[#a9c5b7] bg-white px-4 py-3 text-[#17221d] outline-none transition focus:border-[#0b5c3b] focus:ring-4 focus:ring-[#0b5c3b]/15" /></label>}
