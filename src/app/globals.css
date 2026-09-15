@@ -24,3 +24,27 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.dashboard-tabs-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #8aa39a transparent;
+  overscroll-behavior-inline: contain;
+}
+
+.dashboard-tabs-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.dashboard-tabs-scroll::-webkit-scrollbar-track {
+  background: #edf4f0;
+  border-radius: 999px;
+}
+
+.dashboard-tabs-scroll::-webkit-scrollbar-thumb {
+  background: #8aa39a;
+  border-radius: 999px;
+}
+
+.dashboard-tabs-scroll::-webkit-scrollbar-thumb:hover {
+  background: #176b4d;
+}

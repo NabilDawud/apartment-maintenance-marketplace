@@ -88,6 +88,253 @@ const actionMessages: Record<string, string> = {
   "error-unauthorized": "انتهت جلسة الدخول. سجل الدخول مجددًا.",
 };
 
+const englishDashboardText: Record<string, string> = {
+  "لوحة المالك": "Owner dashboard",
+  "لوحة المستأجر": "Tenant dashboard",
+  "لوحة الفني": "Worker dashboard",
+  "لوحة الإدارة": "Admin dashboard",
+  "لوحتك": "Your dashboard",
+  "صيانة": "Maintenance",
+  "مرحبًا": "Welcome",
+  "اختر دورًا من إعدادات الحساب": "Choose a role in account settings",
+  "حسابك يحتاج إلى دور قبل البدء في المنصة.": "Your account needs a role before you can begin.",
+  "نظرة عامة": "Overview",
+  "طلبات المستأجرين": "Tenant requests",
+  "طلبات ملكية الوحدات": "Unit ownership requests",
+  "مبانيك": "My buildings",
+  "وحداتي": "My units",
+  "الفنيون المعتمدون": "Approved workers",
+  "طلبات الصيانة": "Maintenance requests",
+  "الإشعارات": "Notifications",
+  "لا توجد إشعارات حاليًا.": "No notifications yet.",
+  "طلباتي": "My requests",
+  "الملف المهني": "Professional profile",
+  "دعوات المناقصات": "Tender invitations",
+  "الأعمال المرتبطة": "Assigned work",
+  "الكل": "All",
+  "مُرسل": "Submitted",
+  "قيد البحث عن فني": "Finding a worker",
+  "تم التعيين": "Assigned",
+  "قيد التنفيذ": "In progress",
+  "بانتظار التأكيد": "Awaiting confirmation",
+  "مؤكد": "Confirmed",
+  "مكتمل": "Completed",
+  "ملغي": "Cancelled",
+  "إدارة البنايات ورموز الوحدات.": "Manage buildings and unit codes.",
+  "مراجعة طلبات ملكية الوحدات.": "Review unit ownership requests.",
+  "مراجعة طلبات المستأجرين لوحداتك.": "Review tenant requests for your units.",
+  "إنشاء المناقصات ومقارنة العروض والتفاوض وترسية العمل.": "Create tenders, compare offers, negotiate, and award work.",
+  "إغلاق الأعمال المكتملة وتقييم الفنيين.": "Close completed work and rate workers.",
+  "تمت الموافقة على ملكية وحدتك.": "Your unit ownership was approved.",
+  "مراجعة طلبات المستأجرين لوحدتك.": "Review tenant requests for your unit.",
+  "إدارة طلبات الصيانة والعروض لوحدتك.": "Manage maintenance requests and offers for your unit.",
+  "أرسل طلب ملكية باستخدام رمز البناية ورمز الوحدة.": "Request ownership with the building and unit codes.",
+  "انتظر موافقة مالك البناية على الطلب.": "Wait for the building owner to approve your request.",
+  "بعد الموافقة، أدر وحدتك وطلبات المستأجرين.": "After approval, manage your unit and tenant requests.",
+  "الانضمام إلى وحدة باستخدام رمزي البناية والوحدة.": "Join a unit using its building and unit codes.",
+  "انتظار موافقة مالك الوحدة على طلبك.": "Wait for the unit owner to approve your membership.",
+  "إرسال ومتابعة طلبات الصيانة.": "Submit and track maintenance requests.",
+  "تأكيد انتهاء العمل وتقييم الفني.": "Confirm completed work and rate the worker.",
+  "إكمال الملف المهني واختيار التخصصات والمناطق.": "Complete your profile and select categories and service areas.",
+  "انتظار اعتماد الإدارة.": "Wait for administrator approval.",
+  "مراجعة دعوات المناقصات وإرسال أو تحديث العروض.": "Review tender invitations and submit or update offers.",
+  "التفاوض مع المالك وتنفيذ الأعمال التي تمت ترسيتها.": "Negotiate with the owner and perform awarded work.",
+  "تحديث حالة العمل حتى تأكيد المستأجر.": "Update work status until tenant confirmation.",
+  "مراجعة ملفات الفنيين المعلقة.": "Review pending worker profiles.",
+  "متابعة طلبات الصيانة ونشاط المنصة.": "Monitor maintenance requests and platform activity.",
+  "إدارة إعدادات المنصة والإشعارات.": "Manage platform settings and notifications.",
+  "كيف تعمل المنصة معك": "How your workflow works",
+  "اتبع هذه الخطوات حسب الدور المرتبط بحسابك.": "Follow these steps for your account role.",
+  "يمكنك مقارنة الخبرة العملية والتقييمات وآراء العملاء قبل اختيار الفني.": "Compare experience, ratings, and customer feedback before choosing a worker.",
+  "لا يوجد فنيون معتمدون حاليًا.": "No approved workers are available.",
+  "لا توجد طلبات بهذه الحالة.": "No requests in this status.",
+  "البنايات": "Buildings",
+  "طلبات الملكية المعلقة": "Pending ownership requests",
+  "من تبويب ": "From the ",
+  " أنشئ البنايات والوحدات، ومن تبويب ": " create buildings and units; from the ",
+  " اربط الوحدات التي تملكها في بنايات أخرى. ستجد طلبات المستأجرين وطلبات الملكية في تبويبات مستقلة.": " link units you own in other buildings. Tenant and ownership requests have their own tabs.",
+  "إضافة مبنى ووحدة": "Add building and unit",
+  "اسم المبنى": "Building name",
+  "العنوان": "Address",
+  "المنطقة": "Area",
+  "رقم الوحدة الأولى": "First unit number",
+  "شقة": "Apartment",
+  "محل": "Shop",
+  "السماح بإدارة طلبات الوحدات": "Allow unit request management",
+  "اختياري للبنايات التي يدير مالكها الصيانة العامة.": "Optional for buildings whose owner manages general maintenance.",
+  "حفظ المبنى": "Save building",
+  "إضافة وحدة إلى مبنى": "Add unit to building",
+  "رقم الوحدة": "Unit number",
+  "الطابق": "Floor",
+  "بعد إضافتها، أرسل رمز البناية ورقم الوحدة لمالك الشقة ليطلب ربطها بحسابه.": "After adding it, send the building and unit codes to the unit owner.",
+  "إضافة الوحدة": "Add unit",
+  "لم تضف مباني بعد.": "No buildings added yet.",
+  "مفعلة": "Enabled",
+  "غير مفعلة": "Disabled",
+  "الوحدات ورموز انضمامها": "Units and join codes",
+  "لا توجد وحدات": "No units",
+  "لا توجد وحدات مرتبطة بحسابك من بنايات أخرى.": "No units linked from other buildings.",
+  "طلب ملكية شقة أو محل": "Request apartment or shop ownership",
+  "أدخل رمز البناية ورمز الوحدة الذي أرسلهما لك صاحب البناية.": "Enter the building and unit codes sent by the building owner.",
+  "رمز البناية": "Building code",
+  "رمز الوحدة": "Unit code",
+  "إرسال طلب ملكية": "Submit ownership request",
+  "طلبات الانضمام": "Membership requests",
+  "لا توجد طلبات انضمام معلقة.": "No pending membership requests.",
+  "موافقة": "Approve",
+  "رفض": "Reject",
+  "لا توجد طلبات ملكية معلقة.": "No pending ownership requests.",
+  "طلبات صيانة": "Maintenance requests",
+  "ملفات فنيين بانتظار المراجعة": "Worker profiles awaiting review",
+  "جاهز": "Ready",
+  "حالة النظام": "System status",
+  "إدارة المناقصات والعروض تتم من حساب المالك، والتقييم يرسله المستأجر بعد انتهاء أمر العمل.": "Owners manage tenders and offers; tenants submit feedback after work.",
+  "مراجعة الفنيين": "Worker review",
+  "مراجعة ملفات الفنيين": "Review worker profiles",
+  "لا توجد ملفات بانتظار المراجعة.": "No profiles awaiting review.",
+  "غير متوفر": "Unavailable",
+  "لم يضف الفني نبذة.": "The worker has not added a bio.",
+  "التخصصات:": "Categories:",
+  "، ": " , ",
+  "غير محددة": "Not specified",
+  "المناطق:": "Areas:",
+  "اعتماد الملف": "Approve profile",
+  "سبب التعديل (اختياري)": "Change reason (optional)",
+  "طلب تعديل": "Request changes",
+  "إعدادات النظام": "System settings",
+  "الإشعارات، التصنيفات، مناطق الخدمة، وإعدادات الدفع.": "Notifications, categories, service areas, and payment settings.",
+  "الانضمام إلى وحدة": "Join a unit",
+  "أدخل رمز البناية ورمز وحدتك.": "Enter the building and unit codes.",
+  "الخطوة 1": "Step 1",
+  "إرسال طلب الانضمام": "Submit membership request",
+  "بانتظار الموافقة": "Awaiting approval",
+  "طلب صيانة": "Maintenance request",
+  "صف المشكلة ليتم التعامل معها.": "Describe the problem so it can be handled.",
+  "الخطوة 2": "Step 2",
+  "عنوان المشكلة": "Problem title",
+  "الوصف": "Description",
+  "عادية": "Normal",
+  "عاجلة": "Urgent",
+  "منخفضة": "Low",
+  "إرسال الطلب": "Submit request",
+  "بعد موافقة المالك على طلب الانضمام، سيظهر هنا نموذج إرسال طلب الصيانة.": "The maintenance request form appears after the owner approves your membership.",
+  "لا يوجد": "None",
+  "بانتظار مراجعة الإدارة": "Pending administrator review",
+  "معتمد ويمكنك استقبال الدعوات": "Approved and eligible for invitations",
+  "مطلوب تعديل الملف ثم إعادة الإرسال": "Changes requested; update and resubmit",
+  "مرفوض": "Rejected",
+  "مسودة": "Draft",
+  "متوسط التقييم": "Average rating",
+  "التقييمات": "Ratings",
+  "تم استلام طلبك. سيظهر الآن في لوحة الإدارة لحين اعتماده.": "Your profile was received and is awaiting administrator approval.",
+  "نبذة عن خبرتك": "About your experience",
+  "سنوات الخبرة": "Years of experience",
+  "التخصصات": "Categories",
+  "مناطق الخدمة": "Service areas",
+  "إرسال للمراجعة": "Submit for review",
+  "لا توجد دعوات مفتوحة حاليًا.": "No open invitations.",
+  "تم إرسال عرضك - يمكنك تحديث الحقول التي تريد تغييرها فقط": "Offer submitted; update only the fields you want to change.",
+  "قيمة العرض (شيكل)": "Offer amount (ILS)",
+  "نطاق العمل": "Scope of work",
+  "اكتب بالتفصيل ما الذي سيتضمنه العرض، وما سيتم إصلاحه أو تركيبه.": "Describe what the offer includes and what will be repaired or installed.",
+  "ملاحظات أو افتراضات": "Notes or assumptions",
+  "المدة المتوقعة": "Expected duration",
+  "التاريخ المقترح": "Proposed date",
+  "التاريخ المقترح للعمل": "Proposed work date",
+  "صالح حتى": "Valid until",
+  "إرسال العرض": "Submit offer",
+  "تحديث العرض": "Update offer",
+  "رفض الدعوة": "Decline invitation",
+  "التفاوض والاستفسارات": "Negotiation and questions",
+  "اكتب ردًا أو استفسارًا...": "Write a reply or question...",
+  "إرسال": "Send",
+  "تقييم": "Rating",
+  "أعمال مكتملة": "completed jobs",
+  "اختيار طريقة الحصول على الفني": "Choose how to find a worker",
+  "دعوة فنيين محددين": "Invite selected workers",
+  "استقبال عروض من الفنيين المعتمدين": "Receive offers from approved workers",
+  "لا يوجد فني معتمد لهذا التخصص للدعوات المحددة. يمكنك اختيار استقبال عروض عامة.": "No approved worker matches this category; you can receive public offers.",
+  "الموعد النهائي": "Deadline",
+  "إنشاء وإرسال المناقصة": "Create and send tender",
+  "الفني: ": "Worker: ",
+  "بانتظار عروض الفنيين.": "Awaiting worker offers.",
+  "محدّث": "Updated",
+  "لم يحدد": "Not specified",
+  "ترسية وإنشاء أمر عمل": "Award and create work order",
+  "إنهاء العمل وإرساله للتأكيد": "Finish work and send for confirmation",
+  "إلغاء الطلب": "Cancel request",
+  "قيّم الخدمة": "Rate the service",
+  "5 - ممتاز": "5 - Excellent",
+  "4 - جيد جدًا": "4 - Very good",
+  "3 - جيد": "3 - Good",
+  "2 - مقبول": "2 - Fair",
+  "1 - ضعيف": "1 - Poor",
+  "ملاحظات اختيارية": "Optional comments",
+  "إرسال التقييم": "Submit rating",
+  "قيّم الفني": "Rate the worker",
+  "إرسال تقييم المالك": "Submit owner rating",
+  "أضف تعليقًا...": "Add a comment...",
+  "تعليق": "Comment",
+  "تم إنشاء طلب صيانة جديد": "New maintenance request created",
+  "طلب مستأجر جديد": "New tenant request",
+  "تم تحديث طلب المستأجر": "Tenant request updated",
+  "طلب ملكية وحدة جديد": "New unit ownership request",
+  "تم البت في طلب ملكية الوحدة": "Unit ownership request decided",
+  "تمت دعوتك إلى مناقصة": "You were invited to a tender",
+  "تم إرسال عرض جديد": "New offer submitted",
+  "تمت ترسية العرض": "Offer awarded",
+  "تم استلام تقييم جديد": "New rating received",
+  "تم استلام تقييم جديد من المالك": "New owner rating received",
+  "العمل جاهز لتأكيد المستأجر": "Work ready for tenant confirmation",
+  "رسالة جديدة حول العرض": "New offer message",
+  "تمت الموافقة": "Approved",
+  "أُرسل في:": "Submitted:",
+  "الحالة:": "Status:",
+  "العروض الواردة": "Incoming offers",
+  "تقييم المالك:": "Owner rating:",
+  "تقييم المستأجر:": "Tenant rating:",
+  "تم الرفض": "Rejected",
+  "تحديد كمقروء": "Mark as read",
+  "تحديث الحالة": "Update status",
+  "رمز انضمام البناية:": "Building join code:",
+  "إدارة طلبات الوحدات:": "Unit request management:",
+  "رمز الوحدة:": "Unit code:",
+  "شيكل": "ILS",
+  "السعر": "Price",
+  "الملاحظات والافتراضات": "Notes and assumptions",
+  "SUBMITTED": "Submitted",
+  "OPEN": "Open",
+  "AWARDED": "Awarded",
+  "DECLINED": "Declined",
+  "REJECTED": "Rejected",
+
+};
+
+function tx(locale: string | undefined, arabic: string): string {
+  return locale === "en" ? englishDashboardText[arabic] ?? "Dashboard" : arabic;
+}
+function localizedCategory(category: { nameAr: string; nameEn?: string }, locale: string): string {
+  return locale === "en" ? category.nameEn || "Service category" : category.nameAr;
+}
+
+
+function getActionMessage(message: string, locale: string): string {
+  if (locale === "en") {
+    if (message.startsWith("error-")) return "Unable to complete this action. Please check the details and try again.";
+    if (message.includes("requested")) return "Request submitted successfully.";
+    if (message.includes("exists") || message.includes("already")) return "A request or membership already exists.";
+    return "Operation completed successfully.";
+  }
+  return actionMessages[message] ??
+    (message === "membership-requested" ? "تم إرسال طلب الانضمام، وسيظهر الآن لدى مالك الوحدة للموافقة." :
+      message === "membership-building-not-found" || message === "ownership-building-not-found" ? "رمز البناية غير صحيح أو البناية غير موجودة." :
+        message === "membership-unit-not-found" || message === "ownership-unit-not-found" ? "رقم الوحدة غير موجود داخل هذه البناية." :
+          message === "membership-exists" ? "لديك طلب قائم أو عضوية موجودة لهذه الوحدة." :
+            message === "ownership-requested" ? "تم إرسال طلب ملكية الوحدة إلى مالك البناية للموافقة." :
+              message === "ownership-request-exists" ? "لديك طلب ملكية قيد المراجعة لهذه الوحدة." :
+                message === "ownership-already-owned" ? "أنت مالك هذه الوحدة بالفعل." : "تم حفظ العملية بنجاح.");
+}
+
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <section className={`rounded-3xl border border-[#e0e9e4] bg-white p-6 shadow-sm ${className}`}>{children}</section>;
 }
@@ -185,39 +432,40 @@ export default async function DashboardPage({
 
   const title = isEnglish
     ? role === Role.OWNER ? "Owner dashboard" : role === Role.TENANT ? "Tenant dashboard" : role === Role.WORKER ? "Worker dashboard" : role === Role.SUPER_ADMIN ? "Admin dashboard" : "Your dashboard"
-    : role === Role.OWNER ? "لوحة المالك" : role === Role.TENANT ? "لوحة المستأجر" : role === Role.WORKER ? "لوحة الفني" : role === Role.SUPER_ADMIN ? "لوحة الإدارة" : "لوحتك";
+    : role === Role.OWNER ? tx(locale, "لوحة المالك" ) : role === Role.TENANT ? tx(locale, "لوحة المستأجر" ) : role === Role.WORKER ? tx(locale, "لوحة الفني" ) : role === Role.SUPER_ADMIN ? tx(locale, "لوحة الإدارة" ) : tx(locale, "لوحتك" );
+  const actionMessage = message ? getActionMessage(message, locale) : "";
   return (
     <main className="min-h-screen bg-[#f6f8f7] px-5 py-8 text-[#17221d]" dir={isEnglish ? "ltr" : "rtl"}>
       <div className="mx-auto max-w-6xl">
         <header className="flex flex-wrap items-center justify-between gap-4">
-          <div><p className="text-sm font-semibold text-[#176b4d]">صيانة</p><h1 className="mt-2 text-3xl font-bold">{title}</h1><p className="mt-1 text-[#52635b]">مرحبًا، {session.user.name}</p></div>
-          <LogoutButton locale={locale} />
+          <div><p className="text-sm font-semibold text-[#176b4d]">{tx(locale, "صيانة" )}</p><h1 className="mt-2 text-3xl font-bold">{title}</h1><p className="mt-1 text-[#52635b]">{tx(locale, "مرحبًا")}, {session.user.name}</p></div>
+          <div className="flex items-center gap-3"><a href={`/${locale === "en" ? "ar" : "en"}/dashboard`} className="rounded-full border border-[#c8d7d0] bg-white px-4 py-2 text-sm font-semibold">{locale === "en" ? "العربية" : "English"}</a><LogoutButton locale={locale} /></div>
         </header>
-        {message && <p className={`mt-6 rounded-xl px-4 py-3 text-sm font-semibold ${message.startsWith("error-") || message.includes("not-found") || message.includes("exists") || message.includes("already") ? "bg-[#fff1f0] text-[#a33a32]" : "bg-[#e3f3e9] text-[#176b4d]"}`}>{actionMessages[message] ?? (message === "membership-requested" ? "تم إرسال طلب الانضمام، وسيظهر الآن لدى مالك الوحدة للموافقة." : message === "membership-building-not-found" || message === "ownership-building-not-found" ? "رمز البناية غير صحيح أو البناية غير موجودة." : message === "membership-unit-not-found" || message === "ownership-unit-not-found" ? "رقم الوحدة غير موجود داخل هذه البناية." : message === "membership-exists" ? "لديك طلب قائم أو عضوية موجودة لهذه الوحدة." : message === "ownership-requested" ? "تم إرسال طلب ملكية الوحدة إلى مالك البناية للموافقة." : message === "ownership-request-exists" ? "لديك طلب ملكية قيد المراجعة لهذه الوحدة." : message === "ownership-already-owned" ? "أنت مالك هذه الوحدة بالفعل." : "تم حفظ العملية بنجاح.")}</p>}
+        {actionMessage && <p className="mt-6 rounded-xl bg-[#e3f3e9] px-4 py-3 text-sm font-semibold text-[#176b4d]">{actionMessage}</p>}
         <div className="mt-8">
-          {!role && <Card><h2 className="text-xl font-bold">اختر دورًا من إعدادات الحساب</h2><p className="mt-2 text-[#52635b]">حسابك يحتاج إلى دور قبل البدء في المنصة.</p></Card>}
+          {!role && <Card><h2 className="text-xl font-bold">{tx(locale, "اختر دورًا من إعدادات الحساب" )}</h2><p className="mt-2 text-[#52635b]">{tx(locale, "حسابك يحتاج إلى دور قبل البدء في المنصة." )}</p></Card>}
         </div>
         {role === Role.OWNER && <DashboardTabs tabs={[
-          { id: "overview", label: isEnglish ? "Overview" : "نظرة عامة", content: <div><RoleWorkflowPanel role={role} locale={locale} hasBuildings={buildings.length > 0} hasOwnedUnits={ownedUnits.length > 0} /><OwnerOverviewPanel buildings={buildings} ownedUnits={ownedUnits} requests={requests} ownershipRequests={ownershipRequests} /></div> },
-          { id: "memberships", label: `${isEnglish ? "Tenant requests" : "طلبات المستأجرين"} (${ownerMemberships.length})`, content: <OwnerMembershipPanel memberships={ownerMemberships} locale={locale} /> },
-          { id: "ownership", label: `${isEnglish ? "Unit ownership requests" : "طلبات ملكية الوحدات"} (${ownershipRequests.length})`, content: <OwnerOwnershipPanel requests={ownershipRequests} locale={locale} /> },
-          { id: "buildings", label: `${isEnglish ? "My buildings" : "مبانيك"} (${buildings.length})`, content: <OwnerBuildingsPanel buildings={buildings} locale={locale} /> },
-          { id: "units", label: `${isEnglish ? "My units" : "وحداتي"} (${ownedUnits.length})`, content: <OwnedUnitsPanel units={ownedUnits} locale={locale} /> },
-          { id: "workers", label: isEnglish ? "Approved workers" : "الفنيون المعتمدون", content: <WorkerDirectoryPanel workers={ownerWorkers} /> },
-          { id: "requests", label: `${isEnglish ? "Maintenance requests" : "طلبات الصيانة"} (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={ownerWorkers} /> },
-          { id: "notifications", label: `${isEnglish ? "Notifications" : "الإشعارات"} (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text={isEnglish ? "No notifications yet." : "لا توجد إشعارات حاليًا."} /> },
+          { id: "overview", label: isEnglish ? "Overview" : tx(locale, "نظرة عامة" ), content: <div><RoleWorkflowPanel role={role} locale={locale} hasBuildings={buildings.length > 0} hasOwnedUnits={ownedUnits.length > 0} /><OwnerOverviewPanel buildings={buildings} ownedUnits={ownedUnits} requests={requests} ownershipRequests={ownershipRequests} locale={locale} /></div> },
+          { id: "memberships", label: `${isEnglish ? "Tenant requests" : tx(locale, "طلبات المستأجرين" )} (${ownerMemberships.length})`, content: <OwnerMembershipPanel memberships={ownerMemberships} locale={locale} /> },
+          { id: "ownership", label: `${isEnglish ? "Unit ownership requests" : tx(locale, "طلبات ملكية الوحدات" )} (${ownershipRequests.length})`, content: <OwnerOwnershipPanel requests={ownershipRequests} locale={locale} /> },
+          { id: "buildings", label: `${isEnglish ? "My buildings" : tx(locale, "مبانيك" )} (${buildings.length})`, content: <OwnerBuildingsPanel buildings={buildings} locale={locale} /> },
+          { id: "units", label: `${isEnglish ? "My units" : tx(locale, "وحداتي" )} (${ownedUnits.length})`, content: <OwnedUnitsPanel units={ownedUnits} locale={locale} /> },
+          { id: "workers", label: isEnglish ? "Approved workers" : tx(locale, "الفنيون المعتمدون" ), content: <WorkerDirectoryPanel workers={ownerWorkers} locale={locale} /> },
+          { id: "requests", label: `${isEnglish ? "Maintenance requests" : tx(locale, "طلبات الصيانة" )} (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={ownerWorkers} /> },
+          { id: "notifications", label: `${isEnglish ? "Notifications" : tx(locale, "الإشعارات" )} (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text={isEnglish ? "No notifications yet." : tx(locale, "لا توجد إشعارات حاليًا." )} /> },
         ]} />}
         {role === Role.TENANT && <DashboardTabs tabs={[
-          { id: "overview", label: isEnglish ? "Overview" : "نظرة عامة", content: <div><RoleWorkflowPanel role={role} locale={locale} /><TenantPanel tenancies={tenancies} memberships={memberships} categories={categories} locale={locale} /></div> },
-          { id: "workers", label: isEnglish ? "Approved workers" : "الفنيون المعتمدون", content: <WorkerDirectoryPanel workers={availableWorkers} /> },
-          { id: "requests", label: `${isEnglish ? "My requests" : "طلباتي"} (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={availableWorkers} /> },
-          { id: "notifications", label: `${isEnglish ? "Notifications" : "الإشعارات"} (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text={isEnglish ? "No notifications yet." : "لا توجد إشعارات حاليًا."} /> },
+          { id: "overview", label: isEnglish ? "Overview" : tx(locale, "نظرة عامة" ), content: <div><RoleWorkflowPanel role={role} locale={locale} /><TenantPanel tenancies={tenancies} memberships={memberships} categories={categories} locale={locale} /></div> },
+          { id: "workers", label: isEnglish ? "Approved workers" : tx(locale, "الفنيون المعتمدون" ), content: <WorkerDirectoryPanel workers={availableWorkers} locale={locale} /> },
+          { id: "requests", label: `${isEnglish ? "My requests" : tx(locale, "طلباتي" )} (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={availableWorkers} /> },
+          { id: "notifications", label: `${isEnglish ? "Notifications" : tx(locale, "الإشعارات" )} (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text={isEnglish ? "No notifications yet." : tx(locale, "لا توجد إشعارات حاليًا." )} /> },
         ]} />}
         {role === Role.WORKER && <DashboardTabs tabs={[
-          { id: "overview", label: isEnglish ? "Professional profile" : "الملف المهني", content: <div><RoleWorkflowPanel role={role} locale={locale} /><WorkerPanel profile={profile} categories={categories} areas={areas} locale={locale} /></div> },
-          { id: "tenders", label: `${isEnglish ? "Tender invitations" : "دعوات المناقصات"} (${workerProcurements.length})`, content: <WorkerTenderPanel procurements={workerProcurements} locale={locale} /> },
-          { id: "requests", label: `${isEnglish ? "Assigned work" : "الأعمال المرتبطة"} (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={[]} /> },
-          { id: "notifications", label: `${isEnglish ? "Notifications" : "الإشعارات"} (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text={isEnglish ? "No notifications yet." : "لا توجد إشعارات حاليًا."} /> },
+          { id: "overview", label: isEnglish ? "Professional profile" : tx(locale, "الملف المهني" ), content: <div><RoleWorkflowPanel role={role} locale={locale} /><WorkerPanel profile={profile} categories={categories} areas={areas} locale={locale} /></div> },
+          { id: "tenders", label: `${isEnglish ? "Tender invitations" : tx(locale, "دعوات المناقصات" )} (${workerProcurements.length})`, content: <WorkerTenderPanel procurements={workerProcurements} locale={locale} /> },
+          { id: "requests", label: `${isEnglish ? "Assigned work" : tx(locale, "الأعمال المرتبطة" )} (${requests.length})`, content: <RequestStatusTabs requests={requests} locale={locale} role={role} workers={[]} /> },
+          { id: "notifications", label: `${isEnglish ? "Notifications" : tx(locale, "الإشعارات" )} (${unreadNotifications})`, content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <EmptyState text={isEnglish ? "No notifications yet." : tx(locale, "لا توجد إشعارات حاليًا." )} /> },
         ]} />}
         {role === Role.SUPER_ADMIN && <AdminPanel workers={pendingWorkers} locale={locale} requests={requests} notifications={notifications} unreadNotifications={unreadNotifications} />}
       </div>
@@ -234,24 +482,24 @@ function RoleWorkflowPanel({ role, locale, hasBuildings = false, hasOwnedUnits =
   const ownerSteps = hasBuildings
     ? english
       ? ["Manage buildings and unit codes.", "Review unit ownership requests.", "Review tenant requests for your owned units.", "Create maintenance tenders, compare offers, negotiate, and award work.", "Close completed work and rate workers."]
-      : ["إدارة البنايات ورموز الوحدات.", "مراجعة طلبات ملكية الوحدات.", "مراجعة طلبات المستأجرين لوحداتك.", "إنشاء المناقصات ومقارنة العروض والتفاوض وترسية العمل.", "إغلاق الأعمال المكتملة وتقييم الفنيين."]
+      : [tx(locale, "إدارة البنايات ورموز الوحدات." ), tx(locale, "مراجعة طلبات ملكية الوحدات." ), tx(locale, "مراجعة طلبات المستأجرين لوحداتك." ), tx(locale, "إنشاء المناقصات ومقارنة العروض والتفاوض وترسية العمل." ), tx(locale, "إغلاق الأعمال المكتملة وتقييم الفنيين." )]
     : hasOwnedUnits
       ? english
         ? ["Your unit ownership has been approved.", "Review tenant requests for your unit.", "Manage maintenance requests and tender offers for your unit.", "Close completed work and rate workers."]
-        : ["تمت الموافقة على ملكية وحدتك.", "مراجعة طلبات المستأجرين لوحدتك.", "إدارة طلبات الصيانة والعروض لوحدتك.", "إغلاق الأعمال المكتملة وتقييم الفنيين."]
+        : [tx(locale, "تمت الموافقة على ملكية وحدتك." ), tx(locale, "مراجعة طلبات المستأجرين لوحدتك." ), tx(locale, "إدارة طلبات الصيانة والعروض لوحدتك." ), tx(locale, "إغلاق الأعمال المكتملة وتقييم الفنيين." )]
       : english
         ? ["Request ownership using the building code and unit code.", "Wait for the building owner to approve your request.", "After approval, manage your unit and tenant requests."]
-        : ["أرسل طلب ملكية باستخدام رمز البناية ورمز الوحدة.", "انتظر موافقة مالك البناية على الطلب.", "بعد الموافقة، أدر وحدتك وطلبات المستأجرين."]
+        : [tx(locale, "أرسل طلب ملكية باستخدام رمز البناية ورمز الوحدة." ), tx(locale, "انتظر موافقة مالك البناية على الطلب." ), tx(locale, "بعد الموافقة، أدر وحدتك وطلبات المستأجرين." )]
   const steps = role === Role.OWNER ? ownerSteps : role === Role.TENANT
-    ? english ? ["Join a unit using its building and unit codes.", "Wait for the unit owner to approve your membership.", "Submit and follow maintenance requests.", "Confirm completed work and rate the worker."] : ["الانضمام إلى وحدة باستخدام رمزي البناية والوحدة.", "انتظار موافقة مالك الوحدة على طلبك.", "إرسال ومتابعة طلبات الصيانة.", "تأكيد انتهاء العمل وتقييم الفني."]
+    ? english ? ["Join a unit using its building and unit codes.", "Wait for the unit owner to approve your membership.", "Submit and follow maintenance requests.", "Confirm completed work and rate the worker."] : [tx(locale, "الانضمام إلى وحدة باستخدام رمزي البناية والوحدة." ), tx(locale, "انتظار موافقة مالك الوحدة على طلبك." ), tx(locale, "إرسال ومتابعة طلبات الصيانة." ), tx(locale, "تأكيد انتهاء العمل وتقييم الفني." )]
     : role === Role.WORKER
-      ? english ? ["Complete your profile and select categories and service areas.", "Wait for admin approval.", "Review tender invitations and submit or update offers.", "Negotiate with the owner and execute awarded work.", "Move work through progress and tenant confirmation."] : ["إكمال الملف المهني واختيار التخصصات والمناطق.", "انتظار اعتماد الإدارة.", "مراجعة دعوات المناقصات وإرسال أو تحديث العروض.", "التفاوض مع المالك وتنفيذ الأعمال التي تمت ترسيتها.", "تحديث حالة العمل حتى تأكيد المستأجر."]
-      : english ? ["Review pending worker profiles.", "Monitor maintenance requests and platform activity.", "Manage the platform configuration and notifications."] : ["مراجعة ملفات الفنيين المعلقة.", "متابعة طلبات الصيانة ونشاط المنصة.", "إدارة إعدادات المنصة والإشعارات."]
-  return <Card className="mb-6 border-[#b9dcca] bg-[#f1faf4]"><h2 className="text-xl font-bold">{english ? "How your workflow works" : "كيف تعمل المنصة معك"}</h2><p className="mt-2 text-sm text-[#52635b]">{english ? "Follow these steps for the role associated with your account." : "اتبع هذه الخطوات حسب الدور المرتبط بحسابك."}</p><ol className="mt-4 grid gap-3 md:grid-cols-2">{steps.map((step, index) => <li key={step} className="flex gap-3 rounded-xl bg-white p-3 text-sm"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#176b4d] font-bold text-white">{index + 1}</span><span>{step}</span></li>)}</ol></Card>;
+      ? english ? ["Complete your profile and select categories and service areas.", "Wait for admin approval.", "Review tender invitations and submit or update offers.", "Negotiate with the owner and execute awarded work.", "Move work through progress and tenant confirmation."] : [tx(locale, "إكمال الملف المهني واختيار التخصصات والمناطق." ), tx(locale, "انتظار اعتماد الإدارة." ), tx(locale, "مراجعة دعوات المناقصات وإرسال أو تحديث العروض." ), tx(locale, "التفاوض مع المالك وتنفيذ الأعمال التي تمت ترسيتها." ), tx(locale, "تحديث حالة العمل حتى تأكيد المستأجر." )]
+      : english ? ["Review pending worker profiles.", "Monitor maintenance requests and platform activity.", "Manage the platform configuration and notifications."] : [tx(locale, "مراجعة ملفات الفنيين المعلقة." ), tx(locale, "متابعة طلبات الصيانة ونشاط المنصة." ), tx(locale, "إدارة إعدادات المنصة والإشعارات." )]
+  return <Card className="mb-6 border-[#b9dcca] bg-[#f1faf4]"><h2 className="text-xl font-bold">{english ? "How your workflow works" : tx(locale, "كيف تعمل المنصة معك" )}</h2><p className="mt-2 text-sm text-[#52635b]">{english ? "Follow these steps for the role associated with your account." : tx(locale, "اتبع هذه الخطوات حسب الدور المرتبط بحسابك." )}</p><ol className="mt-4 grid gap-3 md:grid-cols-2">{steps.map((step, index) => <li key={step} className="flex gap-3 rounded-xl bg-white p-3 text-sm"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#176b4d] font-bold text-white">{index + 1}</span><span>{step}</span></li>)}</ol></Card>;
 }
 
-function WorkerDirectoryPanel({ workers }: { workers: DirectoryWorker[] }) {
-  return <Card><h2 className="text-xl font-bold">الفنيون المعتمدون</h2><p className="mt-1 text-sm text-[#52635b]">يمكنك مقارنة الخبرة العملية والتقييمات وآراء العملاء قبل اختيار الفني.</p>{workers.length === 0 ? <p className="mt-4 text-sm text-[#52635b]">لا يوجد فنيون معتمدون حاليًا.</p> : <div className="mt-4 grid gap-3 md:grid-cols-2">{workers.map((worker) => <div key={worker.id} className="rounded-2xl border border-[#e0e9e4] p-4"><p className="font-bold">{worker.user.name}</p><p className="mt-1 text-sm text-[#52635b]">{worker.user.email}</p><div className="mt-3"><WorkerSummary worker={worker} showComments /></div></div>)}</div>}</Card>;
+function WorkerDirectoryPanel({ workers, locale }: { workers: DirectoryWorker[]; locale: string }) {
+  return <Card><h2 className="text-xl font-bold">{tx(locale, "الفنيون المعتمدون" )}</h2><p className="mt-1 text-sm text-[#52635b]">{tx(locale, "يمكنك مقارنة الخبرة العملية والتقييمات وآراء العملاء قبل اختيار الفني." )}</p>{workers.length === 0 ? <p className="mt-4 text-sm text-[#52635b]">{tx(locale, "لا يوجد فنيون معتمدون حاليًا." )}</p> : <div className="mt-4 grid gap-3 md:grid-cols-2">{workers.map((worker) => <div key={worker.id} className="rounded-2xl border border-[#e0e9e4] p-4"><p className="font-bold">{worker.user.name}</p><p className="mt-1 text-sm text-[#52635b]">{worker.user.email}</p><div className="mt-3"><WorkerSummary worker={worker} showComments locale={locale} /></div></div>)}</div>}</Card>;
 }
 
 const requestFilterTabs: Array<{ id: string; label: string; statuses?: RequestStatus[] }> = [
@@ -269,38 +517,38 @@ const requestFilterTabs: Array<{ id: string; label: string; statuses?: RequestSt
 function RequestStatusTabs({ requests, locale, role, workers }: { requests: DashboardRequest[]; locale: string; role: Role | null; workers: DirectoryWorker[] }) {
   return <DashboardTabs tabs={requestFilterTabs.map((tab) => {
     const filtered = tab.statuses ? requests.filter((request) => tab.statuses?.includes(request.status)) : requests;
-    return { id: tab.id, label: `${tab.label} (${filtered.length})`, content: filtered.length ? <RequestList requests={filtered} locale={locale} role={role} workers={workers} /> : <EmptyState text="لا توجد طلبات بهذه الحالة." /> };
+    return { id: tab.id, label: `${tx(locale, tab.label)} (${filtered.length})`, content: filtered.length ? <RequestList requests={filtered} locale={locale} role={role} workers={workers} /> : <EmptyState text={tx(locale, "لا توجد طلبات بهذه الحالة.")} /> };
   })} />;
 }
 
-function OwnerOverviewPanel({ buildings, ownedUnits, requests, ownershipRequests }: { buildings: Array<{ id: string }>; ownedUnits: Array<{ id: string }>; requests: DashboardRequest[]; ownershipRequests: Array<{ id: string }> }) {
+function OwnerOverviewPanel({ buildings, ownedUnits, requests, ownershipRequests, locale }: { buildings: Array<{ id: string }>; ownedUnits: Array<{ id: string }>; requests: DashboardRequest[]; ownershipRequests: Array<{ id: string }>; locale: string }) {
   return <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-    {[["البنايات", buildings.length], ["وحداتي", ownedUnits.length], ["طلبات الصيانة", requests.length], ["طلبات الملكية المعلقة", ownershipRequests.length]].map(([label, count]) => <Card key={String(label)}><p className="text-sm text-[#52635b]">{label}</p><p className="mt-2 text-3xl font-bold text-[#176b4d]">{count}</p></Card>)}
-    <Card className="sm:col-span-2 lg:col-span-4"><h2 className="text-xl font-bold">لوحة المالك</h2><p className="mt-2 leading-7 text-[#52635b]">من تبويب <strong>مبانيك</strong> أنشئ البنايات والوحدات، ومن تبويب <strong>وحداتي</strong> اربط الوحدات التي تملكها في بنايات أخرى. ستجد طلبات المستأجرين وطلبات الملكية في تبويبات مستقلة.</p></Card>
+    {[[tx(locale, "البنايات" ), buildings.length], [tx(locale, "وحداتي" ), ownedUnits.length], [tx(locale, "طلبات الصيانة" ), requests.length], [tx(locale, "طلبات الملكية المعلقة" ), ownershipRequests.length]].map(([label, count]) => <Card key={String(label)}><p className="text-sm text-[#52635b]">{label}</p><p className="mt-2 text-3xl font-bold text-[#176b4d]">{count}</p></Card>)}
+    <Card className="sm:col-span-2 lg:col-span-4"><h2 className="text-xl font-bold">{tx(locale, "لوحة المالك" )}</h2><p className="mt-2 leading-7 text-[#52635b]">{tx(locale, "من تبويب " )}<strong>{tx(locale, "مبانيك" )}</strong>{tx(locale, " أنشئ البنايات والوحدات، ومن تبويب " )}<strong>{tx(locale, "وحداتي" )}</strong>{tx(locale, " اربط الوحدات التي تملكها في بنايات أخرى. ستجد طلبات المستأجرين وطلبات الملكية في تبويبات مستقلة." )}</p></Card>
   </div>;
 }
 
 function OwnerBuildingsPanel({ buildings, locale }: { buildings: Array<{ id: string; name: string; address: string; area: string; joinCode: string; canManageUnitRequests: boolean; units: Array<{ id: string; label: string; joinCode: string; type: string }> }>; locale: string }) {
   return <div><div className="grid items-stretch gap-6 lg:grid-cols-2">
-    <Card className="h-full"><h2 className="text-xl font-bold">إضافة مبنى ووحدة</h2><form action={createBuilding} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><Input name="name" label="اسم المبنى" /><Input name="address" label="العنوان" /><Input name="area" label="المنطقة" /><Input name="unitLabel" label="رقم الوحدة الأولى" required={false} /><select name="unitType" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="APARTMENT">شقة</option><option value="SHOP">محل</option></select><label className="flex items-start gap-2 text-sm"><input type="checkbox" name="canManageUnitRequests" className="mt-1" /><span><strong>السماح بإدارة طلبات الوحدات</strong><span className="block font-normal text-[#52635b]">اختياري للبنايات التي يدير مالكها الصيانة العامة.</span></span></label><Button>حفظ المبنى</Button></form></Card>
-    {buildings.length > 0 && <Card className="h-full"><h2 className="text-xl font-bold">إضافة وحدة إلى مبنى</h2><form action={createUnit} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><select name="buildingId" required className="rounded-xl border border-[#c8d7d0] px-3 py-2.5">{buildings.map((building) => <option key={building.id} value={building.id}>{building.name}</option>)}</select><Input name="label" label="رقم الوحدة" /><Input name="floor" label="الطابق" required={false} /><select name="type" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="APARTMENT">شقة</option><option value="SHOP">محل</option></select><p className="text-xs text-[#52635b]">بعد إضافتها، أرسل رمز البناية ورقم الوحدة لمالك الشقة ليطلب ربطها بحسابه.</p><Button>إضافة الوحدة</Button></form></Card>}
-  </div><div className="mt-6"><OwnerBuildingsList buildings={buildings} /></div></div>;
+    <Card className="h-full"><h2 className="text-xl font-bold">{tx(locale, "إضافة مبنى ووحدة" )}</h2><form action={createBuilding} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><Input name="name" label={tx(locale, "اسم المبنى")} /><Input name="address" label={tx(locale, "العنوان")} /><Input name="area" label={tx(locale, "المنطقة")} /><Input name="unitLabel" label={tx(locale, "رقم الوحدة الأولى")} required={false} /><select name="unitType" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="APARTMENT">{tx(locale, "شقة" )}</option><option value="SHOP">{tx(locale, "محل" )}</option></select><label className="flex items-start gap-2 text-sm"><input type="checkbox" name="canManageUnitRequests" className="mt-1" /><span><strong>{tx(locale, "السماح بإدارة طلبات الوحدات" )}</strong><span className="block font-normal text-[#52635b]">{tx(locale, "اختياري للبنايات التي يدير مالكها الصيانة العامة." )}</span></span></label><Button>{tx(locale, "حفظ المبنى" )}</Button></form></Card>
+    {buildings.length > 0 && <Card className="h-full"><h2 className="text-xl font-bold">{tx(locale, "إضافة وحدة إلى مبنى" )}</h2><form action={createUnit} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><select name="buildingId" required className="rounded-xl border border-[#c8d7d0] px-3 py-2.5">{buildings.map((building) => <option key={building.id} value={building.id}>{building.name}</option>)}</select><Input name="label" label={tx(locale, "رقم الوحدة")} /><Input name="floor" label={tx(locale, "الطابق")} required={false} /><select name="type" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="APARTMENT">{tx(locale, "شقة" )}</option><option value="SHOP">{tx(locale, "محل" )}</option></select><p className="text-xs text-[#52635b]">{tx(locale, "بعد إضافتها، أرسل رمز البناية ورقم الوحدة لمالك الشقة ليطلب ربطها بحسابه." )}</p><Button>{tx(locale, "إضافة الوحدة" )}</Button></form></Card>}
+  </div><div className="mt-6"><OwnerBuildingsList buildings={buildings} locale={locale} /></div></div>;
 }
 
-function OwnerBuildingsList({ buildings }: { buildings: Array<{ id: string; name: string; address: string; area: string; joinCode: string; canManageUnitRequests: boolean; units: Array<{ id: string; label: string; joinCode: string; type: string }> }> }) {
-  return <Card><h2 className="text-xl font-bold">مبانيك</h2>{buildings.length === 0 ? <p className="mt-3 text-[#52635b]">لم تضف مباني بعد.</p> : <ul className="mt-4 grid gap-4 md:grid-cols-2">{buildings.map((building) => <li key={building.id} className="rounded-2xl bg-[#f6f8f7] p-5"><strong>{building.name}</strong><p className="mt-1 text-sm text-[#52635b]">{building.address} · رمز انضمام البناية: <code>{building.joinCode}</code></p><p className="mt-2 text-sm">إدارة طلبات الوحدات: {building.canManageUnitRequests ? "مفعلة" : "غير مفعلة"}</p><div className="mt-3 space-y-2 text-sm"><strong>الوحدات ورموز انضمامها</strong>{building.units.length ? building.units.map((unit) => <p key={unit.id} className="rounded-xl bg-white px-3 py-2">{unit.label} · رمز الوحدة: <code>{unit.joinCode}</code></p>) : <p>لا توجد وحدات</p>}</div></li>)}</ul>}</Card>;
+function OwnerBuildingsList({ buildings, locale }: { buildings: Array<{ id: string; name: string; address: string; area: string; joinCode: string; canManageUnitRequests: boolean; units: Array<{ id: string; label: string; joinCode: string; type: string }> }>; locale: string }) {
+  return <Card><h2 className="text-xl font-bold">{tx(locale, "مبانيك" )}</h2>{buildings.length === 0 ? <p className="mt-3 text-[#52635b]">{tx(locale, "لم تضف مباني بعد." )}</p> : <ul className="mt-4 grid gap-4 md:grid-cols-2">{buildings.map((building) => <li key={building.id} className="rounded-2xl bg-[#f6f8f7] p-5"><strong>{building.name}</strong><p className="mt-1 text-sm text-[#52635b]">{building.address} · {tx(locale, "رمز انضمام البناية:")} <code>{building.joinCode}</code></p><p className="mt-2 text-sm">{tx(locale, "إدارة طلبات الوحدات:")} {building.canManageUnitRequests ? tx(locale, "مفعلة" ) : tx(locale, "غير مفعلة" )}</p><div className="mt-3 space-y-2 text-sm"><strong>{tx(locale, "الوحدات ورموز انضمامها" )}</strong>{building.units.length ? building.units.map((unit) => <p key={unit.id} className="rounded-xl bg-white px-3 py-2">{unit.label} · {tx(locale, "رمز الوحدة:")} <code>{unit.joinCode}</code></p>) : <p>{tx(locale, "لا توجد وحدات" )}</p>}</div></li>)}</ul>}</Card>;
 }
 
 function OwnedUnitsPanel({ units, locale }: { units: Array<{ id: string; label: string; type: string; building: { name: string; address: string } }>; locale: string }) {
-  return <div className="grid gap-6 lg:grid-cols-2"><Card><h2 className="text-xl font-bold">وحداتي</h2>{units.length === 0 ? <p className="mt-3 text-[#52635b]">لا توجد وحدات مرتبطة بحسابك من بنايات أخرى.</p> : <ul className="mt-4 grid gap-3">{units.map((unit) => <li key={unit.id} className="rounded-2xl bg-[#f6f8f7] p-4"><strong>{unit.building.name} · الوحدة {unit.label}</strong><p className="mt-1 text-sm text-[#52635b]">{unit.building.address} · {unit.type === "SHOP" ? "محل" : "شقة"}</p></li>)}</ul>}</Card><Card><h2 className="text-xl font-bold">طلب ملكية شقة أو محل</h2><p className="mt-2 text-sm leading-6 text-[#52635b]">أدخل رمز البناية ورمز الوحدة الذي أرسلهما لك صاحب البناية.</p><form action={requestUnitOwnership} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><Input name="joinCode" label="رمز البناية" /><Input name="unitCode" label="رمز الوحدة" /><Button>إرسال طلب ملكية</Button></form></Card></div>;
+  return <div className="grid gap-6 lg:grid-cols-2"><Card><h2 className="text-xl font-bold">{tx(locale, "وحداتي" )}</h2>{units.length === 0 ? <p className="mt-3 text-[#52635b]">{tx(locale, "لا توجد وحدات مرتبطة بحسابك من بنايات أخرى." )}</p> : <ul className="mt-4 grid gap-3">{units.map((unit) => <li key={unit.id} className="rounded-2xl bg-[#f6f8f7] p-4"><strong>{unit.building.name} · الوحدة {unit.label}</strong><p className="mt-1 text-sm text-[#52635b]">{unit.building.address} · {unit.type === "SHOP" ? tx(locale, "محل" ) : tx(locale, "شقة" )}</p></li>)}</ul>}</Card><Card><h2 className="text-xl font-bold">{tx(locale, "طلب ملكية شقة أو محل" )}</h2><p className="mt-2 text-sm leading-6 text-[#52635b]">{tx(locale, "أدخل رمز البناية ورمز الوحدة الذي أرسلهما لك صاحب البناية." )}</p><form action={requestUnitOwnership} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><Input name="joinCode" label={tx(locale, "رمز البناية")} /><Input name="unitCode" label={tx(locale, "رمز الوحدة")} /><Button>{tx(locale, "إرسال طلب ملكية" )}</Button></form></Card></div>;
 }
 
 function OwnerMembershipPanel({ memberships, locale }: { memberships: Array<{ id: string; tenant: { name: string; email: string }; unit: { label: string; building: { name: string } } }>; locale: string }) {
-  return <Card><h2 className="text-xl font-bold">طلبات الانضمام</h2>{memberships.length === 0 ? <p className="mt-3 text-[#52635b]">لا توجد طلبات انضمام معلقة.</p> : <ul className="mt-4 grid gap-3 md:grid-cols-2">{memberships.map((membership) => <li key={membership.id} className="rounded-2xl bg-[#f6f8f7] p-4"><p><strong>{membership.tenant.name}</strong> · {membership.tenant.email}</p><p className="mt-1 text-sm text-[#52635b]">{membership.unit.building.name} · {membership.unit.label}</p><div className="mt-3 flex gap-2"><form action={decideMembership}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="membershipId" value={membership.id} /><input type="hidden" name="decision" value="APPROVED" /><Button>موافقة</Button></form><form action={decideMembership}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="membershipId" value={membership.id} /><input type="hidden" name="decision" value="REJECTED" /><button className="rounded-xl border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-700">رفض</button></form></div></li>)}</ul>}</Card>;
+  return <Card><h2 className="text-xl font-bold">{tx(locale, "طلبات الانضمام" )}</h2>{memberships.length === 0 ? <p className="mt-3 text-[#52635b]">{tx(locale, "لا توجد طلبات انضمام معلقة." )}</p> : <ul className="mt-4 grid gap-3 md:grid-cols-2">{memberships.map((membership) => <li key={membership.id} className="rounded-2xl bg-[#f6f8f7] p-4"><p><strong>{membership.tenant.name}</strong> · {membership.tenant.email}</p><p className="mt-1 text-sm text-[#52635b]">{membership.unit.building.name} · {membership.unit.label}</p><div className="mt-3 flex gap-2"><form action={decideMembership}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="membershipId" value={membership.id} /><input type="hidden" name="decision" value="APPROVED" /><Button>{tx(locale, "موافقة" )}</Button></form><form action={decideMembership}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="membershipId" value={membership.id} /><input type="hidden" name="decision" value="REJECTED" /><button className="rounded-xl border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-700">{tx(locale, "رفض" )}</button></form></div></li>)}</ul>}</Card>;
 }
 
 function OwnerOwnershipPanel({ requests, locale }: { requests: Array<{ id: string; applicant: { name: string; email: string }; unit: { label: string; building: { name: string } } }>; locale: string }) {
-  return <Card><h2 className="text-xl font-bold">طلبات ملكية الوحدات</h2>{requests.length === 0 ? <p className="mt-3 text-[#52635b]">لا توجد طلبات ملكية معلقة.</p> : <ul className="mt-4 grid gap-3 md:grid-cols-2">{requests.map((request) => <li key={request.id} className="rounded-2xl bg-[#f6f8f7] p-4"><p><strong>{request.applicant.name}</strong> · {request.applicant.email}</p><p className="mt-1 text-sm text-[#52635b]">{request.unit.building.name} · الوحدة {request.unit.label}</p><div className="mt-3 flex gap-2"><form action={decideUnitOwnership}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="ownershipRequestId" value={request.id} /><input type="hidden" name="decision" value="APPROVED" /><Button>موافقة</Button></form><form action={decideUnitOwnership}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="ownershipRequestId" value={request.id} /><input type="hidden" name="decision" value="REJECTED" /><button className="rounded-xl border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-700">رفض</button></form></div></li>)}</ul>}</Card>;
+  return <Card><h2 className="text-xl font-bold">{tx(locale, "طلبات ملكية الوحدات" )}</h2>{requests.length === 0 ? <p className="mt-3 text-[#52635b]">{tx(locale, "لا توجد طلبات ملكية معلقة." )}</p> : <ul className="mt-4 grid gap-3 md:grid-cols-2">{requests.map((request) => <li key={request.id} className="rounded-2xl bg-[#f6f8f7] p-4"><p><strong>{request.applicant.name}</strong> · {request.applicant.email}</p><p className="mt-1 text-sm text-[#52635b]">{request.unit.building.name} · الوحدة {request.unit.label}</p><div className="mt-3 flex gap-2"><form action={decideUnitOwnership}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="ownershipRequestId" value={request.id} /><input type="hidden" name="decision" value="APPROVED" /><Button>{tx(locale, "موافقة" )}</Button></form><form action={decideUnitOwnership}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="ownershipRequestId" value={request.id} /><input type="hidden" name="decision" value="REJECTED" /><button className="rounded-xl border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-700">{tx(locale, "رفض" )}</button></form></div></li>)}</ul>}</Card>;
 }
 
 function AdminPanel({ workers, locale, requests, notifications, unreadNotifications }: { workers: Array<{ id: string; bio: string | null; submittedAt: Date | null; user: { name: string; email: string }; categories: Array<{ category: { nameAr: string } }>; serviceAreas: Array<{ area: { code: string } }> }>; locale: string; requests: DashboardRequest[]; notifications: Array<{ id: string; eventType: string; messageKey: string; createdAt: Date; readAt: Date | null; parameters: unknown }>; unreadNotifications: number }) {
@@ -308,28 +556,28 @@ function AdminPanel({ workers, locale, requests, notifications, unreadNotificati
     <DashboardTabs tabs={[
       {
         id: "overview",
-        label: "نظرة عامة",
-        content: <div><h2 className="text-xl font-bold">نظرة عامة</h2><div className="mt-5 grid gap-4 sm:grid-cols-3"><div className="rounded-2xl bg-[#e9f5ee] p-5"><p className="text-3xl font-bold text-[#0b5c3b]">{requests.length}</p><p className="mt-1 text-sm text-[#52635b]">طلبات صيانة</p></div><div className="rounded-2xl bg-[#fff8e8] p-5"><p className="text-3xl font-bold text-[#6b4a00]">{workers.length}</p><p className="mt-1 text-sm text-[#52635b]">ملفات فنيين بانتظار المراجعة</p></div><div className="rounded-2xl bg-[#eef2ff] p-5"><p className="text-3xl font-bold text-[#3949ab]">جاهز</p><p className="mt-1 text-sm text-[#52635b]">حالة النظام</p></div></div><p className="mt-5 text-sm text-[#52635b]">إدارة المناقصات والعروض تتم من حساب المالك، والتقييم يرسله المستأجر بعد انتهاء أمر العمل.</p></div>,
+        label: tx(locale, "نظرة عامة" ),
+        content: <div><h2 className="text-xl font-bold">{tx(locale, "نظرة عامة" )}</h2><div className="mt-5 grid gap-4 sm:grid-cols-3"><div className="rounded-2xl bg-[#e9f5ee] p-5"><p className="text-3xl font-bold text-[#0b5c3b]">{requests.length}</p><p className="mt-1 text-sm text-[#52635b]">{tx(locale, "طلبات صيانة" )}</p></div><div className="rounded-2xl bg-[#fff8e8] p-5"><p className="text-3xl font-bold text-[#6b4a00]">{workers.length}</p><p className="mt-1 text-sm text-[#52635b]">{tx(locale, "ملفات فنيين بانتظار المراجعة" )}</p></div><div className="rounded-2xl bg-[#eef2ff] p-5"><p className="text-3xl font-bold text-[#3949ab]">{tx(locale, "جاهز" )}</p><p className="mt-1 text-sm text-[#52635b]">{tx(locale, "حالة النظام" )}</p></div></div><p className="mt-5 text-sm text-[#52635b]">{tx(locale, "إدارة المناقصات والعروض تتم من حساب المالك، والتقييم يرسله المستأجر بعد انتهاء أمر العمل." )}</p></div>,
       },
       {
         id: "workers",
-        label: `مراجعة الفنيين (${workers.length})`,
-        content: <div><h2 className="text-xl font-bold">مراجعة ملفات الفنيين</h2>{workers.length === 0 ? <p className="mt-3 text-[#52635b]">لا توجد ملفات بانتظار المراجعة.</p> : <ul className="mt-4 space-y-3">{workers.map((worker) => <li key={worker.id} className="rounded-2xl bg-[#f6f8f7] p-4"><p><strong>{worker.user.name}</strong> · {worker.user.email}</p><p className="mt-1 text-sm text-[#52635b]">أُرسل في: {worker.submittedAt?.toLocaleDateString("ar-JO") ?? "غير متوفر"}</p><p className="mt-2 text-sm">{worker.bio || "لم يضف الفني نبذة."}</p><p className="mt-2 text-sm"><strong>التخصصات:</strong> {worker.categories.map((item) => item.category.nameAr).join("، ") || "غير محددة"}</p><p className="mt-1 text-sm"><strong>المناطق:</strong> {worker.serviceAreas.map((item) => item.area.code).join("، ") || "غير محددة"}</p><div className="mt-3 flex flex-wrap gap-2"><form action={reviewWorkerProfile}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="workerId" value={worker.id} /><input type="hidden" name="decision" value="APPROVED" /><Button>اعتماد الملف</Button></form><form action={reviewWorkerProfile} className="flex gap-2"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="workerId" value={worker.id} /><input type="hidden" name="decision" value="CHANGES_REQUESTED" /><input name="reason" placeholder="سبب التعديل (اختياري)" className="rounded-xl border border-[#c8d7d0] px-3 py-2 text-sm" /><Button>طلب تعديل</Button></form></div></li>)}</ul>}</div>,
+        label: `${tx(locale, "مراجعة الفنيين")} (${workers.length})`,
+        content: <div><h2 className="text-xl font-bold">{tx(locale, "مراجعة ملفات الفنيين" )}</h2>{workers.length === 0 ? <p className="mt-3 text-[#52635b]">{tx(locale, "لا توجد ملفات بانتظار المراجعة." )}</p> : <ul className="mt-4 space-y-3">{workers.map((worker) => <li key={worker.id} className="rounded-2xl bg-[#f6f8f7] p-4"><p><strong>{worker.user.name}</strong> · {worker.user.email}</p><p className="mt-1 text-sm text-[#52635b]">{tx(locale, "أُرسل في:")} {worker.submittedAt?.toLocaleDateString(locale === "en" ? "en-US" : "ar-JO") ?? tx(locale, "غير متوفر" )}</p><p className="mt-2 text-sm">{worker.bio || tx(locale, "لم يضف الفني نبذة." )}</p><p className="mt-2 text-sm"><strong>{tx(locale, "التخصصات:" )}</strong> {worker.categories.map((item) => localizedCategory(item.category, locale)).join(tx(locale, "، " )) || tx(locale, "غير محددة" )}</p><p className="mt-1 text-sm"><strong>{tx(locale, "المناطق:" )}</strong> {worker.serviceAreas.map((item) => item.area.code).join(tx(locale, "، " )) || tx(locale, "غير محددة" )}</p><div className="mt-3 flex flex-wrap gap-2"><form action={reviewWorkerProfile}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="workerId" value={worker.id} /><input type="hidden" name="decision" value="APPROVED" /><Button>{tx(locale, "اعتماد الملف" )}</Button></form><form action={reviewWorkerProfile} className="flex gap-2"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="workerId" value={worker.id} /><input type="hidden" name="decision" value="CHANGES_REQUESTED" /><input name="reason" placeholder={tx(locale, "سبب التعديل (اختياري)")} className="rounded-xl border border-[#c8d7d0] px-3 py-2 text-sm" /><Button>{tx(locale, "طلب تعديل" )}</Button></form></div></li>)}</ul>}</div>,
       },
       {
         id: "requests",
-        label: `طلبات الصيانة (${requests.length})`,
+        label: `${tx(locale, "طلبات الصيانة")} (${requests.length})`,
         content: <RequestStatusTabs requests={requests} locale={locale} role={Role.SUPER_ADMIN} workers={[]} />,
       },
       {
         id: "settings",
-        label: "إعدادات النظام",
-        content: <div><h2 className="text-xl font-bold">إعدادات النظام</h2><p className="mt-3 text-[#52635b]">الإشعارات، التصنيفات، مناطق الخدمة، وإعدادات الدفع.</p></div>,
+        label: tx(locale, "إعدادات النظام" ),
+        content: <div><h2 className="text-xl font-bold">{tx(locale, "إعدادات النظام" )}</h2><p className="mt-3 text-[#52635b]">{tx(locale, "الإشعارات، التصنيفات، مناطق الخدمة، وإعدادات الدفع." )}</p></div>,
       },
       {
         id: "notifications",
-        label: `الإشعارات (${unreadNotifications})`,
-        content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <p className="text-[#52635b]">لا توجد إشعارات حاليًا.</p>,
+        label: `${tx(locale, "الإشعارات")} (${unreadNotifications})`,
+        content: notifications.length ? <NotificationList notifications={notifications} locale={locale} /> : <p className="text-[#52635b]">{tx(locale, "لا توجد إشعارات حاليًا." )}</p>,
       },
     ]} />
   </Card>;
@@ -337,9 +585,9 @@ function AdminPanel({ workers, locale, requests, notifications, unreadNotificati
 
 function TenantPanel({ tenancies, memberships, categories, locale }: { tenancies: Array<{ id: string; unit: { label: string; building: { name: string; joinCode: string } } }>; memberships: Array<{ id: string; state: string; unit: { label: string; building: { name: string } } }>; categories: Array<{ id: string; nameAr: string; nameEn: string }>; locale: string }) {
   return <div className="grid gap-6 lg:grid-cols-2">
-    <Card><div className="flex items-start justify-between gap-3"><div><h2 className="text-xl font-bold">الانضمام إلى وحدة</h2><p className="mt-1 text-sm text-[#52635b]">أدخل رمز البناية ورمز وحدتك.</p></div><span className="rounded-full bg-[#eef7f1] px-3 py-1 text-xs font-bold text-[#176b4d]">الخطوة 1</span></div><form action={requestMembership} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><Input name="joinCode" label="رمز البناية" /><Input name="unitCode" label="رمز الوحدة" /><Button>إرسال طلب الانضمام</Button></form>{memberships.length > 0 && <ul className="mt-4 space-y-2 border-t border-[#e0e9e4] pt-4 text-sm">{memberships.map((membership) => <li key={membership.id} className="flex items-center justify-between gap-2"><span>{membership.unit.building.name} · {membership.unit.label}</span><span className="font-semibold text-[#52635b]">{membership.state === "PENDING" ? "بانتظار الموافقة" : membership.state}</span></li>)}</ul>}</Card>
-    {tenancies.length > 0 && <Card><div className="flex items-start justify-between gap-3"><div><h2 className="text-xl font-bold">طلب صيانة</h2><p className="mt-1 text-sm text-[#52635b]">صف المشكلة ليتم التعامل معها.</p></div><span className="rounded-full bg-[#fff8e8] px-3 py-1 text-xs font-bold text-[#8a6200]">الخطوة 2</span></div><form action={createMaintenanceRequest} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><select name="unitId" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5">{tenancies.map((tenancy) => <option key={tenancy.id} value={tenancy.id}>{tenancy.unit.building.name} · {tenancy.unit.label}</option>)}</select><select name="categoryId" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5">{categories.map((category) => <option key={category.id} value={category.id}>{category.nameAr}</option>)}</select><Input name="title" label="عنوان المشكلة" /><label className="text-sm font-semibold">الوصف<textarea name="description" required className="mt-2 min-h-28 w-full rounded-xl border border-[#c8d7d0] px-3 py-2.5" /></label><select name="urgency" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="NORMAL">عادية</option><option value="URGENT">عاجلة</option><option value="LOW">منخفضة</option></select><Button>إرسال الطلب</Button></form></Card>}
-    {tenancies.length === 0 && <Card><h2 className="text-xl font-bold">طلب صيانة</h2><p className="mt-2 text-sm leading-6 text-[#52635b]">بعد موافقة المالك على طلب الانضمام، سيظهر هنا نموذج إرسال طلب الصيانة.</p></Card>}
+    <Card><div className="flex items-start justify-between gap-3"><div><h2 className="text-xl font-bold">{tx(locale, "الانضمام إلى وحدة" )}</h2><p className="mt-1 text-sm text-[#52635b]">{tx(locale, "أدخل رمز البناية ورمز وحدتك." )}</p></div><span className="rounded-full bg-[#eef7f1] px-3 py-1 text-xs font-bold text-[#176b4d]">{tx(locale, "الخطوة 1" )}</span></div><form action={requestMembership} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><Input name="joinCode" label={tx(locale, "رمز البناية")} /><Input name="unitCode" label={tx(locale, "رمز الوحدة")} /><Button>{tx(locale, "إرسال طلب الانضمام" )}</Button></form>{memberships.length > 0 && <ul className="mt-4 space-y-2 border-t border-[#e0e9e4] pt-4 text-sm">{memberships.map((membership) => <li key={membership.id} className="flex items-center justify-between gap-2"><span>{membership.unit.building.name} · {membership.unit.label}</span><span className="font-semibold text-[#52635b]">{membership.state === "PENDING" ? tx(locale, "بانتظار الموافقة" ) : membership.state}</span></li>)}</ul>}</Card>
+    {tenancies.length > 0 && <Card><div className="flex items-start justify-between gap-3"><div><h2 className="text-xl font-bold">{tx(locale, "طلب صيانة" )}</h2><p className="mt-1 text-sm text-[#52635b]">{tx(locale, "صف المشكلة ليتم التعامل معها." )}</p></div><span className="rounded-full bg-[#fff8e8] px-3 py-1 text-xs font-bold text-[#8a6200]">{tx(locale, "الخطوة 2" )}</span></div><form action={createMaintenanceRequest} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><select name="unitId" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5">{tenancies.map((tenancy) => <option key={tenancy.id} value={tenancy.id}>{tenancy.unit.building.name} · {tenancy.unit.label}</option>)}</select><select name="categoryId" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5">{categories.map((category) => <option key={category.id} value={category.id}>{localizedCategory(category, locale)}</option>)}</select><Input name="title" label={tx(locale, "عنوان المشكلة")} /><label className="text-sm font-semibold">{tx(locale, "الوصف" )}<textarea name="description" required className="mt-2 min-h-28 w-full rounded-xl border border-[#c8d7d0] px-3 py-2.5" /></label><select name="urgency" className="rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="NORMAL">{tx(locale, "عادية" )}</option><option value="URGENT">{tx(locale, "عاجلة" )}</option><option value="LOW">{tx(locale, "منخفضة" )}</option></select><Button>{tx(locale, "إرسال الطلب" )}</Button></form></Card>}
+    {tenancies.length === 0 && <Card><h2 className="text-xl font-bold">{tx(locale, "طلب صيانة" )}</h2><p className="mt-2 text-sm leading-6 text-[#52635b]">{tx(locale, "بعد موافقة المالك على طلب الانضمام، سيظهر هنا نموذج إرسال طلب الصيانة." )}</p></Card>}
   </div>;
 }
 
@@ -350,21 +598,21 @@ function WorkerPanel({
   locale,
 }: {
   profile: { bio: string | null; status: string; categories: Array<{ categoryId: string }>; serviceAreas: Array<{ areaId: string }>; tenantFeedbacks: Array<{ rating: number; comment: string | null }>; ownerFeedbacks: Array<{ rating: number; comment: string | null }> } | null;
-  categories: Array<{ id: string; nameAr: string }>;
+  categories: Array<{ id: string; nameAr: string; nameEn: string }>;
   areas: Array<{ id: string; code: string }>;
   locale: string;
 }) {
   const feedback = [...(profile?.tenantFeedbacks ?? []), ...(profile?.ownerFeedbacks ?? [])];
-  const average = feedback.length ? (feedback.reduce((sum, item) => sum + item.rating, 0) / feedback.length).toFixed(1) : "لا يوجد";
-  return <Card><h2 className="text-xl font-bold">الملف المهني</h2><p className="mt-2 text-sm text-[#52635b]">الحالة: {profile?.status === "PENDING_REVIEW" ? "بانتظار مراجعة الإدارة" : profile?.status === "APPROVED" ? "معتمد ويمكنك استقبال الدعوات" : profile?.status === "CHANGES_REQUESTED" ? "مطلوب تعديل الملف ثم إعادة الإرسال" : profile?.status === "REJECTED" ? "مرفوض" : "مسودة"}</p><div className="mt-4 grid gap-3 sm:grid-cols-2"><div className="rounded-2xl bg-[#f6f8f7] p-4"><p className="text-sm text-[#52635b]">متوسط التقييم</p><p className="mt-1 text-2xl font-bold text-[#176b4d]">{average} {feedback.length ? "/ 5" : ""}</p></div><div className="rounded-2xl bg-[#f6f8f7] p-4"><p className="text-sm text-[#52635b]">التقييمات</p><p className="mt-1 text-2xl font-bold">{feedback.length}</p></div></div>{feedback.length > 0 && <ul className="mt-4 space-y-2">{feedback.map((item, index) => <li key={`${item.rating}-${index}`} className="rounded-xl border border-[#e0e9e4] p-3 text-sm"><strong>{item.rating}/5</strong>{item.comment && <span className="mr-2 text-[#52635b]">{item.comment}</span>}</li>)}</ul>}{profile?.status === "PENDING_REVIEW" && <p className="mt-2 rounded-xl bg-[#fff8e8] px-3 py-2 text-sm text-[#6b4a00]">تم استلام طلبك. سيظهر الآن في لوحة الإدارة لحين اعتماده.</p>}<form action={submitWorkerProfile} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><label className="text-sm font-semibold">نبذة عن خبرتك<textarea name="bio" defaultValue={profile?.bio ?? ""} className="mt-2 min-h-28 w-full rounded-xl border border-[#c8d7d0] px-3 py-2.5" /></label><Input name="yearsOfExperience" label="سنوات الخبرة" type="number" /><fieldset><legend className="text-sm font-semibold">التخصصات</legend><div className="mt-2 grid gap-2">{categories.map((category) => <label key={category.id} className="text-sm"><input type="checkbox" name="categoryIds" value={category.id} defaultChecked={profile?.categories.some((item) => item.categoryId === category.id)} className="ml-2" />{category.nameAr}</label>)}</div></fieldset><fieldset><legend className="text-sm font-semibold">مناطق الخدمة</legend><div className="mt-2 grid gap-2">{areas.map((area) => <label key={area.id} className="text-sm"><input type="checkbox" name="areaIds" value={area.id} defaultChecked={profile?.serviceAreas.some((item) => item.areaId === area.id)} className="ml-2" />{area.code}</label>)}</div></fieldset><Button>إرسال للمراجعة</Button></form></Card>;
+  const average = feedback.length ? (feedback.reduce((sum, item) => sum + item.rating, 0) / feedback.length).toFixed(1) : tx(locale, "لا يوجد" );
+  return <Card><h2 className="text-xl font-bold">{tx(locale, "الملف المهني" )}</h2><p className="mt-2 text-sm text-[#52635b]">{tx(locale, "الحالة:")} {profile?.status === "PENDING_REVIEW" ? tx(locale, "بانتظار مراجعة الإدارة" ) : profile?.status === "APPROVED" ? tx(locale, "معتمد ويمكنك استقبال الدعوات" ) : profile?.status === "CHANGES_REQUESTED" ? tx(locale, "مطلوب تعديل الملف ثم إعادة الإرسال" ) : profile?.status === "REJECTED" ? tx(locale, "مرفوض" ) : tx(locale, "مسودة" )}</p><div className="mt-4 grid gap-3 sm:grid-cols-2"><div className="rounded-2xl bg-[#f6f8f7] p-4"><p className="text-sm text-[#52635b]">{tx(locale, "متوسط التقييم" )}</p><p className="mt-1 text-2xl font-bold text-[#176b4d]">{average} {feedback.length ? "/ 5" : ""}</p></div><div className="rounded-2xl bg-[#f6f8f7] p-4"><p className="text-sm text-[#52635b]">{tx(locale, "التقييمات" )}</p><p className="mt-1 text-2xl font-bold">{feedback.length}</p></div></div>{feedback.length > 0 && <ul className="mt-4 space-y-2">{feedback.map((item, index) => <li key={`${item.rating}-${index}`} className="rounded-xl border border-[#e0e9e4] p-3 text-sm"><strong>{item.rating}/5</strong>{item.comment && <span className="mr-2 text-[#52635b]">{item.comment}</span>}</li>)}</ul>}{profile?.status === "PENDING_REVIEW" && <p className="mt-2 rounded-xl bg-[#fff8e8] px-3 py-2 text-sm text-[#6b4a00]">{tx(locale, "تم استلام طلبك. سيظهر الآن في لوحة الإدارة لحين اعتماده." )}</p>}<form action={submitWorkerProfile} className="mt-4 grid gap-3"><input type="hidden" name="locale" value={locale} /><label className="text-sm font-semibold">{tx(locale, "نبذة عن خبرتك" )}<textarea name="bio" defaultValue={profile?.bio ?? ""} className="mt-2 min-h-28 w-full rounded-xl border border-[#c8d7d0] px-3 py-2.5" /></label><Input name="yearsOfExperience" label={tx(locale, "سنوات الخبرة")} type="number" /><fieldset><legend className="text-sm font-semibold">{tx(locale, "التخصصات" )}</legend><div className="mt-2 grid gap-2">{categories.map((category) => <label key={category.id} className="text-sm"><input type="checkbox" name="categoryIds" value={category.id} defaultChecked={profile?.categories.some((item) => item.categoryId === category.id)} className="ml-2" />{localizedCategory(category, locale)}</label>)}</div></fieldset><fieldset><legend className="text-sm font-semibold">{tx(locale, "مناطق الخدمة" )}</legend><div className="mt-2 grid gap-2">{areas.map((area) => <label key={area.id} className="text-sm"><input type="checkbox" name="areaIds" value={area.id} defaultChecked={profile?.serviceAreas.some((item) => item.areaId === area.id)} className="ml-2" />{area.code}</label>)}</div></fieldset><Button>{tx(locale, "إرسال للمراجعة" )}</Button></form></Card>;
 }
 
-function WorkerTenderPanel({ procurements, locale }: { procurements: Array<{ id: string; deadline: Date | null; request: { title: string; description: string; category: { nameAr: string }; unit: { label: string; building: { name: string } } }; offers: Array<{ id: string; state: string; messages: Array<{ id: string; message: string; author: { name: string } }> }> }>; locale: string }) {
-  return <Card><h2 className="text-xl font-bold">دعوات المناقصات</h2>{procurements.length === 0 ? <p className="mt-2 text-[#52635b]">لا توجد دعوات مفتوحة حاليًا.</p> : <ul className="mt-4 space-y-4">{procurements.map((procurement) => { const firstOffer = procurement.offers.length === 0; return <li key={procurement.id} className="rounded-2xl bg-[#f6f8f7] p-4"><p className="font-bold">{procurement.request.title}</p><p className="mt-1 text-sm text-[#52635b]">{procurement.request.category.nameAr} · {procurement.request.unit.building.name} · {procurement.request.unit.label}</p><p className="mt-1 text-sm">{procurement.request.description}</p>{!firstOffer && <p className="mt-2 text-sm font-semibold text-[#176b4d]">تم إرسال عرضك - يمكنك تحديث الحقول التي تريد تغييرها فقط</p>}{procurement.offers.map((offer) => <OfferConversation key={offer.id} offerId={offer.id} messages={offer.messages} locale={locale} />)}<form action={submitOffer} className="mt-3 grid gap-2"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="procurementId" value={procurement.id} /><Input name="amountShekels" label="قيمة العرض (شيكل)" type="number" required={firstOffer} /><label className="text-sm font-semibold">نطاق العمل<p className="mt-1 text-xs font-normal text-[#52635b]">اكتب بالتفصيل ما الذي سيتضمنه العرض، وما سيتم إصلاحه أو تركيبه.</p><textarea name="scopeInclusions" required={firstOffer} className="mt-1 min-h-20 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /></label><Input name="assumptions" label="ملاحظات أو افتراضات" required={firstOffer} /><Input name="duration" label="المدة المتوقعة" required={firstOffer} /><label className="text-sm font-semibold">التاريخ المقترح للعمل<input name="proposedDate" type="date" required={firstOffer} className="mt-1 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /></label><label className="text-sm font-semibold">صالح حتى<input name="validUntil" type="date" required={firstOffer} className="mt-1 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /></label><div className="flex flex-wrap gap-2"><Button>{firstOffer ? "إرسال العرض" : "تحديث العرض"}</Button><button formAction={respondTenderInvitation} name="response" value="DECLINED" className="rounded-xl border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-700">رفض الدعوة</button></div></form></li>; })}</ul>}</Card>;
+function WorkerTenderPanel({ procurements, locale }: { procurements: Array<{ id: string; deadline: Date | null; request: { title: string; description: string; category: { nameAr: string; nameEn: string }; unit: { label: string; building: { name: string } } }; offers: Array<{ id: string; state: string; messages: Array<{ id: string; message: string; author: { name: string } }> }> }>; locale: string }) {
+  return <Card><h2 className="text-xl font-bold">{tx(locale, "دعوات المناقصات" )}</h2>{procurements.length === 0 ? <p className="mt-2 text-[#52635b]">{tx(locale, "لا توجد دعوات مفتوحة حاليًا." )}</p> : <ul className="mt-4 space-y-4">{procurements.map((procurement) => { const firstOffer = procurement.offers.length === 0; return <li key={procurement.id} className="rounded-2xl bg-[#f6f8f7] p-4"><p className="font-bold">{procurement.request.title}</p><p className="mt-1 text-sm text-[#52635b]">{localizedCategory(procurement.request.category, locale)} · {procurement.request.unit.building.name} · {procurement.request.unit.label}</p><p className="mt-1 text-sm">{procurement.request.description}</p>{!firstOffer && <p className="mt-2 text-sm font-semibold text-[#176b4d]">{tx(locale, "تم إرسال عرضك - يمكنك تحديث الحقول التي تريد تغييرها فقط" )}</p>}{procurement.offers.map((offer) => <OfferConversation key={offer.id} offerId={offer.id} messages={offer.messages} locale={locale} />)}<form action={submitOffer} className="mt-3 grid gap-2"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="procurementId" value={procurement.id} /><Input name="amountShekels" label={tx(locale, "قيمة العرض (شيكل)")} type="number" required={firstOffer} /><label className="text-sm font-semibold">{tx(locale, "نطاق العمل" )}<p className="mt-1 text-xs font-normal text-[#52635b]">{tx(locale, "اكتب بالتفصيل ما الذي سيتضمنه العرض، وما سيتم إصلاحه أو تركيبه." )}</p><textarea name="scopeInclusions" required={firstOffer} className="mt-1 min-h-20 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /></label><Input name="assumptions" label={tx(locale, "ملاحظات أو افتراضات")} required={firstOffer} /><Input name="duration" label={tx(locale, "المدة المتوقعة")} required={firstOffer} /><label className="text-sm font-semibold">{tx(locale, "التاريخ المقترح للعمل" )}<input name="proposedDate" type="date" required={firstOffer} className="mt-1 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /></label><label className="text-sm font-semibold">{tx(locale, "صالح حتى" )}<input name="validUntil" type="date" required={firstOffer} className="mt-1 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /></label><div className="flex flex-wrap gap-2"><Button>{firstOffer ? tx(locale, "إرسال العرض" ) : tx(locale, "تحديث العرض" )}</Button><button formAction={respondTenderInvitation} name="response" value="DECLINED" className="rounded-xl border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-700">{tx(locale, "رفض الدعوة" )}</button></div></form></li>; })}</ul>}</Card>;
 }
 
 function OfferConversation({ offerId, messages, locale }: { offerId: string; messages: Array<{ id: string; message: string; author: { name: string } }>; locale: string }) {
-  return <div className="mt-3 rounded-xl border border-[#dce8e1] bg-white p-3"><p className="text-sm font-semibold">التفاوض والاستفسارات</p>{messages.length > 0 && <ul className="mt-2 space-y-1 text-sm">{messages.map((item) => <li key={item.id}><strong>{item.author.name}:</strong> {item.message}</li>)}</ul>}<form action={sendOfferMessage} className="mt-2 flex gap-2"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="offerId" value={offerId} /><input name="message" required placeholder="اكتب ردًا أو استفسارًا..." className="min-w-0 flex-1 rounded-xl border border-[#c8d7d0] px-3 py-2" /><Button>إرسال</Button></form></div>;
+  return <div className="mt-3 rounded-xl border border-[#dce8e1] bg-white p-3"><p className="text-sm font-semibold">{tx(locale, "التفاوض والاستفسارات" )}</p>{messages.length > 0 && <ul className="mt-2 space-y-1 text-sm">{messages.map((item) => <li key={item.id}><strong>{item.author.name}:</strong> {item.message}</li>)}</ul>}<form action={sendOfferMessage} className="mt-2 flex gap-2"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="offerId" value={offerId} /><input name="message" required placeholder={tx(locale, "اكتب ردًا أو استفسارًا...")} className="min-w-0 flex-1 rounded-xl border border-[#c8d7d0] px-3 py-2" /><Button>{tx(locale, "إرسال" )}</Button></form></div>;
 }
 
 type DashboardRequest = {
@@ -373,7 +621,7 @@ type DashboardRequest = {
   description: string;
   status: RequestStatus;
   version: number;
-  category: { id: string; nameAr: string };
+  category: { id: string; nameAr: string; nameEn: string };
   unit: { label: string; building: { name: string } };
   comments: Array<{ id: string; text: string; author: { name: string } }>;
   workOrders: Array<{ id: string; workerId: string; worker: { user: { name: string } }; tenantFeedback: { id: string; rating: number; comment: string | null } | null; ownerFeedback: { id: string; rating: number; comment: string | null } | null }>;
@@ -387,54 +635,54 @@ type DashboardRequest = {
 
 type DirectoryWorker = { id: string; user: { name: string; email: string }; categories: Array<{ categoryId: string }>; workOrders: Array<{ id: string; request: { status: RequestStatus } }>; tenantFeedbacks: Array<{ rating: number; comment: string | null }>; ownerFeedbacks: Array<{ rating: number; comment: string | null }> };
 
-function WorkerSummary({ worker, showComments = false }: { worker: DirectoryWorker; showComments?: boolean }) {
+function WorkerSummary({ worker, showComments = false, locale }: { worker: DirectoryWorker; showComments?: boolean; locale?: string }) {
   const feedback = [...worker.tenantFeedbacks, ...worker.ownerFeedbacks];
-  const average = feedback.length ? (feedback.reduce((sum, item) => sum + item.rating, 0) / feedback.length).toFixed(1) : "لا يوجد";
+  const average = feedback.length ? (feedback.reduce((sum, item) => sum + item.rating, 0) / feedback.length).toFixed(1) : tx(locale, "لا يوجد" );
   const completed = worker.workOrders.filter((order) => order.request.status === RequestStatus.CLOSED).length;
-  return <span className="text-sm"><strong>{worker.user.name}</strong> · متوسط التقييم {average}{feedback.length ? "/5" : ""} · {feedback.length} تقييم · {completed} أعمال مكتملة{showComments && feedback.filter((item) => item.comment).length > 0 && <span className="mt-2 block border-t border-[#e0e9e4] pt-2 text-[#52635b]">{feedback.filter((item) => item.comment).map((item, index) => <span key={`${item.rating}-${index}`} className="mr-2 inline-block">&quot;{item.comment}&quot;</span>)}</span>}</span>;
+  return <span className="text-sm"><strong>{worker.user.name}</strong> · {tx(locale, "متوسط التقييم")} {average}{feedback.length ? "/5" : ""} · {feedback.length} {tx(locale, "تقييم")} · {completed} {tx(locale, "أعمال مكتملة")}{showComments && feedback.filter((item) => item.comment).length > 0 && <span className="mt-2 block border-t border-[#e0e9e4] pt-2 text-[#52635b]">{feedback.filter((item) => item.comment).map((item, index) => <span key={`${item.rating}-${index}`} className="mr-2 inline-block">&quot;{item.comment}&quot;</span>)}</span>}</span>;
 }
 
 function RequestList({ requests, locale, role, workers }: { requests: DashboardRequest[]; locale: string; role: Role | null; workers: DirectoryWorker[] }) {
-  return <section className="mt-8"><h2 className="mb-4 text-2xl font-bold">طلبات الصيانة</h2><div className="grid gap-4">{requests.map((request) => {
+  return <section className="mt-8"><h2 className="mb-4 text-2xl font-bold">{tx(locale, "طلبات الصيانة" )}</h2><div className="grid gap-4">{requests.map((request) => {
     const openProcurement = request.procurements.find((procurement) => procurement.state === "OPEN");
     const matchingWorkers = workers.filter((worker) => worker.categories.some((category) => category.categoryId === request.category.id));
-    return <Card key={request.id}><div className="flex flex-wrap items-start justify-between gap-3"><div><h3 className="text-lg font-bold">{request.title}</h3><p className="mt-1 text-sm text-[#52635b]">{request.unit.building.name} · {request.unit.label} · {request.category.nameAr}</p></div><span className="rounded-full bg-[#e3f3e9] px-3 py-1 text-xs font-semibold text-[#176b4d]">{statusLabels[request.status]}</span></div><p className="mt-3 leading-7">{request.description}</p>
-      {role === Role.OWNER && request.status === RequestStatus.SUBMITTED && <form action={createProcurement} className="mt-4 rounded-2xl border border-[#dce8e1] p-4"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="requestId" value={request.id} /><p className="font-semibold">اختيار طريقة الحصول على الفني</p><select name="procurementMode" className="mt-3 w-full max-w-md rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="INVITED">دعوة فنيين محددين</option><option value="PUBLIC">استقبال عروض من الفنيين المعتمدين</option></select>{matchingWorkers.length === 0 ? <p className="mt-2 text-sm text-[#52635b]">لا يوجد فني معتمد لهذا التخصص للدعوات المحددة. يمكنك اختيار استقبال عروض عامة.</p> : <div className="mt-3 grid gap-2 sm:grid-cols-2">{matchingWorkers.map((worker) => <label key={worker.id} className="rounded-xl border border-[#e0e9e4] p-3 text-sm"><input type="checkbox" name="workerIds" value={worker.id} className="ml-2" /><WorkerSummary worker={worker} showComments /></label>)}</div>}<label className="mt-3 block max-w-md text-sm font-semibold">الموعد النهائي<input name="deadline" type="date" className="mt-2 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /></label><div className="mt-4"><Button>إنشاء وإرسال المناقصة</Button></div></form>}
-      {request.workOrders.map((order) => <p key={`worker-${order.id}`} className="mt-3 rounded-xl bg-[#f6f8f7] px-3 py-2 text-sm">الفني: <strong>{order.worker.user.name}</strong>{order.tenantFeedback && <span className="mr-3">تقييم المستأجر: {order.tenantFeedback.rating}/5</span>}{order.ownerFeedback && <span className="mr-3">تقييم المالك: {order.ownerFeedback.rating}/5</span>}</p>)}
-      {role === Role.OWNER && openProcurement && <div className="mt-4 rounded-2xl border border-[#dce8e1] p-4"><p className="font-semibold">العروض الواردة ({openProcurement.offers.length})</p>{openProcurement.offers.length === 0 ? <p className="mt-2 text-sm text-[#52635b]">بانتظار عروض الفنيين.</p> : <ul className="mt-2 space-y-3">{openProcurement.offers.map((offer) => { const offerWorker = workers.find((worker) => worker.id === offer.workerId); const isUpdated = offer.updatedAt.getTime() > offer.createdAt.getTime(); const changed = (field: string) => offer.updatedFields.includes(field) ? <span className="mr-2 rounded-full bg-[#fff8e8] px-2 py-1 text-xs font-semibold text-[#8a6200]">محدّث</span> : null; return <li key={offer.id} className="rounded-xl bg-[#f6f8f7] p-3 text-sm"><div className="flex flex-wrap items-center justify-between gap-2"><strong>{offer.worker.user.name}{isUpdated && <span className="mr-2 rounded-full bg-[#fff8e8] px-2 py-1 text-xs font-semibold text-[#8a6200]">محدّث</span>}</strong><span className="font-semibold text-[#176b4d]">{(offer.totalAgorot / 100).toFixed(2)} شيكل · {offer.state}</span></div>{offerWorker && <p className="mt-2"><WorkerSummary worker={offerWorker} showComments /></p>}<dl className="mt-3 grid gap-2 text-[#52635b]"><div><dt className="font-semibold text-[#17221d]">السعر {changed("price")}</dt><dd>{(offer.totalAgorot / 100).toFixed(2)} شيكل</dd></div><div><dt className="font-semibold text-[#17221d]">نطاق العمل {changed("scope")}</dt><dd>{offer.scopeInclusions}</dd></div>{offer.assumptions && <div><dt className="font-semibold text-[#17221d]">الملاحظات والافتراضات {changed("assumptions")}</dt><dd>{offer.assumptions}</dd></div>}<div><dt className="font-semibold text-[#17221d]">المدة المتوقعة {changed("duration")}</dt><dd>{offer.duration || "لم يحدد"}</dd></div><div><dt className="font-semibold text-[#17221d]">التاريخ المقترح {changed("proposedDate")}</dt><dd>{offer.proposedDate?.toLocaleDateString("ar-JO") || "لم يحدد"}</dd></div><div><dt className="font-semibold text-[#17221d]">صالح حتى {changed("validUntil")}</dt><dd>{offer.validUntil.toLocaleDateString("ar-JO")}</dd></div></dl><OfferConversation offerId={offer.id} messages={offer.messages} locale={locale} />{offer.state === "SUBMITTED" && <form action={awardOffer} className="mt-3"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="offerId" value={offer.id} /><Button>ترسية وإنشاء أمر عمل</Button></form>}</li>; })}</ul>}</div>}
+    return <Card key={request.id}><div className="flex flex-wrap items-start justify-between gap-3"><div><h3 className="text-lg font-bold">{request.title}</h3><p className="mt-1 text-sm text-[#52635b]">{request.unit.building.name} · {request.unit.label} · {localizedCategory(request.category, locale)}</p></div><span className="rounded-full bg-[#e3f3e9] px-3 py-1 text-xs font-semibold text-[#176b4d]">{tx(locale, statusLabels[request.status])}</span></div><p className="mt-3 leading-7">{request.description}</p>
+      {role === Role.OWNER && request.status === RequestStatus.SUBMITTED && <form action={createProcurement} className="mt-4 rounded-2xl border border-[#dce8e1] p-4"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="requestId" value={request.id} /><p className="font-semibold">{tx(locale, "اختيار طريقة الحصول على الفني" )}</p><select name="procurementMode" className="mt-3 w-full max-w-md rounded-xl border border-[#c8d7d0] px-3 py-2.5"><option value="INVITED">{tx(locale, "دعوة فنيين محددين" )}</option><option value="PUBLIC">{tx(locale, "استقبال عروض من الفنيين المعتمدين" )}</option></select>{matchingWorkers.length === 0 ? <p className="mt-2 text-sm text-[#52635b]">{tx(locale, "لا يوجد فني معتمد لهذا التخصص للدعوات المحددة. يمكنك اختيار استقبال عروض عامة." )}</p> : <div className="mt-3 grid gap-2 sm:grid-cols-2">{matchingWorkers.map((worker) => <label key={worker.id} className="rounded-xl border border-[#e0e9e4] p-3 text-sm"><input type="checkbox" name="workerIds" value={worker.id} className="ml-2" /><WorkerSummary worker={worker} showComments locale={locale} /></label>)}</div>}<label className="mt-3 block max-w-md text-sm font-semibold">{tx(locale, "الموعد النهائي" )}<input name="deadline" type="date" className="mt-2 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /></label><div className="mt-4"><Button>{tx(locale, "إنشاء وإرسال المناقصة" )}</Button></div></form>}
+      {request.workOrders.map((order) => <p key={`worker-${order.id}`} className="mt-3 rounded-xl bg-[#f6f8f7] px-3 py-2 text-sm">{tx(locale, "الفني: " )}<strong>{order.worker.user.name}</strong>{order.tenantFeedback && <span className="mr-3">{tx(locale, "تقييم المستأجر:")} {order.tenantFeedback.rating}/5</span>}{order.ownerFeedback && <span className="mr-3">{tx(locale, "تقييم المالك:")} {order.ownerFeedback.rating}/5</span>}</p>)}
+      {role === Role.OWNER && openProcurement && <div className="mt-4 rounded-2xl border border-[#dce8e1] p-4"><p className="font-semibold">{tx(locale, "العروض الواردة")} ({openProcurement.offers.length})</p>{openProcurement.offers.length === 0 ? <p className="mt-2 text-sm text-[#52635b]">{tx(locale, "بانتظار عروض الفنيين." )}</p> : <ul className="mt-2 space-y-3">{openProcurement.offers.map((offer) => { const offerWorker = workers.find((worker) => worker.id === offer.workerId); const isUpdated = offer.updatedAt.getTime() > offer.createdAt.getTime(); const changed = (field: string) => offer.updatedFields.includes(field) ? <span className="mr-2 rounded-full bg-[#fff8e8] px-2 py-1 text-xs font-semibold text-[#8a6200]">{tx(locale, "محدّث" )}</span> : null; return <li key={offer.id} className="rounded-xl bg-[#f6f8f7] p-3 text-sm"><div className="flex flex-wrap items-center justify-between gap-2"><strong>{offer.worker.user.name}{isUpdated && <span className="mr-2 rounded-full bg-[#fff8e8] px-2 py-1 text-xs font-semibold text-[#8a6200]">{tx(locale, "محدّث" )}</span>}</strong><span className="font-semibold text-[#176b4d]">{(offer.totalAgorot / 100).toFixed(2)} {tx(locale, "شيكل")} · {tx(locale, offer.state)}</span></div>{offerWorker && <p className="mt-2"><WorkerSummary worker={offerWorker} showComments locale={locale} /></p>}<dl className="mt-3 grid gap-2 text-[#52635b]"><div><dt className="font-semibold text-[#17221d]">{tx(locale, "السعر")} {changed("price")}</dt><dd>{(offer.totalAgorot / 100).toFixed(2)} {tx(locale, "شيكل")}</dd></div><div><dt className="font-semibold text-[#17221d]">{tx(locale, "نطاق العمل")} {changed("scope")}</dt><dd>{offer.scopeInclusions}</dd></div>{offer.assumptions && <div><dt className="font-semibold text-[#17221d]">{tx(locale, "الملاحظات والافتراضات")} {changed("assumptions")}</dt><dd>{offer.assumptions}</dd></div>}<div><dt className="font-semibold text-[#17221d]">{tx(locale, "المدة المتوقعة")} {changed("duration")}</dt><dd>{offer.duration || tx(locale, "لم يحدد" )}</dd></div><div><dt className="font-semibold text-[#17221d]">{tx(locale, "التاريخ المقترح")} {changed("proposedDate")}</dt><dd>{offer.proposedDate?.toLocaleDateString(locale === "en" ? "en-US" : "ar-JO") || tx(locale, "لم يحدد" )}</dd></div><div><dt className="font-semibold text-[#17221d]">{tx(locale, "صالح حتى")} {changed("validUntil")}</dt><dd>{offer.validUntil.toLocaleDateString(locale === "en" ? "en-US" : "ar-JO")}</dd></div></dl><OfferConversation offerId={offer.id} messages={offer.messages} locale={locale} />{offer.state === "SUBMITTED" && <form action={awardOffer} className="mt-3"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="offerId" value={offer.id} /><Button>{tx(locale, "ترسية وإنشاء أمر عمل" )}</Button></form>}</li>; })}</ul>}</div>}
       {role === Role.WORKER && request.status === RequestStatus.ASSIGNED && <StatusForm request={request} locale={locale} statuses={["IN_PROGRESS"]} />}
-      {role === Role.WORKER && request.status === RequestStatus.IN_PROGRESS && <StatusForm request={request} locale={locale} statuses={["AWAITING_TENANT_CONFIRMATION"]} submitLabel="إنهاء العمل وإرساله للتأكيد" />}
-      {role === Role.OWNER && request.status === RequestStatus.IN_PROGRESS && <StatusForm request={request} locale={locale} statuses={["CANCELLED"]} submitLabel="إلغاء الطلب" />}
+      {role === Role.WORKER && request.status === RequestStatus.IN_PROGRESS && <StatusForm request={request} locale={locale} statuses={["AWAITING_TENANT_CONFIRMATION"]} submitLabel={tx(locale, "إنهاء العمل وإرساله للتأكيد")} />}
+      {role === Role.OWNER && request.status === RequestStatus.IN_PROGRESS && <StatusForm request={request} locale={locale} statuses={["CANCELLED"]} submitLabel={tx(locale, "إلغاء الطلب")} />}
       {role === Role.OWNER && request.status === RequestStatus.TENANT_CONFIRMED && <StatusForm request={request} locale={locale} statuses={["CLOSED"]} />}
       {role === Role.OWNER && request.status === RequestStatus.PROCUREMENT && !openProcurement && <StatusForm request={request} locale={locale} statuses={["CANCELLED"]} />}
       {role === Role.OWNER && request.status === RequestStatus.SUBMITTED && <StatusForm request={request} locale={locale} statuses={["REJECTED", "CANCELLED"]} />}
       {role === Role.TENANT && request.status === RequestStatus.SUBMITTED && <StatusForm request={request} locale={locale} statuses={["CANCELLED"]} />}
-      {role === Role.TENANT && request.status === RequestStatus.AWAITING_TENANT_CONFIRMATION && request.workOrders.filter((order) => !order.tenantFeedback).map((order) => <form key={order.id} action={submitTenantFeedback} className="mt-4 rounded-2xl border border-[#dce8e1] p-4"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="workOrderId" value={order.id} /><p className="font-semibold">قيّم الخدمة</p><select name="rating" className="mt-2 rounded-xl border border-[#c8d7d0] px-3 py-2"><option value="5">5 - ممتاز</option><option value="4">4 - جيد جدًا</option><option value="3">3 - جيد</option><option value="2">2 - مقبول</option><option value="1">1 - ضعيف</option></select><textarea name="comment" placeholder="ملاحظات اختيارية" className="mt-2 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /><div className="mt-2"><Button>إرسال التقييم</Button></div></form>)}
-      {role === Role.OWNER && request.status === RequestStatus.CLOSED && request.workOrders.filter((order) => !order.ownerFeedback).map((order) => <form key={order.id} action={submitOwnerFeedback} className="mt-4 rounded-2xl border border-[#dce8e1] p-4"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="workOrderId" value={order.id} /><p className="font-semibold">قيّم الفني</p><select name="rating" className="mt-2 rounded-xl border border-[#c8d7d0] px-3 py-2"><option value="5">5 - ممتاز</option><option value="4">4 - جيد جدًا</option><option value="3">3 - جيد</option><option value="2">2 - مقبول</option><option value="1">1 - ضعيف</option></select><textarea name="comment" placeholder="ملاحظات اختيارية" className="mt-2 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /><div className="mt-2"><Button>إرسال تقييم المالك</Button></div></form>)}
-      {request.comments.length > 0 && <ul className="mt-4 space-y-2 border-t border-[#e0e9e4] pt-4 text-sm">{request.comments.map((comment) => <li key={comment.id}><strong>{comment.author.name}:</strong> {comment.text}</li>)}</ul>}<form action={addComment} className="mt-4 flex gap-2"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="requestId" value={request.id} /><input name="text" required placeholder="أضف تعليقًا..." className="min-w-0 flex-1 rounded-xl border border-[#c8d7d0] px-3 py-2.5" /><input type="hidden" name="audience" value={role === Role.WORKER ? "JOB_PARTICIPANTS" : "TENANT_OWNER"} /><Button>تعليق</Button></form></Card>;
+      {role === Role.TENANT && request.status === RequestStatus.AWAITING_TENANT_CONFIRMATION && request.workOrders.filter((order) => !order.tenantFeedback).map((order) => <form key={order.id} action={submitTenantFeedback} className="mt-4 rounded-2xl border border-[#dce8e1] p-4"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="workOrderId" value={order.id} /><p className="font-semibold">{tx(locale, "قيّم الخدمة" )}</p><select name="rating" className="mt-2 rounded-xl border border-[#c8d7d0] px-3 py-2"><option value="5">{tx(locale, "5 - ممتاز" )}</option><option value="4">{tx(locale, "4 - جيد جدًا" )}</option><option value="3">{tx(locale, "3 - جيد" )}</option><option value="2">{tx(locale, "2 - مقبول" )}</option><option value="1">{tx(locale, "1 - ضعيف" )}</option></select><textarea name="comment" placeholder={tx(locale, "ملاحظات اختيارية")} className="mt-2 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /><div className="mt-2"><Button>{tx(locale, "إرسال التقييم" )}</Button></div></form>)}
+      {role === Role.OWNER && request.status === RequestStatus.CLOSED && request.workOrders.filter((order) => !order.ownerFeedback).map((order) => <form key={order.id} action={submitOwnerFeedback} className="mt-4 rounded-2xl border border-[#dce8e1] p-4"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="workOrderId" value={order.id} /><p className="font-semibold">{tx(locale, "قيّم الفني" )}</p><select name="rating" className="mt-2 rounded-xl border border-[#c8d7d0] px-3 py-2"><option value="5">{tx(locale, "5 - ممتاز" )}</option><option value="4">{tx(locale, "4 - جيد جدًا" )}</option><option value="3">{tx(locale, "3 - جيد" )}</option><option value="2">{tx(locale, "2 - مقبول" )}</option><option value="1">{tx(locale, "1 - ضعيف" )}</option></select><textarea name="comment" placeholder={tx(locale, "ملاحظات اختيارية")} className="mt-2 w-full rounded-xl border border-[#c8d7d0] px-3 py-2" /><div className="mt-2"><Button>{tx(locale, "إرسال تقييم المالك" )}</Button></div></form>)}
+      {request.comments.length > 0 && <ul className="mt-4 space-y-2 border-t border-[#e0e9e4] pt-4 text-sm">{request.comments.map((comment) => <li key={comment.id}><strong>{comment.author.name}:</strong> {comment.text}</li>)}</ul>}<form action={addComment} className="mt-4 flex gap-2"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="requestId" value={request.id} /><input name="text" required placeholder={tx(locale, "أضف تعليقًا...")} className="min-w-0 flex-1 rounded-xl border border-[#c8d7d0] px-3 py-2.5" /><input type="hidden" name="audience" value={role === Role.WORKER ? "JOB_PARTICIPANTS" : "TENANT_OWNER"} /><Button>{tx(locale, "تعليق" )}</Button></form></Card>;
   })}</div></section>;
 }
 
 function NotificationList({ notifications, locale }: { notifications: Array<{ id: string; eventType: string; messageKey: string; createdAt: Date; readAt: Date | null; parameters: unknown }>; locale: string }) {
   const labels: Record<string, [string, string]> = {
-    MAINTENANCE_REQUEST_CREATED: ["تم إنشاء طلب صيانة جديد", "New maintenance request"],
-    MEMBERSHIP_REQUESTED: ["طلب مستأجر جديد", "New tenant request"],
-    MEMBERSHIP_DECIDED: ["تم تحديث طلب المستأجر", "Tenant request updated"],
-    UNIT_OWNERSHIP_REQUESTED: ["طلب ملكية وحدة جديد", "New unit ownership request"],
-    UNIT_OWNERSHIP_DECIDED: ["تم البت في طلب ملكية الوحدة", "Unit ownership request decided"],
-    TENDER_INVITED: ["تمت دعوتك إلى مناقصة", "You were invited to a tender"],
-    TENDER_INVITATION_CREATED: ["تمت دعوتك إلى مناقصة", "You were invited to a tender"],
-    OFFER_SUBMITTED: ["تم إرسال عرض جديد", "New offer submitted"],
-    OFFER_AWARDED: ["تمت ترسية العرض", "Offer awarded"],
-    TENANT_FEEDBACK_SUBMITTED: ["تم استلام تقييم جديد", "New tenant feedback received"],
-    OWNER_FEEDBACK_SUBMITTED: ["تم استلام تقييم جديد من المالك", "New owner feedback received"],
-    WORK_COMPLETION_READY: ["العمل جاهز لتأكيد المستأجر", "Work ready for tenant confirmation"],
-    OFFER_MESSAGE_RECEIVED: ["رسالة جديدة حول العرض", "New offer message"],
+    MAINTENANCE_REQUEST_CREATED: [tx(locale, "تم إنشاء طلب صيانة جديد" ), "New maintenance request"],
+    MEMBERSHIP_REQUESTED: [tx(locale, "طلب مستأجر جديد" ), "New tenant request"],
+    MEMBERSHIP_DECIDED: [tx(locale, "تم تحديث طلب المستأجر" ), "Tenant request updated"],
+    UNIT_OWNERSHIP_REQUESTED: [tx(locale, "طلب ملكية وحدة جديد" ), "New unit ownership request"],
+    UNIT_OWNERSHIP_DECIDED: [tx(locale, "تم البت في طلب ملكية الوحدة" ), "Unit ownership request decided"],
+    TENDER_INVITED: [tx(locale, "تمت دعوتك إلى مناقصة" ), "You were invited to a tender"],
+    TENDER_INVITATION_CREATED: [tx(locale, "تمت دعوتك إلى مناقصة" ), "You were invited to a tender"],
+    OFFER_SUBMITTED: [tx(locale, "تم إرسال عرض جديد" ), "New offer submitted"],
+    OFFER_AWARDED: [tx(locale, "تمت ترسية العرض" ), "Offer awarded"],
+    TENANT_FEEDBACK_SUBMITTED: [tx(locale, "تم استلام تقييم جديد" ), "New tenant feedback received"],
+    OWNER_FEEDBACK_SUBMITTED: [tx(locale, "تم استلام تقييم جديد من المالك" ), "New owner feedback received"],
+    WORK_COMPLETION_READY: [tx(locale, "العمل جاهز لتأكيد المستأجر" ), "Work ready for tenant confirmation"],
+    OFFER_MESSAGE_RECEIVED: [tx(locale, "رسالة جديدة حول العرض" ), "New offer message"],
   };
   const isEnglish = locale === "en";
-  return <section className="mt-8"><Card><h2 className="text-xl font-bold">{isEnglish ? "Notifications" : "الإشعارات"}</h2><ul className="mt-3 space-y-2">{notifications.map((notification) => { const actorName = typeof notification.parameters === "object" && notification.parameters !== null && "actorName" in notification.parameters && typeof notification.parameters.actorName === "string" ? notification.parameters.actorName : null; const decision = typeof notification.parameters === "object" && notification.parameters !== null && "decision" in notification.parameters && typeof notification.parameters.decision === "string" ? notification.parameters.decision : null; const label = labels[notification.eventType]; const title = label ? label[isEnglish ? 1 : 0] : notification.messageKey; const decisionText = notification.eventType === "UNIT_OWNERSHIP_DECIDED" && decision ? (isEnglish ? decision.toLowerCase() : decision === "APPROVED" ? "تمت الموافقة" : "تم الرفض") : null;   const sentAt = notification.createdAt.toLocaleString(isEnglish ? "en-US" : "ar-JO", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Gaza" }); return <li key={notification.id} className={`flex items-center justify-between gap-3 rounded-xl p-3 text-sm ${notification.readAt ? "bg-[#f6f8f7]" : "bg-[#e9f5ee]"}`}><span><strong>{title}{decisionText && <span className="mr-2 text-[#176b4d]">({decisionText})</span>}</strong>{actorName && <span className="mr-2 text-[#60756a]">{isEnglish ? `by ${actorName}` : `بواسطة ${actorName}`}</span>}<time dateTime={notification.createdAt.toISOString()} className="mt-1 block text-xs text-[#60756a]">{isEnglish ? `Sent ${sentAt}` : `أُرسل في ${sentAt}`}</time></span>{!notification.readAt && <form action={markNotificationRead}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="notificationId" value={notification.id} /><button className="text-xs font-bold text-[#176b4d]">{isEnglish ? "Mark as read" : "تحديد كمقروء"}</button></form>}</li>; })}</ul></Card></section>;
+  return <section className="mt-8"><Card><h2 className="text-xl font-bold">{isEnglish ? "Notifications" : tx(locale, "الإشعارات" )}</h2><ul className="mt-3 space-y-2">{notifications.map((notification) => { const actorName = typeof notification.parameters === "object" && notification.parameters !== null && "actorName" in notification.parameters && typeof notification.parameters.actorName === "string" ? notification.parameters.actorName : null; const decision = typeof notification.parameters === "object" && notification.parameters !== null && "decision" in notification.parameters && typeof notification.parameters.decision === "string" ? notification.parameters.decision : null; const label = labels[notification.eventType]; const title = label ? label[isEnglish ? 1 : 0] : notification.messageKey; const decisionText = notification.eventType === "UNIT_OWNERSHIP_DECIDED" && decision ? (isEnglish ? decision.toLowerCase() : decision === "APPROVED" ? tx(locale, "تمت الموافقة" ) : tx(locale, "تم الرفض" )) : null;   const sentAt = notification.createdAt.toLocaleString(isEnglish ? "en-US" : "ar-JO", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Gaza" }); return <li key={notification.id} className={`flex items-center justify-between gap-3 rounded-xl p-3 text-sm ${notification.readAt ? "bg-[#f6f8f7]" : "bg-[#e9f5ee]"}`}><span><span className="flex flex-wrap items-center gap-x-2 gap-y-1"><strong>{title}{decisionText && <span className="ml-2 text-[#176b4d]">({decisionText})</span>}</strong>{actorName && <span className="text-[#60756a]">{isEnglish ? `by ${actorName}` : `بواسطة ${actorName}`}</span>}</span><time dateTime={notification.createdAt.toISOString()} className="mt-1 block text-xs text-[#60756a]">{isEnglish ? `Sent ${sentAt}` : `أُرسل في ${sentAt}`}</time></span>{!notification.readAt && <form action={markNotificationRead}><input type="hidden" name="locale" value={locale} /><input type="hidden" name="notificationId" value={notification.id} /><button className="text-xs font-bold text-[#176b4d]">{isEnglish ? "Mark as read" : tx(locale, "تحديد كمقروء" )}</button></form>}</li>; })}</ul></Card></section>;
 }
 
-function StatusForm({ request, locale, statuses, submitLabel = "تحديث الحالة" }: { request: { id: string; version: number }; locale: string; statuses: string[]; submitLabel?: string }) {
-  return <form action={updateMaintenanceStatus} className="mt-4 flex flex-wrap items-center gap-2"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="requestId" value={request.id} /><select name="status" className="rounded-xl border border-[#c8d7d0] px-3 py-2 text-sm">{statuses.map((status) => <option key={status} value={status}>{statusLabels[status as RequestStatus]}</option>)}</select><Button>{submitLabel}</Button></form>;
+function StatusForm({ request, locale, statuses, submitLabel = tx(locale, "تحديث الحالة" ) }: { request: { id: string; version: number }; locale: string; statuses: string[]; submitLabel?: string }) {
+  return <form action={updateMaintenanceStatus} className="mt-4 flex flex-wrap items-center gap-2"><input type="hidden" name="locale" value={locale} /><input type="hidden" name="requestId" value={request.id} /><select name="status" className="rounded-xl border border-[#c8d7d0] px-3 py-2 text-sm">{statuses.map((status) => <option key={status} value={status}>{tx(locale, statusLabels[status as RequestStatus])}</option>)}</select><Button>{submitLabel}</Button></form>;
 }
