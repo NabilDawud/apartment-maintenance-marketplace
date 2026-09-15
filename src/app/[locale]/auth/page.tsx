@@ -1,10 +1,18 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 
 export default function AuthPage() {
+  return (
+    <Suspense>
+      <AuthForm />
+    </Suspense>
+  );
+}
+
+function AuthForm() {
   const { locale } = useParams<{ locale: string }>();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -12,6 +20,8 @@ export default function AuthPage() {
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   const isArabic = locale === "ar";
+  const otherLocale = isArabic ? "en" : "ar";
+  const switchHref = `/${otherLocale}/auth${mode === "register" ? "?mode=register" : ""}`;
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -45,7 +55,10 @@ export default function AuthPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#f6f8f7] px-6 py-12">
       <div className="w-full max-w-md rounded-3xl border border-[#e0e9e4] bg-white p-8 shadow-xl shadow-[#176b4d]/5">
-        <Link href={`/${locale}`} className="text-xl font-bold text-[#0b5c3b]">صيانة</Link>
+        <div className="flex items-center justify-between">
+          <Link href={`/${locale}`} className="text-xl font-bold text-[#0b5c3b]">صيانة</Link>
+          <Link href={switchHref} className="rounded-full px-4 py-2 text-sm text-[#52635b] hover:bg-[#f6f8f7]">{isArabic ? "English" : "العربية"}</Link>
+        </div>
         <h1 className="mt-10 text-3xl font-bold">{mode === "login" ? (isArabic ? "مرحبًا بعودتك" : "Welcome back") : (isArabic ? "أنشئ حسابك" : "Create your account")}</h1>
         <p className="mt-2 text-[#52635b]">{isArabic ? "أدر طلبات الصيانة بثقة وسهولة." : "Manage maintenance requests with confidence."}</p>
         <form onSubmit={submit} className="mt-8 space-y-4">
